@@ -37,7 +37,9 @@ Fuente: configuración hecha por la fundadora el 25 de octubre de 2026, verifica
 Reglas:
 - Nunca se programa un post sin revisión `aprobado`. Un post con cambios pedidos vuelve a revisión.
 - Instagram exige imagen o video en cada post; un Reel exige video.
-- Metricool necesita las imágenes en un enlace público (o Google Drive vinculado en Metricool). Los archivos del Centro de mando y los enlaces de Canva no son públicos: antes del primer post hay que definir cómo se entregan (por confirmar).
+- Imágenes: se exporta el diseño con `export-design` de Canva (jpg) y se pasa esa URL en `media`. Metricool copia el archivo a su servidor al programar. Probado el 25 de octubre de 2026 con el post 1 como borrador (draft) para el 27 de octubre, 6 pm.
+- Fotos y videos de la biblioteca del Centro de mando todavía no se pueden pasar a Metricool ni a Canva: falta habilitar `www.canva.com` en la red del entorno.
+- Programación automática: pendiente de la decisión de la fundadora (tarea cada 3 horas, de 7 am a 10 pm).
 - Si la imagen la generó la IA, se marca `isAiGenerated: true`, como pide Instagram.
 
 ## Pedidos de ajuste al agente
