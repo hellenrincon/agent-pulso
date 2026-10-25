@@ -204,7 +204,9 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .igp-h .f { font-size: .7rem; color: var(--muted); }
 .igp-h .n { margin-left: auto; font-family: var(--f-title); font-weight: 300; font-size: 1.6rem; color: var(--gold); line-height: 1; }
 .igp-art { position: relative; aspect-ratio: 4 / 5; max-width: 100%; overflow: hidden; }
-.igp-art svg { position: absolute; inset: 0; }
+.igp-art svg, .igp-art img, .thumb img, .pgrid .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.igp-art.has-img { aspect-ratio: 3 / 4; }
+.canva-tag { position: absolute; left: 8px; bottom: 8px; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; background: rgba(23,41,58,.78); color: #F3E8D6; padding: 3px 7px; }
 .igp-txt { position: absolute; left: 0; right: 0; top: 0; padding: 22px 20px; display: grid; gap: 4px; }
 .igp-txt .t { font-family: var(--f-title); font-weight: 300; text-transform: uppercase; letter-spacing: .16em; font-size: 1.35rem; line-height: 1.2; }
 .igp-txt .m { font-family: var(--f-hand); font-size: 1.55rem; line-height: 1; }
@@ -481,13 +483,16 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 
   const AVATAR = '<svg width="30" height="30" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width="1.5"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/></svg>';
   const artOf = (k) => ART[k] || ART.foto;
+  // Diseño real de Canva (archivo publicado junto al dashboard) o, si no hay, la ilustración
+  const imgOf = (p) => /^canva\/[a-z0-9-]+\.png$/.test(p.img || "") ? p.img : "";
+  const visual = (p) => imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
   const colorTinta = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#F3E8D6";
   const REV = { aprobado: ["verde", "Aprobado"], cambios: ["amarillo", "Pide cambios"], descartado: ["rojo", "Descartado"] };
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
   let revId = null;
   function postCard(p) {
     return `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)}</div></div><span class="n">${esc(p.orden)}</span></div>
-      <div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>
+      ${imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
       <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div></div></article>`;
   }
   function propuestasHTML() {
@@ -499,7 +504,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     ps.forEach((x) => { const r = revOf(x); n[r || "pend"]++; });
     const seg = (k, c) => n[k] ? `<span style="flex:${n[k]};background:${c}"></span>` : "";
     const r = revOf(p); const rv = p.revision || {};
-    const strip = ps.map((x) => { const rr = revOf(x); return `<button class="thumb ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}: ${esc(x.titulo_img)}">${artOf(x.art)}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}"></i></button>`; }).join("");
+    const strip = ps.map((x) => { const rr = revOf(x); return `<button class="thumb ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}: ${esc(x.titulo_img)}">${visual(x)}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}"></i></button>`; }).join("");
     const guia = Array.isArray(p.guia_foto) ? p.guia_foto : [];
     const review = `
       <div class="rev-top"><div class="rev-bar">${seg("aprobado", "var(--verde)")}${seg("cambios", "var(--amarillo)")}${seg("descartado", "var(--rojo)")}${seg("pend", "var(--line)")}</div>
@@ -512,14 +517,14 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
           <div class="rev-meta"><div><span class="eyebrow">Cuándo</span><span>${esc(p.cuando)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
-          ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : ""}
+          ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
           ${canWrite ? `<textarea id="rev-cm" placeholder="¿Qué cambiarías? (obligatorio para pedir cambios)" aria-label="Comentario sobre el post"></textarea>
           <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios">Pedir cambio</button><button class="btn" data-revact="descartado">Descartar</button></div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
           <div class="rev-nav"><button class="btn" data-rev="${esc(ps[(idx - 1 + ps.length) % ps.length]._id)}">← Anterior</button><button class="btn" data-rev="${esc(ps[(idx + 1) % ps.length]._id)}">Siguiente →</button></div>
         </div>
       </div>`;
-    const tiles = ps.filter((x) => revOf(x) !== "descartado").reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${artOf(x.art)}<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span><b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
+    const tiles = ps.filter((x) => revOf(x) !== "descartado").reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${visual(x)}${imgOf(x) ? "" : `<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span>`}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
     const perfil = `<div class="perfil"><div class="pgrid" aria-label="Así se vería el perfil">${tiles}</div>
       <div class="bio"><strong>PULSO Coffee &amp; More | Bogotá</strong><span>Café para gente en movimiento</span><span>RUN • RIDE • SWIM</span><span>Bogotá · Próximamente</span><span class="pc">Enlace a la lista de espera: por confirmar</span>
       <span class="hand" style="margin-top:10px">Los descartados desaparecen del perfil</span>
