@@ -206,6 +206,10 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .igp-art { position: relative; aspect-ratio: 4 / 5; max-width: 100%; overflow: hidden; }
 .igp-art svg, .igp-art img, .thumb img, .pgrid .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .igp-art.has-img { aspect-ratio: 3 / 4; }
+.igp-art.has-vid { aspect-ratio: 9 / 16; background: #000; }
+.igp-art video, .thumb video, .pgrid .tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.igp-art.has-vid video { object-fit: contain; }
+.igp-art.has-vid .canva-tag { bottom: auto; top: 8px; }
 /* Biblioteca de fotos y videos reales */
 .med-up { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; border: 1px dashed var(--dorado); background: var(--panel); padding: 18px; margin-bottom: 18px; }
 @media (max-width: 720px) { .med-up { grid-template-columns: minmax(0, 1fr); } }
@@ -512,7 +516,9 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   const artOf = (k) => ART[k] || ART.foto;
   // Diseño real de Canva (archivo publicado junto al dashboard) o, si no hay, la ilustración
   const imgOf = (p) => /^canva\/[a-z0-9-]+\.png$/.test(p.img || "") ? p.img : "";
-  const visual = (p) => imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
+  const assetId = (v) => /^[0-9a-f]{32}$/.test(v || "") ? v : "";
+  const vidOf = (p) => assetId(p.video) ? "/_blob/" + assetId(p.video) : "";
+  const visual = (p) => vidOf(p) ? `<video src="${vidOf(p)}#t=6" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
   const colorTinta = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#F3E8D6";
   const REV = { aprobado: ["verde", "Aprobado"], cambios: ["amarillo", "Pide cambios"], descartado: ["rojo", "Descartado"] };
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
@@ -523,7 +529,6 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "";
   const MED_CATS = ["Bebidas", "Tú y el equipo", "Carrito y lugar", "Deporte y comunidad", "Otro"];
   const MED_ERR = { too_large: "pesa más de 20 MB", unsupported_type: "ese formato no se acepta (usa JPG, PNG, HEIC o MP4)", quota_exceeded: "se llenó el espacio de la biblioteca", not_granted: "solo la fundadora puede subir archivos" };
-  const assetId = (v) => /^[0-9a-f]{32}$/.test(v || "") ? v : "";
   function bibliotecaHTML() {
     const ms = S.medios.filter((m) => assetId(m.asset)).sort((a, b) => String(b.subido || "").localeCompare(String(a.subido || "")));
     const up = assets && canWrite ? `<div class="med-up">
@@ -573,10 +578,10 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const estado = (p) => p.metricool && p.metricool.fecha ? ["verde", "Programado"]
       : faltaFoto(p) ? ["rojo", "Falta tu foto real"]
       : esReel(p) && !videos ? ["rojo", "Reel: falta video"]
-      : !p.canva ? ["amarillo", "Falta diseño"]
+      : !p.canva && !vidOf(p) ? ["amarillo", "Falta diseño"]
       : revOf(p) === "aprobado" ? ["verde", "Aprobado"]
       : ["amarillo", "Listo para tu revisión"];
-    const listos = ps.filter((p) => p.canva && !faltaFoto(p) && !(esReel(p) && !videos)).length;
+    const listos = ps.filter((p) => (p.canva || vidOf(p)) && !faltaFoto(p) && !(esReel(p) && !videos)).length;
     const cats = MED_CATS.map((c) => [c, ms.filter((m) => m.categoria === c).length]).filter((x) => x[1]);
     const kpi = (n, t) => `<div class="palanca"><div class="pt" style="font-size:1.8rem;font-weight:300">${n}</div><div class="pd">${esc(t)}</div></div>`;
     const lectura = !ms.length ? "Todavía no hay material real: los Reels y el post 3 no pueden salir. Prioridad: grabar 3 videos cortos de bebidas y una foto tuya."
@@ -615,7 +620,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   }
   function postCard(p) {
     return `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)}</div></div><span class="n">${esc(p.orden)}</span></div>
-      ${imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
+      ${vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">Tu video · Reel</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
       <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div></div></article>`;
   }
   function propuestasHTML() {
