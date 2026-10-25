@@ -40,6 +40,12 @@ Reglas:
 - Metricool necesita las imágenes en un enlace público (o Google Drive vinculado en Metricool). Los archivos del Centro de mando y los enlaces de Canva no son públicos: antes del primer post hay que definir cómo se entregan (por confirmar).
 - Si la imagen la generó la IA, se marca `isAiGenerated: true`, como pide Instagram.
 
+## Pedidos de ajuste al agente
+
+La fundadora pide ajustes desde el Centro de mando ("Pedir ajuste al agente" en cada foto o video, o "Pedir cambio" en un post). Quedan en `solicitudes`. Contenido los hace en Canva, muestra el resultado y la fundadora lo aprueba.
+
+Límite actual (25 de octubre de 2026): la red del entorno de los agentes bloquea `www.canva.com` y `export-download.canva.com`. Por eso el agente puede cambiar textos, colores y orden en los diseños de Canva, pero todavía no puede subir a Canva las fotos y videos de la fundadora. Se arregla agregando esos dominios en la configuración del entorno (Project settings → Cloud environment → Network access).
+
 ## Fotos y videos reales
 
 La fundadora los sube en las pestañas Contenido o Estratega. Quedan en la colección `medios` del tablero (ver `board/README.md`). Se usan antes que cualquier imagen generada.

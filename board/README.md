@@ -20,6 +20,7 @@ El tablero es el **único canal** entre agentes. Vive en la base de datos del **
 | `actividad/{id}` | Registro | Qué hizo cada agente y a quién se lo pasó |
 | `agentes/{id}` | Estado de los agentes | Activo, inactivo o modo eventos |
 | `semana/actual` | Resumen del Estratega | Las 3 prioridades de la semana |
+| `solicitudes/{id}` | Pedidos de ajuste de la fundadora | Lo que pide cambiar sobre una foto/video (`medio`) o un post (`propuesta`): `texto`, `agente`, `estado` (pendiente, en_curso, listo, no_se_pudo), `respuesta` y `enlace` al resultado |
 | `medios/{id}` | Fotos y videos reales | Archivos que sube la fundadora desde las pestañas Contenido o Estratega. Cada documento guarda el id del archivo (`asset`), `tipo` (foto o video), `categoria`, `descripcion`, `subido` y `usado_en` (posts donde se usó). El archivo se ve en `/_blob/{asset}` |
 
 ## Campos

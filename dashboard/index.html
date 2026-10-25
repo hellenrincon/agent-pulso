@@ -224,6 +224,14 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .med-v img, .med-v video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .med-v .chip { position: absolute; left: 6px; top: 6px; background: rgba(23,41,58,.78); color: #F3E8D6; border-color: transparent; }
 .med-b { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 4px; font-size: .8rem; }
+.med.open { grid-column: span 2; }
+.med-pide { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
+.med-pide textarea { min-height: 60px; font-size: .8rem; }
+.sol { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.sol-v { position: relative; width: 56px; aspect-ratio: 4 / 5; background: var(--petroleo); overflow: hidden; }
+.sol-v img, .sol-v video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sol-t { font-size: .88rem; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.med-b .acc { display: flex; gap: 12px; }
 .med-b button { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--muted); font-size: .7rem; text-decoration: underline; cursor: pointer; }
 .canva-tag { position: absolute; left: 8px; bottom: 8px; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; background: rgba(23,41,58,.78); color: #F3E8D6; padding: 3px 7px; }
 .igp-txt { position: absolute; left: 0; right: 0; top: 0; padding: 22px 20px; display: grid; gap: 4px; }
@@ -332,7 +340,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   const ESTADOS = [["pendiente", "Pendiente"], ["en_curso", "En curso"], ["esperando_aprobacion", "Esperando aprobación"], ["hecha", "Hecha"]];
   const PILAR = { RUN: "var(--run)", RIDE: "var(--ride)", SWIM: "var(--swim)", "CAFÉ": "var(--cafe-pilar)", CAFE: "var(--cafe-pilar)" };
   const TZ = "America/Bogota";
-  const S = { medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], cupos: [], numeros: [], agentes: [], semana: null };
+  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], cupos: [], numeros: [], agentes: [], semana: null };
   let db = null, canWrite = false, busy = false, loaded = false;
   let tab = (location.hash || "").slice(1);
   if (!TABS.includes(tab)) { try { tab = localStorage.getItem("pulso-tab") || "inicio"; } catch (e) { tab = "inicio"; } }
@@ -511,6 +519,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   let revId = null;
 
   /* ---------- Fotos y videos reales (biblioteca compartida de Contenido y Estratega) ---------- */
+  let medPide = null;
   let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "";
   const MED_CATS = ["Bebidas", "Tú y el equipo", "Carrito y lugar", "Deporte y comunidad", "Otro"];
   const MED_ERR = { too_large: "pesa más de 20 MB", unsupported_type: "ese formato no se acepta (usa JPG, PNG, HEIC o MP4)", quota_exceeded: "se llenó el espacio de la biblioteca", not_granted: "solo la fundadora puede subir archivos" };
@@ -531,12 +540,28 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const cats = MED_CATS.filter((c) => ms.some((m) => m.categoria === c));
     const filt = cats.length > 1 ? `<div class="med-filtros">${["todas"].concat(cats).map((c) => `<button class="chip ${c === medFiltro ? "on" : ""}" data-medfil="${esc(c)}">${c === "todas" ? "Todas · " + ms.length : esc(c) + " · " + ms.filter((m) => m.categoria === c).length}</button>`).join("")}</div>` : "";
     const vis = ms.filter((m) => medFiltro === "todas" || m.categoria === medFiltro);
-    const grid = vis.length ? `<div class="med-grid">${vis.map((m) => { const src = "/_blob/" + assetId(m.asset); return `<div class="med">
+    const grid = vis.length ? `<div class="med-grid">${vis.map((m) => { const src = "/_blob/" + assetId(m.asset); return `<div class="med ${medPide === m._id ? "open" : ""}">
         <div class="med-v">${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span></div>
         <div class="med-b"><span>${esc(m.descripcion || m.nombre || "Sin descripción")}</span><span class="src">${esc(m.categoria || "")} · ${fecha(m.subido, { day: "numeric", month: "short" })}${(m.usado_en || []).length ? " · Usada en " + esc(m.usado_en.join(", ")) : ""}</span>
-        ${assets && canWrite ? `<button data-medborrar="${esc(m._id)}">Quitar</button>` : ""}</div></div>`; }).join("")}</div>`
+        ${canWrite ? `<span class="acc"><button data-medpide="${esc(m._id)}">Pedir ajuste al agente</button>${assets ? `<button data-medborrar="${esc(m._id)}">Quitar</button>` : ""}</span>` : ""}</div>
+        ${medPide === m._id ? `<div class="med-pide"><textarea id="sol-txt" maxlength="600" placeholder="Ej: úsala en el post 4 en vez de la foto de Canva, recórtala vertical y súbele la luz" aria-label="Qué debe hacer el agente"></textarea><div class="actions"><button class="btn primary" data-solenviar="${esc(m._id)}">Enviar al agente</button><button class="btn" data-medpide="">Cancelar</button></div></div>` : ""}</div>`; }).join("")}</div>`
       : empty("Todavía no hay fotos ni videos.", "Sube lo que ya tengan: bebidas, el carrito, tú preparando café, entrenos. Los agentes los usarán en vez de imágenes inventadas.");
     return sec("Fotos y videos reales", "Biblioteca compartida · Contenido y Estratega", up + filt + grid);
+  }
+  const SOL_EST = { pendiente: ["amarillo", "Pendiente"], en_curso: ["amarillo", "El agente está en eso"], listo: ["verde", "Listo para revisar"], no_se_pudo: ["rojo", "No se pudo"] };
+  function solicitudesHTML() {
+    const ss = S.solicitudes.slice().sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || ""))).slice(0, 12);
+    if (!ss.length) return "";
+    const rows = ss.map((x) => {
+      const m = S.medios.find((y) => y._id === x.medio); const p = S.propuestas.find((y) => y._id === x.propuesta);
+      const v = m && assetId(m.asset) ? (m.tipo === "video" ? `<video src="/_blob/${assetId(m.asset)}" preload="metadata" muted></video>` : `<img src="/_blob/${assetId(m.asset)}" alt="">`) : p ? visual(p) : "";
+      const e = SOL_EST[x.estado] || SOL_EST.pendiente;
+      return `<div class="sol"><div class="sol-v">${v}</div><div class="sol-t"><span>“${esc(x.texto)}”</span>
+        <span class="src">${p ? "Post " + esc(p.orden) + " · " : ""}${fecha(x.fecha)}</span>
+        ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
+        <span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${e[1]}</span></div>`;
+    }).join("");
+    return sec("Pedidos al agente", "Lo que le pediste ajustar y en qué va", rows);
   }
   async function subirMedios(files) {
     if (!assets || !db || !canWrite || subiendo) return;
@@ -648,8 +673,8 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const decs = sec("Decisiones de " + i.n, "Aprobar · Rechazar · Comentar", decisionesHTML(id));
     const tareas = sec("Tareas", "Pendiente → En curso → Esperando aprobación → Hecha", kanbanHTML(id));
     const extra = {
-      estratega: () => estrategiaHTML() + bibliotecaHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
-      contenido: () => propuestasHTML() + bibliotecaHTML() + decs + sec("Calendario de contenido", "Fechas propuestas", calendarioHTML()) + piezasHTML(id),
+      estratega: () => estrategiaHTML() + solicitudesHTML() + bibliotecaHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
+      contenido: () => propuestasHTML() + solicitudesHTML() + bibliotecaHTML() + decs + sec("Calendario de contenido", "Fechas propuestas", calendarioHTML()) + piezasHTML(id),
       producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + decs,
       comunidad: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + decs,
       alianzas: () => sec("Calendario de eventos", "Modo eventos · Bogotá y Cundinamarca", empty("Primera búsqueda pendiente.", "Aquí aparece cada carrera, evento ciclista, triatlón o ciclovía con semáforo, fuente y fecha de verificación, más su tarjeta: ir, no ir o contactar.")) + decs,
@@ -663,7 +688,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   function renderAll() {
     renderTabs();
     const scrollY = window.scrollY;
-    const drafts = {}; document.querySelectorAll("textarea[id^='cm-'], #rev-cm, #med-desc").forEach((t) => { if (t.value) drafts[t.id] = t.value; });
+    const drafts = {}; document.querySelectorAll("textarea[id^='cm-'], #rev-cm, #med-desc, #sol-txt").forEach((t) => { if (t.value) drafts[t.id] = t.value; });
     const sel = {}; document.querySelectorAll(".dcard input[type=radio]:checked:not(:disabled)").forEach((r) => (sel[r.name] = r.value));
     if (!loaded) return;
     $("panel").setAttribute("aria-labelledby", "tab-" + tab);
@@ -687,6 +712,20 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     if (rb) { revId = rb.dataset.rev; if ($("rev-cm")) $("rev-cm").value = ""; renderAll(); const ph = document.querySelector(".review"); if (ph && ph.getBoundingClientRect().top < 0) ph.scrollIntoView({ block: "start" }); return; }
     const mf = ev.target.closest("button[data-medfil]");
     if (mf) { medFiltro = mf.dataset.medfil; renderAll(); return; }
+    const mp = ev.target.closest("button[data-medpide]");
+    if (mp) { medPide = mp.dataset.medpide || null; renderAll(); const t = $("sol-txt"); if (t) t.focus(); return; }
+    const se = ev.target.closest("button[data-solenviar]");
+    if (se && db && canWrite && !busy) {
+      const txt = (($("sol-txt") || {}).value || "").trim();
+      if (!txt) { toast("Escribe qué debe hacer el agente."); return; }
+      busy = true; const now = new Date().toISOString();
+      try {
+        await db.collection("solicitudes").doc().set({ tipo: "medio", medio: se.dataset.solenviar, texto: txt, agente: "contenido", estado: "pendiente", fecha: now });
+        await db.collection("actividad").doc().set({ agente: "fundadora", accion: `Pidió un ajuste a Contenido: ${txt}`, pasa_a: "contenido", fecha: now });
+        medPide = null; if ($("sol-txt")) $("sol-txt").value = ""; toast("Enviado. Contenido lo hace en Canva y te muestra el resultado aquí.");
+      } catch (e) { toast("No se pudo enviar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
     const mb = ev.target.closest("button[data-medborrar]");
     if (mb && assets && db && canWrite && !busy) {
       const m = S.medios.find((x) => x._id === mb.dataset.medborrar); if (!m) return;
@@ -705,6 +744,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
       const now = new Date().toISOString();
       try {
         await db.doc("propuestas/" + p._id).update({ revision: { estado: act, comentario: cm, fecha: now } });
+        if (act === "cambios") await db.collection("solicitudes").doc().set({ tipo: "post", propuesta: p._id, texto: cm, agente: "contenido", estado: "pendiente", fecha: now });
         await db.collection("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", descartado: "Descartó" }[act]} el post ${p.orden} "${p.titulo_img}"${cm ? ": " + cm : ""}`, pasa_a: "contenido", tarea: "t-reel3", fecha: now });
         toast({ aprobado: "Post aprobado.", cambios: "Cambio enviado a Contenido.", descartado: "Post descartado." }[act]);
         const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
@@ -767,9 +807,9 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     try { const c = user ? await user.can("data.write") : null; canWrite = c === null ? true : !!c; } catch (e) { canWrite = true; }
     if (!canWrite) note("Estás viendo el Centro de mando en modo lectura.");
     window.claude.use("assets").then((a) => { assets = a; assetsListo = true; if (loaded) renderAll(); }, () => { assetsListo = true; });
-    let pending = 11; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
+    let pending = 12; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
     const sub = (path) => { let first = true; db.collection(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
-    ["medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "cupos", "numeros", "agentes"].forEach(sub);
+    ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "cupos", "numeros", "agentes"].forEach(sub);
     db.doc("estrategia/actual").onSnapshot((d) => { S.estrategia = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     db.doc("semana/actual").onSnapshot((d) => { S.semana = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
   })();
