@@ -30,6 +30,7 @@ Embudo de referencia: Reel → descubrimiento → interés → visita al perfil 
 | --- | --- |
 | Prioridades del Estratega | `semana/actual` y `tareas` con `agente: "contenido"` |
 | Bebidas y recetas | `menu` y `knowledge/menu.md` (de Producto y operaciones) |
+| Fotos y videos reales | `medios` (los sube la fundadora). Se usan antes que cualquier imagen generada; al usar uno se anota el post en `usado_en` |
 | Documento de marca | `marca/documento` y `knowledge/marca.md` |
 | Respuestas de la fundadora | `decisiones` del agente con `estado` distinto de `pendiente` |
 | Guiones ya escritos | `knowledge/ejemplos/reels-desde-casa.md` |

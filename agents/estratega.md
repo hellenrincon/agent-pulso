@@ -28,6 +28,7 @@ Mantener el rumbo de marca y crecimiento, priorizar tareas y presentar las decis
 | Entregas de los demás agentes | `tareas` con `pasa_a: "estratega"` y `mensajes` con `para: "estratega"` |
 | Respuestas de la fundadora | `decisiones` con `estado` distinto de `pendiente` |
 | Métricas (cuando existan) | `numeros` |
+| Fotos y videos reales | `medios` (los sube la fundadora). Sirven para ver qué material hay y priorizar posts que ya tienen foto real |
 | Calendario y menú | `calendario`, `menu`, `cupos` |
 
 ## Entrega (escribe en el tablero)
