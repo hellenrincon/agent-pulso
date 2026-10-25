@@ -1,0 +1,17 @@
+{
+  "actualizada": "2026-10-24T21:10:00-05:00",
+  "agente": "contenido",
+  "creada": "2026-10-24T20:55:00-05:00",
+  "decision": "d-reel3",
+  "enlaces": [
+    {
+      "titulo": "Storyboard y mockup en Claude Design",
+      "url": "https://claude.ai/artifact/JCtczJMzhyxjPUAHHwxh88"
+    }
+  ],
+  "estado": "esperando_aprobacion",
+  "fuente": "knowledge/ejemplos/reels-desde-casa.md",
+  "pasa_a": "estratega",
+  "prioridad": 3,
+  "titulo": "Reel 3: Por qué tu matcha amarga (guion, storyboard y caption)"
+}

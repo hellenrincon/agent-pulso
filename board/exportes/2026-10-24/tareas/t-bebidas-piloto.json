@@ -1,0 +1,12 @@
+{
+  "actualizada": "2026-10-24T20:52:00-05:00",
+  "agente": "producto",
+  "creada": "2026-10-24T20:50:00-05:00",
+  "decision": "d-bebidas-piloto",
+  "detalle": "Primero decides cuáles; después Producto calcula costo y margen con precios reales de insumos.",
+  "estado": "esperando_aprobacion",
+  "fuente": "Documento maestro: Estrategia de ventas; knowledge/menu.md",
+  "pasa_a": "estratega",
+  "prioridad": 1,
+  "titulo": "Definir las 2 o 3 bebidas frías del piloto, su costo y precio"
+}
