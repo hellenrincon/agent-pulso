@@ -21,3 +21,4 @@ Ids de agente: `estratega`, `contenido`, `producto`, `comunidad`, `alianzas`, `d
 | Pieza | Tarea | Enlace |
 | --- | --- | --- |
 | Storyboard Reel 3 + mockup del post | `t-reel3` | https://claude.ai/artifact/JCtczJMzhyxjPUAHHwxh88 |
+| 9 propuestas de post + perfil completo | `t-reel3` | https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC |

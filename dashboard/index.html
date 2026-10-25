@@ -195,6 +195,42 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .msgs { display: grid; gap: 10px; }
 .msg { background: var(--panel); border: 1px solid var(--line); padding: 12px 14px; display: grid; gap: 6px; font-size: .88rem; }
 .pieces { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 14px; }
+
+/* Propuestas de posts */
+.posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 22px; align-items: start; }
+.igp { background: var(--panel); border: 1px solid var(--line); display: grid; min-width: 0; }
+.igp-h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+.igp-h .u { font-size: .82rem; font-weight: 600; line-height: 1.2; }
+.igp-h .f { font-size: .7rem; color: var(--muted); }
+.igp-h .n { margin-left: auto; font-family: var(--f-title); font-weight: 300; font-size: 1.6rem; color: var(--gold); line-height: 1; }
+.igp-art { position: relative; aspect-ratio: 4 / 5; max-width: 100%; overflow: hidden; }
+.igp-art svg { position: absolute; inset: 0; }
+.igp-txt { position: absolute; left: 0; right: 0; top: 0; padding: 22px 20px; display: grid; gap: 4px; }
+.igp-txt .t { font-family: var(--f-title); font-weight: 300; text-transform: uppercase; letter-spacing: .16em; font-size: 1.35rem; line-height: 1.2; }
+.igp-txt .m { font-family: var(--f-hand); font-size: 1.55rem; line-height: 1; }
+.igp-b { padding: 12px 14px 16px; display: grid; gap: 8px; font-size: .86rem; }
+.igp-b .cta { color: var(--accent); font-weight: 600; font-size: .8rem; }
+.igp-b .obj { font-size: .76rem; color: var(--ink-2); border-left: 2px solid var(--gold); padding-left: 8px; }
+.perfil { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 820px) { .perfil { grid-template-columns: minmax(0, 1fr); } }
+.pgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; background: var(--panel); border: 1px solid var(--line); padding: 2px; }
+.pgrid .tile { position: relative; aspect-ratio: 4 / 5; overflow: hidden; }
+.pgrid .tile svg { position: absolute; inset: 0; }
+.pgrid .tile span { position: absolute; left: 6px; right: 6px; top: 6px; font-size: .55rem; letter-spacing: .12em; text-transform: uppercase; line-height: 1.25; }
+.pgrid .tile b { position: absolute; right: 4px; bottom: 4px; font-size: .58rem; background: rgba(23,41,58,.75); color: #F3E8D6; padding: 1px 5px; }
+.bio { font-size: .86rem; line-height: 1.5; display: grid; gap: 4px; }
+/* Estrategia */
+.diag { display: grid; gap: 8px; }
+.diag div { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: .9rem; }
+.palancas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 14px; }
+.palanca { background: var(--panel); border: 1px solid var(--line); padding: 16px; display: grid; gap: 8px; align-content: start; }
+.palanca .pt { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; font-size: .82rem; }
+.palanca .pd { font-size: .84rem; color: var(--ink-2); }
+.fases { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 0; border: 1px solid var(--line); }
+.fase { padding: 16px; border-right: 1px solid var(--line); display: grid; gap: 6px; align-content: start; position: relative; }
+.fase:last-child { border-right: 0; }
+.fase .fn { font-family: var(--f-title); font-weight: 300; font-size: 1.8rem; color: var(--gold); line-height: 1; }
+.nohacer { display: flex; gap: 10px; flex-wrap: wrap; }
 </style>
 
 <header class="top">
@@ -247,11 +283,12 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     fundadora: { n: "Fundadora", m: "TÚ", c: "#17293A" },
     max: { n: "Max (montaje)", m: "MX", c: "#7d6a5c" }
   };
+  const ART = {"logo": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#5A1A28\"/><circle cx=\"200\" cy=\"230\" r=\"118\" fill=\"#F3E8D6\"/><path d=\"M104 240 H160 L174 206 L192 276 L212 168 L226 240 H250\" fill=\"none\" stroke=\"#5A1A28\" stroke-width=\"7\" stroke-linejoin=\"round\"/><ellipse cx=\"276\" cy=\"240\" rx=\"22\" ry=\"31\" fill=\"#5B3522\" transform=\"rotate(25 276 240)\"/><path d=\"M268 214 C283 230 268 250 284 266\" fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"4\"/><path d=\"M0 430 H150 L162 430 L172 414 L184 444 L196 406 L206 430 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "pilares": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#F3E8D6\"/><rect x=\"0\" y=\"0\" width=\"134\" height=\"500\" fill=\"#4A4B25\"/><rect x=\"134\" y=\"0\" width=\"133\" height=\"500\" fill=\"#5B3522\"/><rect x=\"267\" y=\"0\" width=\"133\" height=\"500\" fill=\"#17293A\"/><g fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"72\" cy=\"150\" r=\"11\"/><path d=\"M68 164 L58 204 L80 220 L74 254 M58 204 L40 236 M64 180 L88 192 L98 180 M64 180 L44 186\"/><circle cx=\"174\" cy=\"226\" r=\"24\"/><circle cx=\"234\" cy=\"226\" r=\"24\"/><path d=\"M174 226 L196 186 L224 186 L234 226 M196 186 L208 226 L224 186 M190 176 L204 176\"/><path d=\"M290 200 Q302 190 314 200 T338 200 T362 200 T386 200 M290 226 Q302 216 314 226 T338 226 T362 226 T386 226\"/><circle cx=\"326\" cy=\"166\" r=\"10\"/><path d=\"M300 182 L352 176\"/></g><path d=\"M0 440 H150 L162 440 L172 424 L184 454 L196 416 L206 440 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "matcha": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#4A4B25\"/><clipPath id=\"gm\"><path d=\"M140 150 L260 150 L248 440 L152 440 Z\"/></clipPath><g clip-path=\"url(#gm)\"><rect x=\"130\" y=\"140\" width=\"140\" height=\"310\" fill=\"#ffffff\" fill-opacity=\"0.10\"/><rect x=\"130\" y=\"300\" width=\"140\" height=\"150\" fill=\"#EFE4CF\" fill-opacity=\"1\"/><rect x=\"130\" y=\"196\" width=\"140\" height=\"109\" fill=\"#9DB86A\" fill-opacity=\"0.95\"/><g fill=\"#ffffff\" fill-opacity=\"0.32\" stroke=\"#ffffff\" stroke-opacity=\"0.6\" stroke-width=\"1.5\"><rect x=\"158\" y=\"168\" width=\"34\" height=\"34\" transform=\"rotate(-12 175 185)\"/><rect x=\"200\" y=\"176\" width=\"36\" height=\"36\" transform=\"rotate(10 218 194)\"/><rect x=\"176\" y=\"214\" width=\"32\" height=\"32\" transform=\"rotate(24 192 230)\"/></g></g><path d=\"M140 150 L260 150 L248 440 L152 440 Z\" fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"3\"/><path d=\"M222 160 L234 122\" stroke=\"#F3E8D6\" stroke-width=\"9\" stroke-linecap=\"square\"/><path d=\"M0 475 H150 L162 475 L172 459 L184 489 L196 451 L206 475 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "coldbrew": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#5B3522\"/><clipPath id=\"gc\"><path d=\"M140 150 L260 150 L248 440 L152 440 Z\"/></clipPath><g clip-path=\"url(#gc)\"><rect x=\"130\" y=\"140\" width=\"140\" height=\"310\" fill=\"#ffffff\" fill-opacity=\"0.10\"/><rect x=\"130\" y=\"190\" width=\"140\" height=\"260\" fill=\"#1f120b\" fill-opacity=\"1\"/><rect x=\"130\" y=\"190\" width=\"140\" height=\"24\" fill=\"#C9A27A\" fill-opacity=\"0.9\"/><g fill=\"#ffffff\" fill-opacity=\"0.32\" stroke=\"#ffffff\" stroke-opacity=\"0.6\" stroke-width=\"1.5\"><rect x=\"158\" y=\"168\" width=\"34\" height=\"34\" transform=\"rotate(-12 175 185)\"/><rect x=\"200\" y=\"176\" width=\"36\" height=\"36\" transform=\"rotate(10 218 194)\"/><rect x=\"176\" y=\"214\" width=\"32\" height=\"32\" transform=\"rotate(24 192 230)\"/></g></g><path d=\"M140 150 L260 150 L248 440 L152 440 Z\" fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"3\"/><path d=\"M222 160 L234 122\" stroke=\"#F3E8D6\" stroke-width=\"9\" stroke-linecap=\"square\"/><path d=\"M0 475 H150 L162 475 L172 459 L184 489 L196 451 L206 475 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "dirty": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#F3E8D6\"/><clipPath id=\"gd\"><path d=\"M140 150 L260 150 L248 440 L152 440 Z\"/></clipPath><g clip-path=\"url(#gd)\"><rect x=\"130\" y=\"140\" width=\"140\" height=\"310\" fill=\"#ffffff\" fill-opacity=\"0.10\"/><rect x=\"130\" y=\"330\" width=\"140\" height=\"120\" fill=\"#EFE4CF\" fill-opacity=\"1\"/><rect x=\"130\" y=\"252\" width=\"140\" height=\"80\" fill=\"#9DB86A\" fill-opacity=\"1\"/><rect x=\"130\" y=\"190\" width=\"140\" height=\"64\" fill=\"#3b2416\" fill-opacity=\"1\"/><g fill=\"#ffffff\" fill-opacity=\"0.32\" stroke=\"#ffffff\" stroke-opacity=\"0.6\" stroke-width=\"1.5\"><rect x=\"158\" y=\"168\" width=\"34\" height=\"34\" transform=\"rotate(-12 175 185)\"/><rect x=\"200\" y=\"176\" width=\"36\" height=\"36\" transform=\"rotate(10 218 194)\"/><rect x=\"176\" y=\"214\" width=\"32\" height=\"32\" transform=\"rotate(24 192 230)\"/></g></g><path d=\"M140 150 L260 150 L248 440 L152 440 Z\" fill=\"none\" stroke=\"#17293A\" stroke-width=\"3\"/><path d=\"M222 160 L234 122\" stroke=\"#5A1A28\" stroke-width=\"9\" stroke-linecap=\"square\"/><path d=\"M0 475 H150 L162 475 L172 459 L184 489 L196 451 L206 475 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "tonic": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#17293A\"/><clipPath id=\"gt\"><path d=\"M140 150 L260 150 L248 440 L152 440 Z\"/></clipPath><g clip-path=\"url(#gt)\"><rect x=\"130\" y=\"140\" width=\"140\" height=\"310\" fill=\"#ffffff\" fill-opacity=\"0.10\"/><rect x=\"130\" y=\"262\" width=\"140\" height=\"188\" fill=\"#EADBA8\" fill-opacity=\"0.55\"/><rect x=\"130\" y=\"190\" width=\"140\" height=\"74\" fill=\"#8A5426\" fill-opacity=\"0.95\"/><g fill=\"#ffffff\" fill-opacity=\"0.32\" stroke=\"#ffffff\" stroke-opacity=\"0.6\" stroke-width=\"1.5\"><rect x=\"158\" y=\"168\" width=\"34\" height=\"34\" transform=\"rotate(-12 175 185)\"/><rect x=\"200\" y=\"176\" width=\"36\" height=\"36\" transform=\"rotate(10 218 194)\"/><rect x=\"176\" y=\"214\" width=\"32\" height=\"32\" transform=\"rotate(24 192 230)\"/></g></g><path d=\"M140 150 L260 150 L248 440 L152 440 Z\" fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"3\"/><path d=\"M222 160 L234 122\" stroke=\"#F3E8D6\" stroke-width=\"9\" stroke-linecap=\"square\"/><circle cx=\"262\" cy=\"160\" r=\"30\" fill=\"#E8B83C\"/><circle cx=\"262\" cy=\"160\" r=\"24\" fill=\"#F6D776\"/><path d=\"M262 136 V184 M238 160 H286 M245 143 L279 177 M279 143 L245 177\" stroke=\"#E8B83C\" stroke-width=\"2\"/><path d=\"M0 475 H150 L162 475 L172 459 L184 489 L196 451 L206 475 H400\" fill=\"none\" stroke=\"#B8913F\" stroke-opacity=\"0.9\" stroke-width=\"2.5\"/></svg>", "ciclovia": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#17293A\"/><circle cx=\"300\" cy=\"120\" r=\"40\" fill=\"#B8913F\"/><path d=\"M0 300 L60 220 L110 260 L170 170 L230 240 L280 200 L340 250 L400 210 L400 320 L0 320 Z\" fill=\"#4A4B25\"/><path d=\"M0 320 L400 320 L400 500 L0 500 Z\" fill=\"#2a3a48\"/><path d=\"M150 320 L250 320 L330 500 L70 500 Z\" fill=\"#5B3522\" fill-opacity=\"0.55\"/><path d=\"M200 330 L200 350 M200 370 L200 395 M200 415 L200 445 M200 465 L200 500\" stroke=\"#B8913F\" stroke-width=\"5\"/><g fill=\"none\" stroke=\"#F3E8D6\" stroke-width=\"4\" stroke-linecap=\"round\"><circle cx=\"120\" cy=\"440\" r=\"22\"/><circle cx=\"176\" cy=\"440\" r=\"22\"/><path d=\"M120 440 L140 404 L166 404 L176 440 M140 404 L150 440 L166 404\"/></g></svg>", "espera": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#B8913F\"/><path d=\"M150 170 L250 170 L240 430 L160 430 Z\" fill=\"#F3E8D6\"/><rect x=\"138\" y=\"146\" width=\"124\" height=\"26\" fill=\"#5A1A28\"/><rect x=\"150\" y=\"132\" width=\"100\" height=\"16\" fill=\"#5A1A28\"/><path d=\"M162 300 H180 L186 284 L194 316 L202 272 L208 300 H238\" fill=\"none\" stroke=\"#5A1A28\" stroke-width=\"4\"/><path d=\"M0 470 H150 L162 470 L172 454 L184 484 L196 446 L206 470 H400\" fill=\"none\" stroke=\"#5A1A28\" stroke-opacity=\"0.7\" stroke-width=\"2.5\"/></svg>", "foto": "<svg viewBox=\"0 0 400 500\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\" style=\"display:block;width:100%;height:100%\"><rect width=\"400\" height=\"500\" fill=\"#e9dcc6\"/><g stroke=\"#d8c7aa\" stroke-width=\"2\"><path d=\"M0 0 L-500 500\"/><path d=\"M28 0 L-472 500\"/><path d=\"M56 0 L-444 500\"/><path d=\"M84 0 L-416 500\"/><path d=\"M112 0 L-388 500\"/><path d=\"M140 0 L-360 500\"/><path d=\"M168 0 L-332 500\"/><path d=\"M196 0 L-304 500\"/><path d=\"M224 0 L-276 500\"/><path d=\"M252 0 L-248 500\"/><path d=\"M280 0 L-220 500\"/><path d=\"M308 0 L-192 500\"/><path d=\"M336 0 L-164 500\"/><path d=\"M364 0 L-136 500\"/><path d=\"M392 0 L-108 500\"/><path d=\"M420 0 L-80 500\"/><path d=\"M448 0 L-52 500\"/><path d=\"M476 0 L-24 500\"/><path d=\"M504 0 L4 500\"/><path d=\"M532 0 L32 500\"/><path d=\"M560 0 L60 500\"/><path d=\"M588 0 L88 500\"/><path d=\"M616 0 L116 500\"/><path d=\"M644 0 L144 500\"/><path d=\"M672 0 L172 500\"/><path d=\"M700 0 L200 500\"/><path d=\"M728 0 L228 500\"/><path d=\"M756 0 L256 500\"/><path d=\"M784 0 L284 500\"/><path d=\"M812 0 L312 500\"/><path d=\"M840 0 L340 500\"/><path d=\"M868 0 L368 500\"/><path d=\"M896 0 L396 500\"/></g><rect x=\"150\" y=\"190\" width=\"100\" height=\"72\" fill=\"none\" stroke=\"#5B3522\" stroke-width=\"4\"/><circle cx=\"200\" cy=\"226\" r=\"20\" fill=\"none\" stroke=\"#5B3522\" stroke-width=\"4\"/><rect x=\"170\" y=\"180\" width=\"26\" height=\"12\" fill=\"#5B3522\"/><path d=\"M0 430 H150 L162 430 L172 414 L184 444 L196 406 L206 430 H400\" fill=\"none\" stroke=\"#5A1A28\" stroke-opacity=\"0.6\" stroke-width=\"2.5\"/></svg>"};
   const TABS = ["inicio", "estratega", "contenido", "producto", "comunidad", "alianzas", "datos", "anuncios"];
   const ESTADOS = [["pendiente", "Pendiente"], ["en_curso", "En curso"], ["esperando_aprobacion", "Esperando aprobación"], ["hecha", "Hecha"]];
   const PILAR = { RUN: "var(--run)", RIDE: "var(--ride)", SWIM: "var(--swim)", "CAFÉ": "var(--cafe-pilar)", CAFE: "var(--cafe-pilar)" };
   const TZ = "America/Bogota";
-  const S = { tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], cupos: [], numeros: [], agentes: [], semana: null };
+  const S = { propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], cupos: [], numeros: [], agentes: [], semana: null };
   let db = null, canWrite = false, busy = false, loaded = false;
   let tab = (location.hash || "").slice(1);
   if (!TABS.includes(tab)) { try { tab = localStorage.getItem("pulso-tab") || "inicio"; } catch (e) { tab = "inicio"; } }
@@ -418,6 +455,38 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
       <div class="a-obj">${esc(a.objetivo)}</div><div class="a-fmt">Abrir su pestaña →</div></button>`; }).join("")}</div>`;
   }
 
+
+  const AVATAR = '<svg width="30" height="30" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width="1.5"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/></svg>';
+  const artOf = (k) => ART[k] || ART.foto;
+  const colorTinta = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#F3E8D6";
+  function propuestasHTML() {
+    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
+    if (!ps.length) return "";
+    const tiles = ps.slice().reverse().map((p) => `<div class="tile">${artOf(p.art)}<span style="color:${colorTinta(p.tinta)}">${esc(p.titulo_img)}</span><b>${esc(p.orden)}</b></div>`).join("");
+    const perfil = `<div class="perfil"><div class="pgrid" aria-label="Así se vería el perfil">${tiles}</div>
+      <div class="bio"><span class="eyebrow">Así se vería el perfil</span><strong>PULSO Coffee &amp; More | Bogotá</strong><span>Café para gente en movimiento</span><span>RUN • RIDE • SWIM</span><span>Bogotá · Próximamente</span><span class="pc">Enlace a la lista de espera: por confirmar</span>
+      <span class="hand" style="margin-top:10px">Los 3 primeros posts quedan fijados arriba</span>
+      ${safeUrl(ps[0].lienzo) ? `<a class="visual-link" href="${esc(ps[0].lienzo)}" target="_blank" rel="noopener" style="margin-top:10px">Abrir y editar en Claude Design</a>` : ""}</div></div>`;
+    const cards = ps.map((p) => `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)} · ${esc(p.cuando)}</div></div><span class="n">${esc(p.orden)}</span></div>
+      <div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>
+      <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">CTA: ${esc(p.cta)}</div><div class="obj">${esc(p.objetivo)}</div>
+      ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}<div class="src">Ilustración de referencia: la foto o el video real los pones tú.</div></div></article>`).join("");
+    return sec("Propuesta visual: arranque desde cero", "Así se vería tu perfil y cada post", perfil) + sec("Los 9 posts, uno por uno", "Imagen, texto en la imagen, caption y llamado a la acción", `<div class="posts">${cards}</div>`);
+  }
+  function estrategiaHTML() {
+    const e = S.estrategia; if (!e) return "";
+    const diag = (e.diagnostico || []).map((t) => `<div><span class="dot rojo" style="margin-top:7px"></span><span>${esc(t)}</span></div>`).join("");
+    const pal = (e.palancas || []).map((p) => `<div class="palanca"><div class="pt">${esc(p.titulo)}</div><div class="pd">${esc(p.detalle)}</div><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip" style="color:var(--ink-2)">${esc(p.tiempo)}</span><span class="chip" style="color:var(--verde)">${esc(p.costo)}</span></div></div>`).join("");
+    const fases = (e.fases || []).map((f, i) => `<div class="fase"><span class="fn">${i + 1}</span><span class="t" style="font-family:var(--f-title);text-transform:uppercase;letter-spacing:.12em;font-weight:500;font-size:.8rem">${esc(f.nombre)}</span><span style="font-size:.86rem">${esc(f.meta)}</span><span class="src">${esc(f.cuando)}${f.fuente ? " · " + esc(f.fuente) : ""}</span></div>`).join("");
+    const no = (e.no_hacer || []).map((t) => `<span class="chip" style="color:var(--rojo)">${esc(t)}</span>`).join("");
+    return sec(e.titulo || "Estrategia", e.actualizada ? "Revisada " + fecha(e.actualizada, { day: "numeric", month: "short" }) : "", `
+      ${e.frase ? `<div class="hand">${esc(e.frase)}</div>` : ""}
+      <h3>Dónde estamos</h3><div class="diag">${diag}</div>
+      <h3>El camino</h3><div class="fases">${fases}</div>
+      <h3>Qué vamos a hacer (todo sin pagar)</h3><div class="palancas">${pal}</div>
+      ${no ? `<h3>Lo que no vamos a hacer</h3><div class="nohacer">${no}</div>` : ""}`);
+  }
+
   /* ---------- Pestañas ---------- */
   function renderTabs() {
     $("tabs").innerHTML = TABS.map((t) => {
@@ -444,8 +513,8 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const decs = sec("Decisiones de " + i.n, "Aprobar · Rechazar · Comentar", decisionesHTML(id));
     const tareas = sec("Tareas", "Pendiente → En curso → Esperando aprobación → Hecha", kanbanHTML(id));
     const extra = {
-      estratega: () => sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
-      contenido: () => decs + sec("Calendario de contenido", "Próximas 9 publicaciones", calendarioHTML()) + piezasHTML(id),
+      estratega: () => estrategiaHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
+      contenido: () => decs + propuestasHTML() + sec("Calendario de contenido", "Fechas propuestas", calendarioHTML()) + piezasHTML(id),
       producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + decs,
       comunidad: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + decs,
       alianzas: () => sec("Calendario de eventos", "Modo eventos · Bogotá y Cundinamarca", empty("Primera búsqueda pendiente.", "Aquí aparece cada carrera, evento ciclista, triatlón o ciclovía con semáforo, fuente y fecha de verificación, más su tarjeta: ir, no ir o contactar.")) + decs,
@@ -523,9 +592,10 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const user = await window.claude.use("user");
     try { const c = user ? await user.can("data.write") : null; canWrite = c === null ? true : !!c; } catch (e) { canWrite = true; }
     if (!canWrite) note("Estás viendo el Centro de mando en modo lectura.");
-    let pending = 9; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
+    let pending = 10; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
     const sub = (path) => { let first = true; db.collection(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
-    ["tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "cupos", "numeros", "agentes"].forEach(sub);
+    ["propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "cupos", "numeros", "agentes"].forEach(sub);
+    db.doc("estrategia/actual").onSnapshot((d) => { S.estrategia = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     db.doc("semana/actual").onSnapshot((d) => { S.semana = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
   })();
 })();
