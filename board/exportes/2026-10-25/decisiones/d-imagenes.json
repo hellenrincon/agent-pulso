@@ -1,0 +1,37 @@
+{
+  "agente": "estratega",
+  "creada": "2026-10-24T21:35:00-05:00",
+  "estado": "aprobada",
+  "fuentes": [
+    "eesel.ai, precios de Canva AI (9 jun 2026)",
+    "knowledge/reglas.md: todo gasto se aprueba"
+  ],
+  "opciones": [
+    {
+      "detalle": "$0. Guía de fotos en cada post. Canva gratis trae 5 imágenes con IA al mes.",
+      "id": "a",
+      "titulo": "Fotos con tu celular + Canva gratis"
+    },
+    {
+      "detalle": "Unos US$12 al mes (por confirmar en canva.com): más fotos de banco, más IA y kit de marca.",
+      "id": "b",
+      "titulo": "Fotos con tu celular + Canva Pro"
+    },
+    {
+      "detalle": "Precio por confirmar con cotizaciones. Tiene más sentido cerca del carrito.",
+      "id": "c",
+      "titulo": "Sesión con fotógrafo para el lanzamiento"
+    }
+  ],
+  "porque": "Presupuesto bajo: empezar en $0 y pasar a Pro solo si la versión gratis se queda corta. Las fotos reales con buena luz se ven profesionales.",
+  "propuesta": "Las fotos del producto deben ser reales: así la gente sabe qué va a recibir.\nPara fondos, ambiente y diseños, Canva tiene fotos e imágenes con IA.\nCon el conector de Canva, los agentes diseñan en tu cuenta sin pedir tu contraseña.",
+  "recomendada": "a",
+  "respuesta": {
+    "comentario": "",
+    "fecha": "2026-10-25T03:34:55.117Z",
+    "opcion": "a"
+  },
+  "tarea": "t-imagenes",
+  "tipo": "gasto",
+  "titulo": "¿Cómo conseguimos imágenes profesionales?"
+}

@@ -1,0 +1,24 @@
+{
+  "art": "logo",
+  "canva": "https://canva.link/x254ajw4awat0bg",
+  "caption": "Somos PULSO Coffee & More: café y matcha para gente en movimiento, desde Bogotá. Corremos, pedaleamos y nadamos… y después, café. Todavía no tenemos carrito: lo estamos construyendo contigo. Síguenos y mira cómo nace.",
+  "cta": "Seguir la cuenta y compartirla con alguien que corre o pedalea",
+  "cuando": "Antes de abrir la cuenta · post fijado",
+  "estado": "propuesta",
+  "formato": "Carrusel",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "La primera imagen es el diseño con el logo: no necesita foto.",
+    "Segunda imagen: tú con un vaso con hielo, de pie junto a una ventana, luz de lado.",
+    "Tercera imagen: el vaso sobre madera o tela crema, desde arriba.",
+    "Celular en vertical 4:5, lente limpio, sin flash."
+  ],
+  "img": "canva/post1.png",
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "café para gente en movimiento",
+  "objetivo": "Que quien llegue entienda qué es PULSO en 3 segundos",
+  "orden": 1,
+  "pilar": "CAFÉ",
+  "tinta": "#F3E8D6",
+  "titulo_img": "Hola, somos PULSO"
+}

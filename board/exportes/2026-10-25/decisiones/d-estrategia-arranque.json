@@ -1,0 +1,37 @@
+{
+  "agente": "estratega",
+  "creada": "2026-10-24T21:20:00-05:00",
+  "estado": "aprobada",
+  "fuentes": [
+    "Documento maestro: Instagram 17 oct 2026",
+    "pulso-base-de-conocimiento.md §3, §7 y §8"
+  ],
+  "opciones": [
+    {
+      "detalle": "Perfil profesional, 3 posts fijados y cuenta pública desde el lun 26 oct.",
+      "id": "a",
+      "titulo": "Aprobar y abrir la cuenta al público"
+    },
+    {
+      "detalle": "Mantiene la regla de la base de conocimiento: privada hasta tener 3 Reels.",
+      "id": "b",
+      "titulo": "Aprobar, pero abrir con 3 Reels listos"
+    },
+    {
+      "detalle": "Escríbelos en el comentario.",
+      "id": "c",
+      "titulo": "Quiero cambios"
+    }
+  ],
+  "porque": "Una cuenta privada no aparece a nadie. Con los 3 posts fijados el perfil ya explica qué es PULSO a quien llegue.",
+  "propuesta": "Hoy nadie conoce PULSO: 0 seguidores y cuenta privada.\nPrimero que nos conozcan (perfil claro + Reels útiles + tu círculo), después las votaciones.\nTodo sin pagar. El detalle está en la pestaña Estratega.",
+  "recomendada": "a",
+  "respuesta": {
+    "comentario": "",
+    "fecha": "2026-10-25T03:36:19.247Z",
+    "opcion": "b"
+  },
+  "tarea": "t-estrategia",
+  "tipo": "marca",
+  "titulo": "¿Cambiamos a la estrategia de arranque desde cero?"
+}

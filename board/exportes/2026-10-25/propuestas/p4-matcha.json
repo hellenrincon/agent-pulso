@@ -1,0 +1,24 @@
+{
+  "art": "matcha",
+  "canva": "https://canva.link/2dcq8zfijt9zzy8",
+  "caption": "El matcha no es amargo, solo está mal preparado. Prueba estos 3 jarabes y cuéntanos cuál te gustó.",
+  "cta": "Comentar JARABE (recetas por DM) y guardar",
+  "cuando": "Primer Reel al abrir la cuenta",
+  "enlace": "https://claude.ai/artifact/JCtczJMzhyxjPUAHHwxh88",
+  "estado": "propuesta",
+  "formato": "Reel",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Sigue el storyboard de 7 escenas que ya está en Claude Design.",
+    "Graba cerca de una ventana, de día, celular apoyado (no en la mano).",
+    "La escena clave es el jarabe cayendo: grábala en cámara lenta."
+  ],
+  "img": "canva/post4.png",
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "y se arregla en 10 segundos",
+  "objetivo": "Llegar a gente nueva: se guarda y se comparte",
+  "orden": 4,
+  "pilar": "RUN",
+  "tinta": "#F3E8D6",
+  "titulo_img": "Tu matcha sabe amargo por esto"
+}

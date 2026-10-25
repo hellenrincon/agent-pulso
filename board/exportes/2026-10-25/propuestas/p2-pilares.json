@@ -1,0 +1,23 @@
+{
+  "art": "pilares",
+  "canva": "https://canva.link/fz05yoctupq3z7t",
+  "caption": "Tres formas de moverse, un mismo café. Desliza y cuéntanos en los comentarios: ¿eres RUN, RIDE o SWIM?",
+  "cta": "Comentar RUN, RIDE o SWIM",
+  "cuando": "Antes de abrir la cuenta · post fijado",
+  "estado": "propuesta",
+  "formato": "Carrusel",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Busca 3 fotos tuyas o de amigos: corriendo, en bici y nadando (sirven fotos que ya tengas).",
+    "Una foto por pilar; en el diseño cada una va sobre su color.",
+    "Si no hay foto de natación, deja ese panel con la ilustración."
+  ],
+  "img": "canva/post2.png",
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "¿cuál es el tuyo?",
+  "objetivo": "Mostrar la comunidad deportiva, no solo el café",
+  "orden": 2,
+  "pilar": "RUN",
+  "tinta": "#F3E8D6",
+  "titulo_img": "RUN • RIDE • SWIM"
+}

@@ -1,0 +1,21 @@
+{
+  "art": "espera",
+  "caption": "Estamos preparando el carrito PULSO. Si quieres probarlo antes que nadie, entra a la lista de espera: enlace en la bio.",
+  "cta": "Entrar a la lista de espera",
+  "cuando": "Cuando exista el formulario (por confirmar)",
+  "estado": "propuesta",
+  "formato": "Post",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Puede ser solo diseño (el vaso PULSO ilustrado) o una foto del vaso crema con tapa vino si ya lo tienes.",
+    "Publícalo solo cuando exista el formulario de lista de espera."
+  ],
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "sé de los primeros",
+  "nota": "Requiere el formulario de lista de espera",
+  "objetivo": "Convertir seguidores en futuros clientes",
+  "orden": 9,
+  "pilar": "CAFÉ",
+  "tinta": "#5A1A28",
+  "titulo_img": "Muy pronto"
+}

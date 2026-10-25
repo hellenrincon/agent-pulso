@@ -1,0 +1,25 @@
+{
+  "art": "foto",
+  "canva": "https://canva.link/qv4psihcr5jsc3n",
+  "caption": "[Tu nombre], fundadora de PULSO. [Una línea tuya: por qué empezaste PULSO]. Aquí vas a ver todo el proceso: recetas, pruebas y el carrito.",
+  "cta": "Saludar en los comentarios",
+  "cuando": "Antes de abrir la cuenta · post fijado",
+  "estado": "propuesta",
+  "formato": "Post con foto",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Foto tuya, medio cuerpo, con un vaso PULSO en la mano.",
+    "Luz de ventana de frente o de lado, fondo simple (pared clara o cocina ordenada).",
+    "Pide a alguien que tome 20 fotos seguidas mientras hablas: las naturales son las mejores.",
+    "Escribe tu frase: por qué empezaste PULSO."
+  ],
+  "img": "canva/post3.png",
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "quién prepara tu café",
+  "nota": "Ojo: la persona de la foto la generó la IA de Canva. Como el post presenta a quien prepara el café, hay que cambiarla por una foto tuya real antes de publicar.",
+  "objetivo": "Poner una cara humana: genera confianza desde cero",
+  "orden": 3,
+  "pilar": "CAFÉ",
+  "tinta": "#17293A",
+  "titulo_img": "Detrás de PULSO"
+}

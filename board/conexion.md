@@ -5,6 +5,7 @@
 | Centro de mando (tablero + dashboard) | https://claude.ai/artifact/FxKr6SJtAyL8FHPLYy43jq |
 | Código del dashboard | `dashboard/index.html` |
 | Herramienta de los agentes | `ArtifactData` (leer: `get`, `list`, `query`; escribir: `set`, `update`, `batch`) con `url` = la del Centro de mando |
+| Conexiones externas | Ver `knowledge/conexiones.md` (Canva, Metricool, Instagram) |
 | Dueña | La fundadora (el Centro de mando es privado; solo ella y quien ella invite lo abren) |
 
 ## Rutina mínima de un agente

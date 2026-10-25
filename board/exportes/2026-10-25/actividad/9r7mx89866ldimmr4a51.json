@@ -1,0 +1,8 @@
+{
+  "accion": "Aprobó: ¿Cambiamos a la estrategia de arranque desde cero? (Aprobar, pero abrir con 3 Reels listos)",
+  "agente": "fundadora",
+  "decision": "d-estrategia-arranque",
+  "fecha": "2026-10-25T03:36:19.247Z",
+  "pasa_a": "estratega",
+  "tarea": "t-estrategia"
+}

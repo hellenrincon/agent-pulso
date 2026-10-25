@@ -1,0 +1,21 @@
+{
+  "art": "ciclovia",
+  "caption": "Los domingos Bogotá se mueve. ¿Por cuál tramo de la ciclovía pasas? Cuéntanos y te buscamos por ahí.",
+  "cta": "Comentar su tramo de ciclovía",
+  "cuando": "Domingo",
+  "estado": "propuesta",
+  "formato": "Post",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Domingo en la ciclovía: foto de la bici o del vaso con la vía y los cerros de fondo.",
+    "Hora dorada (temprano en la mañana) para luz cálida.",
+    "Sin caras de desconocidos de cerca."
+  ],
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "¿por qué tramo pasas?",
+  "objetivo": "Conversación local con ciclistas de Bogotá",
+  "orden": 6,
+  "pilar": "RIDE",
+  "tinta": "#F3E8D6",
+  "titulo_img": "Domingo de ciclovía"
+}

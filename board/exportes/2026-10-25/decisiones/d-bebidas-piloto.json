@@ -1,0 +1,32 @@
+{
+  "agente": "estratega",
+  "creada": "2026-10-24T20:52:00-05:00",
+  "estado": "pendiente",
+  "fuentes": [
+    "Documento maestro: Estrategia de ventas",
+    "knowledge/menu.md"
+  ],
+  "opciones": [
+    {
+      "detalle": "Las dos de 'Verde o negro'. Pocos insumos; el cold brew se prepara por lotes.",
+      "id": "a",
+      "titulo": "Cold Brew + Matcha Latte frío"
+    },
+    {
+      "detalle": "Suma una firma con panela o canela. Un insumo más.",
+      "id": "b",
+      "titulo": "Cold Brew + Matcha Latte frío + PULSO RIDE"
+    },
+    {
+      "detalle": "Escríbela en el comentario.",
+      "id": "c",
+      "titulo": "Otra combinación"
+    }
+  ],
+  "porque": "Con una máquina pequeña y 2 horas al día, dos bebidas frías reducen compras y tiempo. Encaja con el Reel 1 'Verde o negro'.",
+  "propuesta": "Es lo que más bloquea: sin bebidas no hay precio, cupo ni web.\nAquí eliges cuáles. Los precios vienen después, con costos reales.",
+  "recomendada": "a",
+  "tarea": "t-bebidas-piloto",
+  "tipo": "precio",
+  "titulo": "¿Con qué bebidas arranca el piloto de la web?"
+}

@@ -1,0 +1,24 @@
+{
+  "art": "coldbrew",
+  "canva": "https://canva.link/0f3obzp9902tl16",
+  "caption": "El cold brew es el café de quienes no tienen afán… pero sí kilómetros por recorrer. Receta completa en este Reel.",
+  "cta": "Guardar el Reel y comentar COLD",
+  "cuando": "Semana 1",
+  "estado": "propuesta",
+  "formato": "Reel",
+  "fuente": "Propuesta de Contenido; Reels 4, 5, 7 y 8 basados en la base de conocimiento §6",
+  "guia_foto": [
+    "Plano desde arriba del frasco con el café molido y el agua.",
+    "Un plano del frasco entrando a la nevera.",
+    "Al día siguiente: colar y servir sobre hielo con un chorrito de leche.",
+    "Fondo: tabla de madera y tela crema."
+  ],
+  "img": "canva/post5.png",
+  "lienzo": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC",
+  "mano": "2 ingredientes, cero máquinas",
+  "objetivo": "Receta útil que se guarda",
+  "orden": 5,
+  "pilar": "RIDE",
+  "tinta": "#F3E8D6",
+  "titulo_img": "Cold brew en casa"
+}

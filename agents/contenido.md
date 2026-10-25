@@ -86,7 +86,9 @@ Todo se diseña en Claude Design (tipo "Design"), partiendo de `knowledge/marca.
 | --- | --- | --- |
 | Tablero (`ArtifactData` sobre el Centro de mando) | Calendario, tareas, decisiones | Conectado |
 | Claude Design (tipo "Design") | Storyboards, mockups, carruseles, portadas, historias | Disponible |
-| Metricool | Programar y medir Instagram | **Por conectar**: la fundadora autoriza sobre su cuenta profesional |
+| Metricool | Programar en Instagram solo lo aprobado, y medir | Conectado · marca `7638555` · `@pulso.coffee.co` · flujo en `knowledge/conexiones.md` |
+| Canva | Diseño de posts | Conectado (plan gratis) · carpeta en `knowledge/conexiones.md` |
+| Fotos y videos reales | Material de la fundadora | Colección `medios` del tablero |
 | Fotos libres (Unsplash, Pexels) | Fondos y ambiente, con crédito | Disponible por enlace |
 
 ## Skills que usa

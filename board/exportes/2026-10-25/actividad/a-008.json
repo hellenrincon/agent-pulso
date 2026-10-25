@@ -1,0 +1,7 @@
+{
+  "accion": "Rehízo el calendario del 26 oct al 6 nov según la estrategia de arranque.",
+  "agente": "contenido",
+  "fecha": "2026-10-24T21:26:00-05:00",
+  "pasa_a": "estratega",
+  "tarea": "t-calendario-semana"
+}

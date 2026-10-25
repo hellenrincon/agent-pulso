@@ -1,0 +1,11 @@
+{
+  "actualizada": "2026-10-24T21:20:00-05:00",
+  "agente": "estratega",
+  "creada": "2026-10-24T21:20:00-05:00",
+  "decision": "d-estrategia-arranque",
+  "estado": "esperando_aprobacion",
+  "fuente": "Pedido de la fundadora: 'no tengo seguidores, no conocen PULSO'",
+  "pasa_a": "contenido",
+  "prioridad": 1,
+  "titulo": "Estrategia de arranque: de 0 a los primeros 100 seguidores"
+}

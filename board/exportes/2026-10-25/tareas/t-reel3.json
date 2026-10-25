@@ -1,0 +1,21 @@
+{
+  "actualizada": "2026-10-24T21:25:00-05:00",
+  "agente": "contenido",
+  "creada": "2026-10-24T20:55:00-05:00",
+  "decision": "d-posts-base",
+  "enlaces": [
+    {
+      "titulo": "Propuestas en Claude Design",
+      "url": "https://claude.ai/artifact/1Jar8uwUSxzGpeb6sPCTLC"
+    },
+    {
+      "titulo": "Storyboard Reel matcha",
+      "url": "https://claude.ai/artifact/JCtczJMzhyxjPUAHHwxh88"
+    }
+  ],
+  "estado": "esperando_aprobacion",
+  "fuente": "knowledge/ejemplos/reels-desde-casa.md",
+  "pasa_a": "estratega",
+  "prioridad": 3,
+  "titulo": "9 propuestas de post de arranque (imagen, texto y caption)"
+}

@@ -6,7 +6,7 @@ Fuente de verdad: *PULSO - Documento maestro de agentes* (20 oct 2026).
 
 | Carpeta | Qué hay |
 | --- | --- |
-| `knowledge/` | `marca.md` (documento de marca, solo lectura), `menu.md`, `reglas.md`, `ejemplos/` |
+| `knowledge/` | `marca.md` (documento de marca, solo lectura), `menu.md`, `reglas.md`, `conexiones.md` (Canva, Metricool, Instagram), `decisiones-fundadora.md`, `ejemplos/` |
 | `agents/` | Una ficha por agente |
 | `skills/` | Procedimientos repetibles |
 | `board/` | Esquema del tablero, conexión y exportes |
