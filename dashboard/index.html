@@ -563,6 +563,32 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     }).join("");
     return sec("Pedidos al agente", "Lo que le pediste ajustar y en qué va", rows);
   }
+  // Vista del Estratega: el material como insumo para decidir (subir y ajustar es de Contenido)
+  const faltaFoto = (p) => /foto (real|tuya)/i.test(p.nota || "");
+  function materialHTML() {
+    const ms = S.medios.filter((m) => assetId(m.asset));
+    const fotos = ms.filter((m) => m.tipo !== "video").length, videos = ms.length - fotos;
+    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)).filter((p) => revOf(p) !== "descartado");
+    const esReel = (p) => /reel/i.test(p.formato || "");
+    const estado = (p) => p.metricool && p.metricool.fecha ? ["verde", "Programado"]
+      : faltaFoto(p) ? ["rojo", "Falta tu foto real"]
+      : esReel(p) && !videos ? ["rojo", "Reel: falta video"]
+      : !p.canva ? ["amarillo", "Falta diseño"]
+      : revOf(p) === "aprobado" ? ["verde", "Aprobado"]
+      : ["amarillo", "Listo para tu revisión"];
+    const listos = ps.filter((p) => p.canva && !faltaFoto(p) && !(esReel(p) && !videos)).length;
+    const cats = MED_CATS.map((c) => [c, ms.filter((m) => m.categoria === c).length]).filter((x) => x[1]);
+    const kpi = (n, t) => `<div class="palanca"><div class="pt" style="font-size:1.8rem;font-weight:300">${n}</div><div class="pd">${esc(t)}</div></div>`;
+    const lectura = !ms.length ? "Todavía no hay material real: los Reels y el post 3 no pueden salir. Prioridad: grabar 3 videos cortos de bebidas y una foto tuya."
+      : !videos ? "Hay fotos pero ningún video: los Reels, que son los que traen gente nueva, siguen frenados."
+      : `Hay material para ${listos} de ${ps.length} posts. Conviene sacar primero los que ya tienen diseño y dejar para después los que esperan foto.`;
+    return sec("Material para decidir", "Lo que hay y lo que frena cada post", `
+      <div class="palancas">${kpi(fotos, fotos === 1 ? "foto real" : "fotos reales")}${kpi(videos, videos === 1 ? "video" : "videos")}${kpi(listos + " / " + ps.length, "posts que ya pueden salir")}</div>
+      ${cats.length ? `<div class="nohacer" style="margin-top:12px">${cats.map((c) => `<span class="chip" style="color:var(--ink-2)">${esc(c[0])} · ${c[1]}</span>`).join("")}</div>` : ""}
+      <div class="hand" style="margin:14px 0 8px">${esc(lectura)}</div>
+      <div class="strip">${ps.map((p) => { const e = estado(p); return `<button class="thumb" data-tab="contenido" aria-label="Post ${esc(p.orden)}: ${esc(e[1])}" title="Post ${esc(p.orden)} · ${esc(e[1])}">${visual(p)}<b>${esc(p.orden)}</b><i class="dot ${e[0]}"></i></button>`; }).join("")}</div>
+      <div class="src" style="margin-top:6px">Verde: aprobado o programado · Amarillo: falta diseño o tu revisión · Rojo: falta material real. Las fotos y videos se suben en la pestaña Contenido.</div>`);
+  }
   async function subirMedios(files) {
     if (!assets || !db || !canWrite || subiendo) return;
     const list = Array.from(files || []).filter((f) => /^(image|video)\//.test(f.type) || /\.(heic|heif|mov|mp4)$/i.test(f.name));
@@ -674,7 +700,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
     const decs = sec("Decisiones de " + i.n, "Aprobar · Rechazar · Comentar", decisionesHTML(id));
     const tareas = sec("Tareas", "Pendiente → En curso → Esperando aprobación → Hecha", kanbanHTML(id));
     const extra = {
-      estratega: () => estrategiaHTML() + solicitudesHTML() + bibliotecaHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
+      estratega: () => estrategiaHTML() + materialHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
       contenido: () => propuestasHTML() + solicitudesHTML() + bibliotecaHTML() + decs + sec("Calendario de contenido", "Fechas propuestas", calendarioHTML()) + piezasHTML(id),
       producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + decs,
       comunidad: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + decs,
