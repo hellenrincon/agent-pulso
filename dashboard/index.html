@@ -563,7 +563,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
       const e = SOL_EST[x.estado] || SOL_EST.pendiente;
       return `<div class="sol"><div class="sol-v">${v}</div><div class="sol-t"><span>“${esc(x.texto)}”</span>
         <span class="src">${p ? "Post " + esc(p.orden) + " · " : ""}${fecha(x.fecha)}</span>
-        ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
+        ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${assetId(x.resultado) ? `<video src="/_blob/${assetId(x.resultado)}" controls playsinline preload="metadata" style="width:100%;max-width:260px;border-radius:10px;margin-top:6px"></video>` : ""}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
         <span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${e[1]}</span></div>`;
     }).join("");
     return sec("Pedidos al agente", "Lo que le pediste ajustar y en qué va", rows);
@@ -623,6 +623,14 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
       ${vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">Tu video · Reel</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
       <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div></div></article>`;
   }
+  // Gancho de los primeros segundos y canción sugerida (skills hooks-por-publicacion y musica-para-reels)
+  function hookMusicaHTML(p) {
+    const h = p.hooks || {}, m = p.musica || {};
+    const hs = [["Imagen", h.visual], ["Texto en pantalla", h.texto], ["Caption", h.caption]].filter((x) => x[1]);
+    const hk = hs.length ? `<div class="guia"><span class="eyebrow">Gancho · primeros 2 segundos</span><ul style="margin:6px 0 0;padding-left:18px">${hs.map((x) => `<li><strong>${esc(x[0])}:</strong> ${esc(String(x[1]).replace(/^(Primer segundo|Texto|Primera línea):\s*/i, ""))}</li>`).join("")}</ul></div>` : "";
+    const mu = m.cancion ? `<div class="guia"><span class="eyebrow">Música sugerida</span><div style="margin-top:6px"><strong>${esc(m.cancion)}</strong> · ${esc(m.artista || "")}</div>${m.por_que ? `<div style="font-size:.86rem">${esc(m.por_que)}</div>` : ""}${m.alternativa ? `<div class="src">Alternativa: ${esc(m.alternativa)}</div>` : ""}${m.fuente ? `<div class="src">Fuente: ${esc(m.fuente)}</div>` : ""}${m.nota ? `<div class="src" style="color:var(--accent)">${esc(m.nota)}</div>` : ""}</div>` : "";
+    return hk + mu;
+  }
   function propuestasHTML() {
     const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
     if (!ps.length) return "";
@@ -644,6 +652,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
           <div><span class="eyebrow">Post ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
           <div class="rev-meta"><div><span class="eyebrow">Cuándo</span><span>${esc(p.cuando)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
+          ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
           ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo programa en Metricool en su próxima revisión.</div>` : ""}
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}

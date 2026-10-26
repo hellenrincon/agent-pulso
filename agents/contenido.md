@@ -96,6 +96,8 @@ Todo se diseña en Claude Design (tipo "Design"), partiendo de `knowledge/marca.
 
 - `skills/guion-de-reel.md`
 - `skills/caption-con-gancho.md`
+- `skills/hooks-por-publicacion.md` (gancho visual, texto y caption de cada post)
+- `skills/musica-para-reels.md` (canción sugerida con fuente y alternativa)
 - `skills/tarjeta-de-decision.md`
 
 ## Ejemplo de tarjeta de decisión
