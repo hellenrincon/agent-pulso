@@ -574,7 +574,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       const e = SOL_EST[x.estado] || SOL_EST.pendiente;
       return `<div class="sol"><div class="sol-v">${v}</div><div class="sol-t"><span>“${esc(x.texto)}”</span>
         <span class="src">${p ? "Post " + esc(p.orden) + " · " : ""}${fecha(x.fecha)}</span>
-        ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${assetId(x.resultado) ? `<video src="/_blob/${assetId(x.resultado)}" controls playsinline preload="metadata" style="width:100%;max-width:260px;border-radius:10px;margin-top:6px"></video>` : ""}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
+        ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${resultadoHTML(x)}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
         <span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${e[1]}</span></div>`;
     }).join("");
     return sec("Pedidos al agente", "Lo que le pediste ajustar y en qué va", rows);
@@ -636,6 +636,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   }
   // Material real por post: la fundadora sube lo que pide la guía y Contenido lo monta en Canva
   const delPost = (p) => S.medios.filter((m) => assetId(m.asset) && (m.propuesta === p._id || (m.usado_en || []).includes(p._id)));
+  const resultadoHTML = (x) => !assetId(x.resultado) ? "" : x.resultado_tipo === "foto"
+    ? `<a href="/_blob/${assetId(x.resultado)}" target="_blank" rel="noopener"><img src="/_blob/${assetId(x.resultado)}" alt="Versión preparada por Contenido" style="width:100%;max-width:260px;margin-top:6px;display:block"></a>`
+    : `<video src="/_blob/${assetId(x.resultado)}" controls playsinline preload="metadata" style="width:100%;max-width:260px;border-radius:10px;margin-top:6px"></video>`;
   function materialPostHTML(p) {
     const ms = delPost(p); const esReel = /reel/i.test(p.formato || "");
     const sols = S.solicitudes.filter((x) => x.propuesta === p._id && x.tipo === "material");
@@ -649,7 +652,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       <textarea id="post-nota" maxlength="400" placeholder="Opcional: qué quieres que haga (ej: usa la segunda foto de portada, recorta vertical)" aria-label="Indicaciones para el agente"></textarea>`
       : assetsListo && db ? `<div class="src">Para subir archivos abre el Centro de mando con la cuenta de la fundadora.</div>` : "";
     return `<div class="guia"><span class="eyebrow">Tu material para este post</span>${thumbs}${form}
-      ${e ? `<div class="src" style="margin-top:6px"><span class="dot ${e[0]}"></span> Ajuste en Canva: ${esc(e[1])}${ult.respuesta ? " · " + esc(ult.respuesta) : ""}</div>` : ""}</div>`;
+      ${e ? `<div class="src" style="margin-top:6px"><span class="dot ${e[0]}"></span> Ajuste del agente: ${esc(e[1])}</div>${ult.respuesta ? `<div style="font-size:.84rem;margin-top:4px">${esc(ult.respuesta)}</div>` : ""}${resultadoHTML(ult)}` : ""}</div>`;
   }
   async function subirParaPost(files, pid) {
     const p = S.propuestas.find((x) => x._id === pid);
