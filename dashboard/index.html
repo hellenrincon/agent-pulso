@@ -232,6 +232,13 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .med-pide { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
 .med-pide textarea { min-height: 60px; font-size: .8rem; }
 .sol { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.post-med { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.post-med img, .post-med video { width: 56px; aspect-ratio: 4 / 5; object-fit: cover; background: var(--petroleo); }
+label.post-drop { position: relative; display: flex; flex-direction: column; gap: 4px; margin-top: 8px; border: 1px dashed var(--dorado); background: var(--bg); padding: 14px; cursor: pointer; text-align: center; }
+label.post-drop.over { border-style: solid; }
+label.post-drop strong { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .14em; font-weight: 500; font-size: .78rem; }
+label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+#post-nota { margin-top: 8px; min-height: 52px; }
 .sol-v { position: relative; width: 56px; aspect-ratio: 4 / 5; background: var(--petroleo); overflow: hidden; }
 .sol-v img, .sol-v video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .sol-t { font-size: .88rem; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -623,6 +630,53 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
       ${vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">Tu video · Reel</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
       <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div></div></article>`;
   }
+  // Material real por post: la fundadora sube lo que pide la guía y Contenido lo monta en Canva
+  const delPost = (p) => S.medios.filter((m) => assetId(m.asset) && (m.propuesta === p._id || (m.usado_en || []).includes(p._id)));
+  function materialPostHTML(p) {
+    const ms = delPost(p); const esReel = /reel/i.test(p.formato || "");
+    const sols = S.solicitudes.filter((x) => x.propuesta === p._id && x.tipo === "material");
+    const ult = sols.sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")))[0];
+    const e = ult ? (SOL_EST[ult.estado] || SOL_EST.pendiente) : null;
+    const thumbs = ms.length ? `<div class="post-med">${ms.map((m) => { const src = "/_blob/" + assetId(m.asset); return m.tipo === "video" ? `<video src="${src}" preload="metadata" muted playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || "Tu foto")}" loading="lazy">`; }).join("")}</div>` : "";
+    const form = assets && db && canWrite ? `
+      <label class="drop post-drop" data-postdrop="${esc(p._id)}"><input type="file" class="post-file" data-post="${esc(p._id)}" accept="${esReel ? "video/*,image/*" : "image/*,video/*"}" multiple>
+        <strong>${subiendo ? esc(subiendo) : esReel ? "Subir el video de este post" : "Subir fotos o video de este post"}</strong>
+        <span class="src">${subiendo ? "No cierres la página mientras termina." : "Sigue la guía de arriba. Al subirlo, Contenido lo monta en el diseño de Canva y te lo muestra aquí para que lo apruebes."}</span></label>
+      <textarea id="post-nota" maxlength="400" placeholder="Opcional: qué quieres que haga (ej: usa la segunda foto de portada, recorta vertical)" aria-label="Indicaciones para el agente"></textarea>`
+      : assetsListo && db ? `<div class="src">Para subir archivos abre el Centro de mando con la cuenta de la fundadora.</div>` : "";
+    return `<div class="guia"><span class="eyebrow">Tu material para este post</span>${thumbs}${form}
+      ${e ? `<div class="src" style="margin-top:6px"><span class="dot ${e[0]}"></span> Ajuste en Canva: ${esc(e[1])}${ult.respuesta ? " · " + esc(ult.respuesta) : ""}</div>` : ""}</div>`;
+  }
+  async function subirParaPost(files, pid) {
+    const p = S.propuestas.find((x) => x._id === pid);
+    if (!p || !assets || !db || !canWrite || subiendo) return;
+    const list = Array.from(files || []).filter((f) => /^(image|video)\//.test(f.type) || /\.(heic|heif|mov|mp4)$/i.test(f.name));
+    if (!list.length) { toast("Elige fotos o videos."); return; }
+    const nota = ((($("post-nota") || {}).value) || "").trim();
+    const ids = []; const fallas = [];
+    for (let i = 0; i < list.length; i++) {
+      const f = list[i]; subiendo = `Subiendo ${i + 1} de ${list.length}…`; renderAll();
+      const ext = (f.name.split(".").pop() || "").toLowerCase();
+      const tipoArchivo = f.type || { heic: "image/heic", heif: "image/heif", mov: "video/quicktime", mp4: "video/mp4" }[ext] || "";
+      try {
+        const r = await assets.upload(f, tipoArchivo && tipoArchivo !== f.type ? { type: tipoArchivo } : undefined);
+        const ref = db.collection("medios").doc();
+        await ref.set({ asset: r.id, tipo: /^video\//.test(r.contentType) ? "video" : "foto", nombre: f.name.slice(0, 120), descripcion: `Para el post ${p.orden}: ${p.titulo_img || ""}`.slice(0, 160), categoria: "Bebidas", propuesta: p._id, subido: new Date().toISOString(), por: "fundadora", usado_en: [p._id] });
+        ids.push(ref.id);
+      } catch (e) { fallas.push(`${f.name}: ${MED_ERR[e && e.code] || "no se pudo subir"}`); }
+    }
+    subiendo = "";
+    if (ids.length) {
+      const now = new Date().toISOString();
+      try {
+        await db.collection("solicitudes").doc().set({ tipo: "material", propuesta: p._id, medios: ids, medio: ids[0], texto: nota || `Monta este material en el post ${p.orden} siguiendo la guía y ajústalo en Canva`, agente: "contenido", estado: "pendiente", fecha: now });
+        await db.collection("actividad").doc().set({ agente: "fundadora", accion: `Subió ${ids.length} ${ids.length === 1 ? "archivo" : "archivos"} para el post ${p.orden}`, pasa_a: "contenido", fecha: now });
+      } catch (e) { fallas.push("el pedido al agente no se guardó"); }
+    }
+    if ($("post-nota")) $("post-nota").value = "";
+    renderAll();
+    toast(fallas.length ? (ids.length ? `Se subieron ${ids.length}. ` : "") + "No se pudo: " + fallas.join(" · ") : "Subido. Contenido lo monta en Canva y te lo muestra aquí para aprobar.");
+  }
   // Gancho de los primeros segundos y canción sugerida (skills hooks-por-publicacion y musica-para-reels)
   function hookMusicaHTML(p) {
     const h = p.hooks || {}, m = p.musica || {};
@@ -652,6 +706,7 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
           <div><span class="eyebrow">Post ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
           <div class="rev-meta"><div><span class="eyebrow">Cuándo</span><span>${esc(p.cuando)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
+          ${materialPostHTML(p)}
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
           ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo programa en Metricool en su próxima revisión.</div>` : ""}
@@ -829,12 +884,13 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
   });
   document.addEventListener("change", (ev) => {
     if (ev.target.id === "med-file") { subirMedios(ev.target.files); ev.target.value = ""; }
+    if (ev.target.classList && ev.target.classList.contains("post-file")) { subirParaPost(ev.target.files, ev.target.dataset.post); ev.target.value = ""; }
     if (ev.target.id === "med-cat") medCat = ev.target.value;
   });
   ["dragover", "dragleave", "drop"].forEach((t) => document.addEventListener(t, (ev) => {
-    const z = ev.target.closest && ev.target.closest("#med-drop"); if (!z) return;
+    const z = ev.target.closest && ev.target.closest("#med-drop, [data-postdrop]"); if (!z) return;
     ev.preventDefault(); z.classList.toggle("over", t === "dragover");
-    if (t === "drop") subirMedios(ev.dataTransfer.files);
+    if (t === "drop") { if (z.dataset.postdrop) subirParaPost(ev.dataTransfer.files, z.dataset.postdrop); else subirMedios(ev.dataTransfer.files); }
   }));
   window.addEventListener("hashchange", () => go((location.hash || "").slice(1)));
 

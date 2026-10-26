@@ -51,3 +51,11 @@ Límite actual (25 de octubre de 2026): la red del entorno de los agentes bloque
 ## Fotos y videos reales
 
 La fundadora los sube en las pestañas Contenido o Estratega. Quedan en la colección `medios` del tablero (ver `board/README.md`). Se usan antes que cualquier imagen generada.
+
+
+## Material por post (desde 26 oct 2026)
+En "Revisión de posts", cada post tiene "Tu material para este post": la fundadora sube ahí la foto o el video según "Cómo hacer la foto o el video".
+- Cada archivo se guarda en `medios` con `propuesta` = id del post.
+- Se crea una solicitud `tipo: "material"` con `medios` (ids) para Contenido.
+- La revisión programada (cada 3 horas) la atiende: monta el material en una copia del diseño de Canva. Mientras canva.com siga bloqueado en esta sesión, Contenido prepara la versión ajustada con ffmpeg y la muestra en el tablero (`resultado`), y el paso a Canva lo hace la fundadora arrastrando el archivo.
+- Nada se programa sin que la fundadora apruebe el post.
