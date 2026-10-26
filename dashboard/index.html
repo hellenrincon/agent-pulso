@@ -233,7 +233,10 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .med-pide textarea { min-height: 60px; font-size: .8rem; }
 .sol { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .post-med { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
-.post-med img, .post-med video { width: 56px; aspect-ratio: 4 / 5; object-fit: cover; background: var(--petroleo); }
+.post-med figure { margin: 0; display: flex; flex-direction: column; gap: 4px; width: 72px; }
+.post-med .pm-x { font: inherit; font-size: .7rem; padding: 3px 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink-2); cursor: pointer; }
+.post-med .pm-x.si, .acc button.si { color: var(--rojo); border-color: var(--rojo); }
+.post-med img, .post-med video { width: 72px; aspect-ratio: 4 / 5; object-fit: cover; background: var(--petroleo); }
 label.post-drop { position: relative; display: flex; flex-direction: column; gap: 4px; margin-top: 8px; border: 1px dashed var(--dorado); background: var(--bg); padding: 14px; cursor: pointer; text-align: center; }
 label.post-drop.over { border-style: solid; }
 label.post-drop strong { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .14em; font-weight: 500; font-size: .78rem; }
@@ -532,7 +535,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   let revId = null;
 
   /* ---------- Fotos y videos reales (biblioteca compartida de Contenido y Estratega) ---------- */
-  let medPide = null;
+  let medPide = null, medBorrar = null;
+  const btnQuitar = (id, cls) => medBorrar === id ? `<button class="${cls} si" data-medborrar="${esc(id)}" data-ok="1">¿Seguro? Quitar</button><button class="${cls}" data-medborrar="">No</button>` : `<button class="${cls}" data-medborrar="${esc(id)}" aria-label="Quitar este archivo">Quitar</button>`;
   let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "";
   const MED_CATS = ["Bebidas", "Tú y el equipo", "Carrito y lugar", "Deporte y comunidad", "Otro"];
   const MED_ERR = { too_large: "pesa más de 20 MB", unsupported_type: "ese formato no se acepta (usa JPG, PNG, HEIC o MP4)", quota_exceeded: "se llenó el espacio de la biblioteca", not_granted: "solo la fundadora puede subir archivos" };
@@ -555,7 +559,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const grid = vis.length ? `<div class="med-grid">${vis.map((m) => { const src = "/_blob/" + assetId(m.asset); return `<div class="med ${medPide === m._id ? "open" : ""}">
         <div class="med-v">${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span></div>
         <div class="med-b"><span>${esc(m.descripcion || m.nombre || "Sin descripción")}</span><span class="src">${esc(m.categoria || "")} · ${fecha(m.subido, { day: "numeric", month: "short" })}${(m.usado_en || []).length ? " · Usada en " + esc(m.usado_en.join(", ")) : ""}</span>
-        ${canWrite ? `<span class="acc"><button data-medpide="${esc(m._id)}">Pedir ajuste al agente</button>${assets ? `<button data-medborrar="${esc(m._id)}">Quitar</button>` : ""}</span>` : ""}</div>
+        ${canWrite ? `<span class="acc"><button data-medpide="${esc(m._id)}">Pedir ajuste al agente</button>${assets ? btnQuitar(m._id, "") : ""}</span>` : ""}</div>
         ${medPide === m._id ? `<div class="med-pide"><textarea id="sol-txt" maxlength="600" placeholder="Ej: úsala en el post 4 en vez de la foto de Canva, recórtala vertical y súbele la luz" aria-label="Qué debe hacer el agente"></textarea><div class="actions"><button class="btn primary" data-solenviar="${esc(m._id)}">Enviar al agente</button><button class="btn" data-medpide="">Cancelar</button></div></div>` : ""}</div>`; }).join("")}</div>`
       : empty("Todavía no hay fotos ni videos.", "Sube lo que ya tengan: bebidas, el carrito, tú preparando café, entrenos. Los agentes los usarán en vez de imágenes inventadas.");
     return sec("Fotos y videos reales", "Biblioteca compartida · Contenido y Estratega", up + filt + grid);
@@ -637,7 +641,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const sols = S.solicitudes.filter((x) => x.propuesta === p._id && x.tipo === "material");
     const ult = sols.sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")))[0];
     const e = ult ? (SOL_EST[ult.estado] || SOL_EST.pendiente) : null;
-    const thumbs = ms.length ? `<div class="post-med">${ms.map((m) => { const src = "/_blob/" + assetId(m.asset); return m.tipo === "video" ? `<video src="${src}" preload="metadata" muted playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || "Tu foto")}" loading="lazy">`; }).join("")}</div>` : "";
+    const thumbs = ms.length ? `<div class="post-med">${ms.map((m) => { const src = "/_blob/" + assetId(m.asset); return `<figure>${m.tipo === "video" ? `<video src="${src}" preload="metadata" muted playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || "Tu foto")}" loading="lazy">`}${assets && canWrite ? btnQuitar(m._id, "pm-x") : ""}</figure>`; }).join("")}</div>` : "";
     const form = assets && db && canWrite ? `
       <label class="drop post-drop" data-postdrop="${esc(p._id)}"><input type="file" class="post-file" data-post="${esc(p._id)}" accept="${esReel ? "video/*,image/*" : "image/*,video/*"}" multiple>
         <strong>${subiendo ? esc(subiendo) : esReel ? "Subir el video de este post" : "Subir fotos o video de este post"}</strong>
@@ -824,11 +828,19 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     }
     const mb = ev.target.closest("button[data-medborrar]");
     if (mb && assets && db && canWrite && !busy) {
-      const m = S.medios.find((x) => x._id === mb.dataset.medborrar); if (!m) return;
-      if (!confirm("¿Quitar este archivo de la biblioteca? No se puede deshacer.")) return;
+      const m = S.medios.find((x) => x._id === mb.dataset.medborrar);
+      if (!m || !mb.dataset.ok) { medBorrar = m ? m._id : null; renderAll(); return; }
       busy = true;
-      try { await db.doc("medios/" + m._id).delete(); if (assetId(m.asset)) await assets.delete(m.asset); toast("Archivo quitado."); }
-      catch (e) { toast("No se pudo quitar. Inténtalo de nuevo."); } finally { busy = false; }
+      try {
+        await db.doc("medios/" + m._id).delete(); if (assetId(m.asset)) await assets.delete(m.asset);
+        // Si un pedido pendiente al agente solo tenía este archivo, ya no hay nada que hacer
+        for (const x of S.solicitudes.filter((y) => y.estado === "pendiente" && (y.medio === m._id || (y.medios || []).includes(m._id)))) {
+          const resto = (x.medios || [x.medio]).filter((id) => id && id !== m._id);
+          if (resto.length) await db.doc("solicitudes/" + x._id).update({ medios: resto, medio: resto[0] });
+          else await db.doc("solicitudes/" + x._id).delete();
+        }
+        toast("Archivo quitado.");
+      } catch (e) { toast("No se pudo quitar. Inténtalo de nuevo."); } finally { busy = false; medBorrar = null; renderAll(); }
       return;
     }
     const ra = ev.target.closest("button[data-revact]");
