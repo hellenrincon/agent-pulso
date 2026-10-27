@@ -59,3 +59,20 @@ En "Revisión de posts", cada post tiene "Tu material para este post": la fundad
 - Se crea una solicitud `tipo: "material"` con `medios` (ids) para Contenido.
 - La revisión programada (cada 3 horas) la atiende: monta el material en una copia del diseño de Canva. Mientras canva.com siga bloqueado en esta sesión, Contenido prepara la versión ajustada con ffmpeg y la muestra en el tablero (`resultado`), y el paso a Canva lo hace la fundadora arrastrando el archivo.
 - Nada se programa sin que la fundadora apruebe el post.
+
+## Calendario de publicación (27 oct 2026)
+Cada propuesta lleva `publicar {fecha, motivo, fuente, estado}`, una fecha y hora propuestas que la fundadora ve antes de aprobar. La colección `calendario` enlaza cada fila con su `propuesta` y tiene `hora`.
+Horas: según Metricool (mejor hora Instagram, Bogotá, consultado 27 oct 2026), los picos son 10 am y 6 pm entre semana, y 10 am los fines de semana.
+
+| Fecha | Hora | Post |
+|---|---|---|
+| Lun 2 nov | 6:00 / 6:15 / 6:30 pm | 1 Hola, 2 Pilares, 3 Detrás de PULSO (lanzamiento, fijados) |
+| Mar 3 nov | 6:00 pm | 4 Matcha (Reel), más la Story "abrimos la cuenta" |
+| Jue 5 nov | 6:00 pm | 10 Espresso (Reel) |
+| Sáb 7 nov | 10:00 am | 5 Cold brew (Reel) |
+| Dom 8 nov | 10:00 am | 6 Ciclovía |
+| Mar 10 nov | 6:00 pm | 7 Dirty matcha (Reel) |
+| Dom 15 nov | 10:00 am | 8 Espresso tonic (Reel) |
+| Por confirmar | | 9 Lista de espera (cuando exista el formulario) |
+
+Al aprobar, la revisión programada usa esa fecha. Si ya pasó, toma la siguiente franja libre y actualiza el calendario.

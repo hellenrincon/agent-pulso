@@ -452,6 +452,15 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       <button class="chip" data-tab="inicio" style="background:none;cursor:pointer;color:${pend ? "var(--accent)" : "var(--verde)"}"><span class="dot ${pend ? (pend > 3 ? "rojo" : "amarillo") : "verde"}"></span>${pend} ${pend === 1 ? "decisión espera" : "decisiones esperan"} tu respuesta</button></div>`;
   }
 
+  function calChip(c, stChip) {
+    const p = c.propuesta && S.propuestas.find((x) => x._id === c.propuesta);
+    const e = !p ? [stChip[c.estado] || "gris", c.estado || "idea"]
+      : p.metricool && p.metricool.fecha ? ["verde", "Programado"]
+      : revOf(p) === "aprobado" ? ["verde", "Aprobado, falta programar"]
+      : revOf(p) === "cambios" ? ["amarillo", "Con cambios"]
+      : revOf(p) === "descartado" ? ["rojo", "Descartado"] : ["amarillo", "Por aprobar"];
+    return p ? `<button class="chip" data-tab="contenido" data-rev="${esc(p._id)}" style="color:var(--ink-2);cursor:pointer;background:none"><span class="dot ${e[0]}"></span>${esc(e[1])}</button>` : `<span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span>`;
+  }
   function calendarioHTML() {
     const hoy = hoyYMD();
     const items = S.calendario.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
@@ -460,13 +469,13 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const mini = '<svg viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 H40 L45 3 L51 16 L57 10 H100" fill="none" stroke="#B8913F" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg>';
     const cells = nine.map((c) => { const d = dia(c.fecha); return `<div class="ig-cell" style="--pc:${PILAR[(c.pilar || "").toUpperCase()] || "var(--petroleo)"}">
       <span class="ig-f">${esc(c.formato || "")} · ${esc(c.pilar || "")}</span>${mini}<span class="ig-g">${esc(c.gancho || c.titulo)}</span>
-      <span class="ig-d">${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }) : esc(c.fecha)}</span></div>`; });
+      <span class="ig-d">${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }) : esc(c.fecha)}${c.hora && /\d/.test(c.hora) ? " · " + esc(c.hora) : ""}</span></div>`; });
     while (cells.length < 9) cells.push(`<div class="ig-cell vacia"><span class="ig-f">Libre</span><span></span><span class="ig-d">por planear</span></div>`);
     const stChip = { idea: "gris", guion: "amarillo", grabado: "amarillo", editado: "amarillo", aprobado: "verde", publicado: "verde" };
     const list = items.length ? `<div class="cal-list">${(prox.length ? prox : items).slice(0, 14).map((c) => { const d = dia(c.fecha); return `<div class="cal-row">
       <div class="cal-date">${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "short" }) : ""}<b>${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, day: "numeric" }) : esc(c.fecha)}</b>${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, month: "short" }) : ""}</div>
-      <div class="cal-body"><div class="cal-t">${esc(c.formato || "")} · ${esc(c.titulo)}</div>${c.gancho ? `<div class="cal-h">“${esc(c.gancho)}”</div>` : ""}${c.fuente ? `<div class="src">${esc(c.fuente)}</div>` : ""}</div>
-      <span class="chip" style="color:var(--ink-2)"><span class="dot ${stChip[c.estado] || "gris"}"></span>${esc(c.estado || "idea")}</span></div>`; }).join("")}</div>`
+      <div class="cal-body"><div class="cal-t">${c.hora ? `<b>${esc(c.hora)}</b> · ` : ""}${esc(c.formato || "")} · ${esc(c.titulo)}</div>${c.gancho ? `<div class="cal-h">“${esc(c.gancho)}”</div>` : ""}${c.fuente ? `<div class="src">${esc(c.fuente)}</div>` : ""}</div>
+      ${calChip(c, stChip)}</div>`; }).join("")}</div>`
       : empty("Calendario vacío.", "El agente Contenido lo llena cada semana.");
     return `<div class="cal-grid"><div class="ig" aria-label="Cuadrícula de Instagram con las próximas publicaciones">${cells.join("")}</div><div>${list}</div></div>`;
   }
@@ -636,6 +645,11 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   }
   // Material real por post: la fundadora sube lo que pide la guía y Contenido lo monta en Canva
   const delPost = (p) => S.medios.filter((m) => assetId(m.asset) && (m.propuesta === p._id || (m.usado_en || []).includes(p._id)));
+  const pubTxt = (p) => {
+    const f = p.metricool && p.metricool.fecha ? p.metricool.fecha : p.publicar && p.publicar.fecha;
+    if (!f) return esc((p.publicar && p.publicar.estado) || p.cuando || "Por confirmar");
+    return esc(fecha(f, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }));
+  };
   const resultadoHTML = (x) => !assetId(x.resultado) ? "" : x.resultado_tipo === "foto"
     ? `<a href="/_blob/${assetId(x.resultado)}" target="_blank" rel="noopener"><img src="/_blob/${assetId(x.resultado)}" alt="Versión preparada por Contenido" style="width:100%;max-width:260px;margin-top:6px;display:block"></a>`
     : `<video src="/_blob/${assetId(x.resultado)}" controls playsinline preload="metadata" style="width:100%;max-width:260px;border-radius:10px;margin-top:6px"></video>`;
@@ -711,8 +725,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         <div class="phone">${postCard(p)}</div>
         <div class="rev-side">
           <div><span class="eyebrow">Post ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
-          <div class="rev-meta"><div><span class="eyebrow">Cuándo</span><span>${esc(p.cuando)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
+          <div class="rev-meta"><div><span class="eyebrow">Se publicaría</span><span>${pubTxt(p)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
+          ${p.publicar && p.publicar.motivo ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
           ${materialPostHTML(p)}
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
@@ -777,7 +792,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const tareas = sec("Tareas", "Pendiente → En curso → Esperando aprobación → Hecha", kanbanHTML(id));
     const extra = {
       estratega: () => estrategiaHTML() + materialHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
-      contenido: () => propuestasHTML() + solicitudesHTML() + bibliotecaHTML() + decs + sec("Calendario de contenido", "Fechas propuestas", calendarioHTML()) + piezasHTML(id),
+      contenido: () => propuestasHTML() + sec("Calendario de publicación", "Fecha y hora propuestas · nada sale sin tu aprobación", calendarioHTML() + `<div class="src" style="margin-top:8px">Al aprobar un post, el agente lo programa en Metricool en esa fecha y hora. Si la fecha ya pasó, toma el siguiente espacio libre. Para cambiar una fecha, usa "Pedir cambio" en el post.</div>`) + solicitudesHTML() + bibliotecaHTML() + decs + piezasHTML(id),
       producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + decs,
       comunidad: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + decs,
       alianzas: () => sec("Calendario de eventos", "Modo eventos · Bogotá y Cundinamarca", empty("Primera búsqueda pendiente.", "Aquí aparece cada carrera, evento ciclista, triatlón o ciclovía con semáforo, fuente y fecha de verificación, más su tarjeta: ir, no ir o contactar.")) + decs,
