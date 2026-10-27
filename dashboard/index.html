@@ -242,6 +242,15 @@ label.post-drop.over { border-style: solid; }
 label.post-drop strong { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .14em; font-weight: 500; font-size: .78rem; }
 label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 #post-nota { margin-top: 8px; min-height: 52px; }
+.prog { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+.prog-bar { height: 6px; background: var(--line); overflow: hidden; }
+.prog-bar span { display: block; height: 100%; background: var(--verde); transition: width .4s; }
+.prog-bar span.vivo { background: var(--amarillo); animation: prog-pulso 1.4s ease-in-out infinite; }
+.prog-bar span.mal { background: var(--rojo); }
+@keyframes prog-pulso { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .prog-bar span.vivo { animation: none; } }
+.prog-pasos { display: flex; justify-content: space-between; gap: 6px; font-size: .72rem; color: var(--ink-2); flex-wrap: wrap; }
+.prog-pasos .on { color: var(--ink); font-weight: 600; }
 .sol-v { position: relative; width: 56px; aspect-ratio: 4 / 5; background: var(--petroleo); overflow: hidden; }
 .sol-v img, .sol-v video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .sol-t { font-size: .88rem; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -574,6 +583,26 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     return sec("Fotos y videos reales", "Biblioteca compartida · Contenido y Estratega", up + filt + grid);
   }
   const SOL_EST = { pendiente: ["amarillo", "Pendiente"], en_curso: ["amarillo", "El agente está en eso"], listo: ["verde", "Listo para revisar"], no_se_pudo: ["rojo", "No se pudo"] };
+  // Próxima revisión del agente: minuto 17 de cada hora, de 7 am a 10 pm (hora de Bogotá, UTC-5 sin horario de verano)
+  function proxRevision() {
+    const n = new Date(); const b = new Date(n.getTime() - 5 * 3600e3);
+    let h = b.getUTCHours(), d = 0;
+    if (b.getUTCMinutes() >= 17) h++;
+    if (h < 7) h = 7; else if (h > 22) { h = 7; d = 1; }
+    const t = new Date(Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate() + d, h + 5, 17));
+    return (d ? "mañana a las " : "hoy a las ") + t.toLocaleTimeString("es-CO", { timeZone: TZ, hour: "numeric", minute: "2-digit" });
+  }
+  function progresoHTML(x) {
+    const st = x.estado || "pendiente"; const n = st === "pendiente" ? 1 : st === "en_curso" ? 2 : 3;
+    const mal = st === "no_se_pudo";
+    const pasos = ["Enviado", "El agente trabaja", mal ? "No se pudo" : "Listo para revisar"];
+    const nota = st === "pendiente" ? `El agente lo toma en su próxima revisión: ${proxRevision()}. Si es urgente, escríbele en el chat.`
+      : st === "en_curso" ? "El agente está haciendo el cambio ahora." : mal ? "Mira la respuesta del agente." : (x.respondido ? "Terminado " + fecha(x.respondido) : "Terminado");
+    return `<div class="prog" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${n}" aria-label="Avance del pedido">
+      <div class="prog-bar"><span class="${mal ? "mal" : ""} ${st === "en_curso" ? "vivo" : ""}" style="width:${n * 33.34}%"></span></div>
+      <div class="prog-pasos">${pasos.map((p, i) => `<span class="${i < n ? "on" : ""}">${i < n ? "●" : "○"} ${esc(p)}</span>`).join("")}</div>
+      <div class="src">${esc(nota)}</div></div>`;
+  }
   function solicitudesHTML() {
     const ss = S.solicitudes.slice().sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || ""))).slice(0, 12);
     if (!ss.length) return "";
@@ -583,6 +612,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       const e = SOL_EST[x.estado] || SOL_EST.pendiente;
       return `<div class="sol"><div class="sol-v">${v}</div><div class="sol-t"><span>“${esc(x.texto)}”</span>
         <span class="src">${p ? "Post " + esc(p.orden) + " · " : ""}${fecha(x.fecha)}</span>
+        ${progresoHTML(x)}
         ${x.respuesta ? `<span>${esc(x.respuesta)}</span>` : ""}${resultadoHTML(x)}${safeUrl(x.enlace) ? `<a class="visual-link" href="${esc(x.enlace)}" target="_blank" rel="noopener" style="align-self:flex-start">Ver el resultado</a>` : ""}</div>
         <span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${e[1]}</span></div>`;
     }).join("");
@@ -730,6 +760,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${p.publicar && p.publicar.motivo ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
           ${p.texto_publicar ? `<div class="guia"><span class="eyebrow">Texto exacto que se publica</span><div style="white-space:pre-line;font-size:.86rem;margin-top:6px">${esc(p.texto_publicar)}</div><div class="src" style="margin-top:4px">Lleva el gancho en la primera línea, el llamado a la acción y los hashtags. Esto es lo que se envía a Metricool al aprobar.${/por confirmar/i.test(p.texto_publicar) ? " Tiene datos por confirmar: no se programa hasta completarlos." : ""}</div></div>` : ""}
           ${materialPostHTML(p)}
+          ${(() => { const u = S.solicitudes.filter((x) => x.propuesta === p._id).sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")))[0]; return u ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(u.texto)}”</div>${progresoHTML(u)}${u.respuesta && u.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(u.respuesta)}</div>` : ""}</div>` : ""; })()}
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
           ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo pasa solo a Metricool en menos de una hora (revisa cada hora de 7 am a 10 pm), en la fecha y hora del calendario. No tienes que hacer nada más.</div>` : ""}
@@ -873,9 +904,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         await db.doc("propuestas/" + p._id).update({ revision: { estado: act, comentario: cm, fecha: now } });
         if (act === "cambios") await db.collection("solicitudes").doc().set({ tipo: "post", propuesta: p._id, texto: cm, agente: "contenido", estado: "pendiente", fecha: now });
         await db.collection("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", descartado: "Descartó" }[act]} el post ${p.orden} "${p.titulo_img}"${cm ? ": " + cm : ""}`, pasa_a: "contenido", tarea: "t-reel3", fecha: now });
-        toast({ aprobado: "Post aprobado.", cambios: "Cambio enviado a Contenido.", descartado: "Post descartado." }[act]);
-        const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
-        const nxt = ps.find((x) => x._id !== p._id && !revOf(x)); if (nxt) revId = nxt._id; if ($("rev-cm")) $("rev-cm").value = "";
+        toast({ aprobado: "Post aprobado.", cambios: `Cambio enviado. El agente lo toma ${proxRevision()}; la barra te muestra el avance.`, descartado: "Post descartado." }[act]);
+        if (act !== "cambios") { const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); const nxt = ps.find((x) => x._id !== p._id && !revOf(x)); if (nxt) revId = nxt._id; }
+        if ($("rev-cm")) $("rev-cm").value = "";
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); }
       finally { busy = false; renderAll(); }
       return;
