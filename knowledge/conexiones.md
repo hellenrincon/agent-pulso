@@ -39,7 +39,7 @@ Reglas:
 - Instagram exige imagen o video en cada post; un Reel exige video.
 - Imágenes: se exporta el diseño con `export-design` de Canva (jpg) y se pasa esa URL en `media`. Metricool copia el archivo a su servidor al programar. Probado el 25 de octubre de 2026 con el post 1 como borrador (draft) para el 27 de octubre, 6 pm.
 - Fotos y videos de la biblioteca del Centro de mando todavía no se pueden pasar a Metricool ni a Canva: falta habilitar `www.canva.com` en la red del entorno.
-- Programación automática: pendiente de la decisión de la fundadora (tarea cada 3 horas, de 7 am a 10 pm).
+- Programación automática: activa. Tarea cada hora de 7 am a 10 pm (Bogotá). Lo que la fundadora aprueba en el Centro de mando pasa solo a Metricool, sin que escriba nada. El flujo de "Enviar a revisión" de Metricool no está disponible en el plan gratis (error 403, 27 oct 2026), así que se aprueba en el tablero.
 - Si la imagen la generó la IA, se marca `isAiGenerated: true`, como pide Instagram.
 
 ## Pedidos de ajuste al agente
@@ -57,7 +57,7 @@ La fundadora los sube en las pestañas Contenido o Estratega. Quedan en la colec
 En "Revisión de posts", cada post tiene "Tu material para este post": la fundadora sube ahí la foto o el video según "Cómo hacer la foto o el video".
 - Cada archivo se guarda en `medios` con `propuesta` = id del post.
 - Se crea una solicitud `tipo: "material"` con `medios` (ids) para Contenido.
-- La revisión programada (cada 3 horas) la atiende: monta el material en una copia del diseño de Canva. Mientras canva.com siga bloqueado en esta sesión, Contenido prepara la versión ajustada con ffmpeg y la muestra en el tablero (`resultado`), y el paso a Canva lo hace la fundadora arrastrando el archivo.
+- La revisión programada (cada hora) la atiende: monta el material en una copia del diseño de Canva. Mientras canva.com siga bloqueado en esta sesión, Contenido prepara la versión ajustada con ffmpeg y la muestra en el tablero (`resultado`), y el paso a Canva lo hace la fundadora arrastrando el archivo.
 - Nada se programa sin que la fundadora apruebe el post.
 
 ## Calendario de publicación (27 oct 2026)
