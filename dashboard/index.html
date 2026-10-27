@@ -543,7 +543,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const AVATAR = '<svg width="30" height="30" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width="1.5"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/></svg>';
   const artOf = (k) => ART[k] || ART.foto;
   // Diseño real de Canva (archivo publicado junto al dashboard) o, si no hay, la ilustración
-  const imgOf = (p) => /^canva\/[a-z0-9-]+\.png$/.test(p.img || "") ? p.img : "";
+  const imgOf = (p) => /^canva\/[a-z0-9-]+\.png$/.test(p.img || "") ? p.img + "?v=" + (Number(p.img_v) || 1) : "";
   const assetId = (v) => /^[0-9a-f]{32}$/.test(v || "") ? v : "";
   const vidOf = (p) => assetId(p.video) ? "/_blob/" + assetId(p.video) : "";
   const visual = (p) => vidOf(p) ? `<video src="${vidOf(p)}#t=6" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
