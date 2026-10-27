@@ -79,3 +79,6 @@ Al aprobar, la revisión programada usa esa fecha. Si ya pasó, toma la siguient
 
 ## Fotos libres en Canva (27 oct 2026)
 `upload-asset-from-url` de Canva funciona con URLs públicas como images.unsplash.com, porque Canva las baja desde sus propios servidores. Así se pueden poner fotos reales de banco libre, con crédito, aunque esta sesión no llegue a esos dominios. Post 2 v2: Venti Views (correr), Anvesh Vatsavai (bici), Omar Abozeid (natación), con licencia Unsplash.
+
+## Botón "ahora" (27 oct 2026)
+El Centro de mando tiene permiso `mcp` sobre el conector Claude Code Remote (solo `fire_trigger`). Lo usan "Aprobar", "Pedir cambio ahora" y subir material en un post: disparan la revisión programada al instante. "Pedir cambio en la próxima revisión" espera a la vuelta de cada hora (7 am a 10 pm). La primera vez, el navegador pide permiso para usar el conector.

@@ -553,7 +553,14 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   let revId = null;
 
   /* ---------- Fotos y videos reales (biblioteca compartida de Contenido y Estratega) ---------- */
-  let medPide = null, medBorrar = null;
+  let medPide = null, medBorrar = null, mcp = null;
+  // Despierta al agente ya: dispara la revisión programada desde el conector Claude Code Remote
+  const TRIGGER = "trig_01H2V3kidK9v9Fa1xMJhgTEz";
+  async function despertarAgente() {
+    if (!mcp) return false;
+    try { await mcp.callTool("Claude Code Remote", "fire_trigger", { trigger_id: TRIGGER }, { cache: false }); return true; }
+    catch (e) { return false; }
+  }
   const btnQuitar = (id, cls) => medBorrar === id ? `<button class="${cls} si" data-medborrar="${esc(id)}" data-ok="1">¿Seguro? Quitar</button><button class="${cls}" data-medborrar="">No</button>` : `<button class="${cls}" data-medborrar="${esc(id)}" aria-label="Quitar este archivo">Quitar</button>`;
   let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "";
   const MED_CATS = ["Bebidas", "Tú y el equipo", "Carrito y lugar", "Deporte y comunidad", "Otro"];
@@ -596,7 +603,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const st = x.estado || "pendiente"; const n = st === "pendiente" ? 1 : st === "en_curso" ? 2 : 3;
     const mal = st === "no_se_pudo";
     const pasos = ["Enviado", "El agente trabaja", mal ? "No se pudo" : "Listo para revisar"];
-    const nota = st === "pendiente" ? `El agente lo toma en su próxima revisión: ${proxRevision()}. Si es urgente, escríbele en el chat.`
+    const nota = st === "pendiente" && x.urgente ? "Pediste hacerlo ahora: el agente empieza en unos minutos." : st === "pendiente" ? `El agente lo toma en su próxima revisión: ${proxRevision()}. Si es urgente, escríbele en el chat.`
       : st === "en_curso" ? "El agente está haciendo el cambio ahora." : mal ? "Mira la respuesta del agente." : (x.respondido ? "Terminado " + fecha(x.respondido) : "Terminado");
     return `<div class="prog" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${n}" aria-label="Avance del pedido">
       <div class="prog-bar"><span class="${mal ? "mal" : ""} ${st === "en_curso" ? "vivo" : ""}" style="width:${n * 33.34}%"></span></div>
@@ -720,7 +727,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ids.length) {
       const now = new Date().toISOString();
       try {
-        await db.collection("solicitudes").doc().set({ tipo: "material", propuesta: p._id, medios: ids, medio: ids[0], texto: nota || `Monta este material en el post ${p.orden} siguiendo la guía y ajústalo en Canva`, agente: "contenido", estado: "pendiente", fecha: now });
+        await db.collection("solicitudes").doc().set({ tipo: "material", propuesta: p._id, medios: ids, medio: ids[0], texto: nota || `Monta este material en el post ${p.orden} siguiendo la guía y ajústalo en Canva`, agente: "contenido", estado: "pendiente", fecha: now, urgente: true });
+        despertarAgente();
         await db.collection("actividad").doc().set({ agente: "fundadora", accion: `Subió ${ids.length} ${ids.length === 1 ? "archivo" : "archivos"} para el post ${p.orden}`, pasa_a: "contenido", fecha: now });
       } catch (e) { fallas.push("el pedido al agente no se guardó"); }
     }
@@ -767,7 +775,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
           ${canWrite ? `<textarea id="rev-cm" placeholder="¿Qué cambiarías? (obligatorio para pedir cambios)" aria-label="Comentario sobre el post"></textarea>
-          <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios">Pedir cambio</button><button class="btn" data-revact="descartado">Descartar</button></div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
+          <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios" data-ahora="1" title="El agente empieza en un par de minutos">Pedir cambio ahora</button><button class="btn" data-revact="cambios" title="El agente lo hace en su revisión de cada hora (7 am a 10 pm)">Pedir cambio en la próxima revisión</button><button class="btn" data-revact="descartado">Descartar</button></div>
+          <div class="src">"Ahora" despierta al agente al instante. "Próxima revisión" lo deja para ${proxRevision()}. Al aprobar, el agente lo pasa a Metricool enseguida.</div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
           <div class="rev-nav"><button class="btn" data-rev="${esc(ps[(idx - 1 + ps.length) % ps.length]._id)}">← Anterior</button><button class="btn" data-rev="${esc(ps[(idx + 1) % ps.length]._id)}">Siguiente →</button></div>
         </div>
       </div>`;
@@ -895,16 +904,19 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     }
     const ra = ev.target.closest("button[data-revact]");
     if (ra && db && canWrite && !busy) {
-      const act = ra.dataset.revact; const p = S.propuestas.find((x) => x._id === revId); if (!p) return;
+      const act = ra.dataset.revact; const ahora = act === "aprobado" || !!ra.dataset.ahora; const p = S.propuestas.find((x) => x._id === revId); if (!p) return;
       const cm = (($("rev-cm") || {}).value || "").trim();
       if (act === "cambios" && !cm) { toast("Escribe qué cambiarías antes de pedir el cambio."); return; }
       busy = true; document.querySelectorAll("button[data-revact]").forEach((x) => (x.disabled = true));
       const now = new Date().toISOString();
       try {
         await db.doc("propuestas/" + p._id).update({ revision: { estado: act, comentario: cm, fecha: now } });
-        if (act === "cambios") await db.collection("solicitudes").doc().set({ tipo: "post", propuesta: p._id, texto: cm, agente: "contenido", estado: "pendiente", fecha: now });
+        if (act === "cambios") await db.collection("solicitudes").doc().set({ tipo: "post", propuesta: p._id, texto: cm, agente: "contenido", estado: "pendiente", fecha: now, urgente: ahora });
         await db.collection("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", descartado: "Descartó" }[act]} el post ${p.orden} "${p.titulo_img}"${cm ? ": " + cm : ""}`, pasa_a: "contenido", tarea: "t-reel3", fecha: now });
-        toast({ aprobado: "Post aprobado.", cambios: `Cambio enviado. El agente lo toma ${proxRevision()}; la barra te muestra el avance.`, descartado: "Post descartado." }[act]);
+        const yaVa = ahora && act !== "descartado" ? await despertarAgente() : false;
+        toast(act === "descartado" ? "Post descartado."
+          : yaVa ? (act === "aprobado" ? "Post aprobado. El agente ya lo está pasando a Metricool." : "Cambio enviado. El agente ya empezó; mira la barra.")
+          : act === "aprobado" ? `Post aprobado. Pasa a Metricool ${proxRevision()}.` : `Cambio enviado. El agente lo toma ${proxRevision()}; la barra te muestra el avance.`);
         if (act !== "cambios") { const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); const nxt = ps.find((x) => x._id !== p._id && !revOf(x)); if (nxt) revId = nxt._id; }
         if ($("rev-cm")) $("rev-cm").value = "";
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); }
@@ -965,6 +977,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const user = await window.claude.use("user");
     try { const c = user ? await user.can("data.write") : null; canWrite = c === null ? true : !!c; } catch (e) { canWrite = true; }
     if (!canWrite) note("Estás viendo el Centro de mando en modo lectura.");
+    window.claude.use("mcp").then((m) => { mcp = m; }, () => {});
     window.claude.use("assets").then((a) => { assets = a; assetsListo = true; if (loaded) renderAll(); }, () => { assetsListo = true; });
     let pending = 12; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
     const sub = (path) => { let first = true; db.collection(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
