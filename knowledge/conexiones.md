@@ -17,7 +17,7 @@ Fuente: configuración hecha por la fundadora el 25 de octubre de 2026, verifica
 | Post | Diseño | Id |
 | --- | --- | --- |
 | 1 · Hola, somos PULSO | https://canva.link/x254ajw4awat0bg | DAHY-z6winI |
-| 2 · RUN • RIDE • SWIM | https://canva.link/fz05yoctupq3z7t | DAHY-0aG-WE |
+| 2 · RUN • RIDE • SWIM | https://www.canva.com/d/oBTfNv2YJQKYwes (v2, fotos reales Unsplash; v1: https://canva.link/fz05yoctupq3z7t) | DAHZKyn9PY0 |
 | 3 · Detrás de PULSO | https://canva.link/qv4psihcr5jsc3n | DAHY-1Rdlcs |
 | 4 · Tu matcha sabe amargo | https://canva.link/2dcq8zfijt9zzy8 | DAHY-8FwRt0 |
 | 5 · Cold brew en casa | https://canva.link/0f3obzp9902tl16 | DAHY-6qjApk |
@@ -76,3 +76,6 @@ Horas: según Metricool (mejor hora Instagram, Bogotá, consultado 27 oct 2026),
 | Por confirmar | | 9 Lista de espera (cuando exista el formulario) |
 
 Al aprobar, la revisión programada usa esa fecha. Si ya pasó, toma la siguiente franja libre y actualiza el calendario.
+
+## Fotos libres en Canva (27 oct 2026)
+`upload-asset-from-url` de Canva funciona con URLs públicas como images.unsplash.com, porque Canva las baja desde sus propios servidores. Así se pueden poner fotos reales de banco libre, con crédito, aunque esta sesión no llegue a esos dominios. Post 2 v2: Venti Views (correr), Anvesh Vatsavai (bici), Omar Abozeid (natación), con licencia Unsplash.
