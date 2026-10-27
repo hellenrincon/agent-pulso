@@ -641,7 +641,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   function postCard(p) {
     return `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)}</div></div><span class="n">${esc(p.orden)}</span></div>
       ${vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">Tu video · Reel</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
-      <div class="igp-b"><div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div></div></article>`;
+      <div class="igp-b">${p.texto_publicar ? `<div style="white-space:pre-line"><strong>pulso.coffee.co</strong> ${esc(p.texto_publicar)}</div>` : `<div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div>`}</div></article>`;
   }
   // Material real por post: la fundadora sube lo que pide la guía y Contenido lo monta en Canva
   const delPost = (p) => S.medios.filter((m) => assetId(m.asset) && (m.propuesta === p._id || (m.usado_en || []).includes(p._id)));
@@ -703,7 +703,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const h = p.hooks || {}, m = p.musica || {};
     const hs = [["Imagen", h.visual], ["Texto en pantalla", h.texto], ["Caption", h.caption]].filter((x) => x[1]);
     const hk = hs.length ? `<div class="guia"><span class="eyebrow">Gancho · primeros 2 segundos</span><ul style="margin:6px 0 0;padding-left:18px">${hs.map((x) => `<li><strong>${esc(x[0])}:</strong> ${esc(String(x[1]).replace(/^(Primer segundo|Texto|Primera línea):\s*/i, ""))}</li>`).join("")}</ul></div>` : "";
-    const mu = m.cancion ? `<div class="guia"><span class="eyebrow">Música sugerida</span><div style="margin-top:6px"><strong>${esc(m.cancion)}</strong> · ${esc(m.artista || "")}</div>${m.por_que ? `<div style="font-size:.86rem">${esc(m.por_que)}</div>` : ""}${m.alternativa ? `<div class="src">Alternativa: ${esc(m.alternativa)}</div>` : ""}${m.fuente ? `<div class="src">Fuente: ${esc(m.fuente)}</div>` : ""}${m.nota ? `<div class="src" style="color:var(--accent)">${esc(m.nota)}</div>` : ""}</div>` : "";
+    const mu = m.cancion ? `<div class="guia"><span class="eyebrow">Música sugerida</span><div style="margin-top:6px"><strong>${esc(m.cancion)}</strong> · ${esc(m.artista || "")}</div>${m.por_que ? `<div style="font-size:.86rem">${esc(m.por_que)}</div>` : ""}${m.alternativa ? `<div class="src">Alternativa: ${esc(m.alternativa)}</div>` : ""}${m.fuente ? `<div class="src">Fuente: ${esc(m.fuente)}</div>` : ""}${m.nota ? `<div class="src" style="color:var(--accent)">${esc(m.nota)}</div>` : ""}<div class="src">${/reel/i.test(p.formato || "") ? "En Reels, el agente intenta agregarla desde Metricool. Si Instagram no lo permite para tu cuenta, se publica con el sonido original y te avisa para agregarla en la app." : "Instagram no deja poner música en fotos y carruseles programados: si la quieres, agrégala en la app justo después de que se publique."}</div></div>` : "";
     return hk + mu;
   }
   function propuestasHTML() {
@@ -728,6 +728,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           <div class="rev-meta"><div><span class="eyebrow">Se publicaría</span><span>${pubTxt(p)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
           ${p.publicar && p.publicar.motivo ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
+          ${p.texto_publicar ? `<div class="guia"><span class="eyebrow">Texto exacto que se publica</span><div style="white-space:pre-line;font-size:.86rem;margin-top:6px">${esc(p.texto_publicar)}</div><div class="src" style="margin-top:4px">Lleva el gancho en la primera línea, el llamado a la acción y los hashtags. Esto es lo que se envía a Metricool al aprobar.${/por confirmar/i.test(p.texto_publicar) ? " Tiene datos por confirmar: no se programa hasta completarlos." : ""}</div></div>` : ""}
           ${materialPostHTML(p)}
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}

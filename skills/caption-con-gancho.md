@@ -14,3 +14,6 @@
 - Si el CTA dispara un DM automático (Manychat), la palabra clave debe estar aprobada y configurada; si no, el CTA es "guardar" o "votar".
 - Nunca precios, fechas de lanzamiento ni promociones sin aprobación en el tablero.
 - Entregar **2 variantes** en la tarjeta de decisión: una corta y una con receta.
+
+## Texto final para Metricool (`texto_publicar`)
+Cada propuesta guarda en `texto_publicar` el texto exacto que se publica: el gancho en la primera línea, el cuerpo, el CTA como frase y los hashtags. La fundadora lo ve en "Texto exacto que se publica" antes de aprobar, y la revisión programada lo envía tal cual. Si contiene "por confirmar" o corchetes, no se programa.
