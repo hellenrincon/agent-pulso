@@ -82,3 +82,7 @@ Al aprobar, la revisión programada usa esa fecha. Si ya pasó, toma la siguient
 
 ## Botón "ahora" (27 oct 2026)
 El Centro de mando tiene permiso `mcp` sobre el conector Claude Code Remote (solo `fire_trigger`). Lo usan "Aprobar", "Pedir cambio ahora" y subir material en un post: disparan la revisión programada al instante. "Pedir cambio en la próxima revisión" espera a la vuelta de cada hora (7 am a 10 pm). La primera vez, el navegador pide permiso para usar el conector.
+
+## Fotos de la fundadora a Canva (27 oct 2026)
+
+Mientras la red bloquee `www.canva.com` y `export-download.canva.com`, el flujo es: la fundadora sube la foto final a su Canva (carpeta "PULSO · Posts de arranque" o Subidos), el agente la busca con `list-folder-items` (ordenado por fecha), copia el diseño, cambia la foto con `update_fill` + `crop_media`, exporta y programa. Así se hizo el post 2 (Canva DAHZLG-wFJQ, foto MAHZLO1mDM4, Metricool 407423102, 2 nov 6:15 pm). Arreglo definitivo: agregar esos dos dominios en Project settings → Cloud environment → Network access → Allowed domains.
