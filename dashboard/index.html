@@ -152,6 +152,15 @@ th { text-align: left; font-size: .62rem; letter-spacing: .2em; text-transform: 
 td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 td.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 .pc { color: var(--muted); font-style: italic; font-size: .8rem; }
+.fichas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
+.ficha { background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--accent); padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.ficha h4 { margin: 0; font-size: 1.02rem; font-weight: 500; }
+.ficha .meta { display: flex; gap: 6px; flex-wrap: wrap; }
+.ficha ul, .ficha ol { margin: 0; padding-left: 18px; font-size: .86rem; line-height: 1.5; }
+.ficha dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: .84rem; }
+.ficha dt { color: var(--muted); }
+.ficha dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.ficha details summary { cursor: pointer; font-size: .8rem; color: var(--accent); }
 .foto { width: 44px; height: 44px; background: var(--panel); border: 1px solid var(--line); object-fit: cover; display: block; }
 .cupo { background: var(--panel); border: 1px solid var(--line); padding: 20px; display: grid; gap: 12px; }
 .cupo .big { font-family: var(--f-title); font-weight: 300; font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
@@ -363,7 +372,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const ESTADOS = [["pendiente", "Pendiente"], ["en_curso", "En curso"], ["esperando_aprobacion", "Esperando aprobación"], ["hecha", "Hecha"]];
   const PILAR = { RUN: "var(--run)", RIDE: "var(--ride)", SWIM: "var(--swim)", "CAFÉ": "var(--cafe-pilar)", CAFE: "var(--cafe-pilar)" };
   const TZ = "America/Bogota";
-  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], cupos: [], numeros: [], agentes: [], semana: null };
+  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], semana: null };
   let db = null, canWrite = false, busy = false, loaded = false;
   let tab = (location.hash || "").slice(1);
   if (!TABS.includes(tab)) { try { tab = localStorage.getItem("pulso-tab") || "inicio"; } catch (e) { tab = "inicio"; } }
@@ -510,6 +519,29 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       <td><span class="chip" style="color:var(--ink-2)">${esc(m.estado || "candidata")}</span></td>
       <td class="num">${pc(m.costo, cop)}</td><td class="num">${pc(m.precio, cop)}</td><td>${semaforoMargen(m)}</td></tr>`; }).join("")}</tbody></table></div>
       <div class="src">Fuente: ${esc((rows[0] || {}).fuente || "knowledge/menu.md")}. Semáforo: verde si el costo es hasta 30 % del precio, amarillo hasta 35 %, rojo por encima.</div>`;
+  }
+  const RCAT = ["café", "matcha", "otra"];
+  function recetasHTML() {
+    if (!S.recetas.length) return empty("Todavía no hay recetas.", "Aquí aparece cada bebida con ingredientes, cantidades y pasos. Nada de precios ni cifras sin fuente.");
+    const rows = S.recetas.slice().sort((a, b) => (RCAT.indexOf(a.categoria) - RCAT.indexOf(b.categoria)) || ((a.orden || 99) - (b.orden || 99)));
+    return `<div class="fichas">${rows.map((r) => { const ing = Array.isArray(r.ingredientes) ? r.ingredientes : []; const pasos = Array.isArray(r.pasos) ? r.pasos : [];
+      return `<article class="ficha"><div class="meta"><span class="chip" style="color:var(--ink-2)">${esc(r.categoria || "otra")}</span><span class="chip" style="color:var(--ink-2)">${esc(r.estado || "borrador")}</span></div>
+      <h4>${esc(r.producto || "Sin nombre")}</h4>${r.rinde ? `<div class="src">Rinde: ${esc(r.rinde)}</div>` : ""}
+      ${ing.length ? `<ul>${ing.map((i) => `<li>${esc(i.item)}${i.cantidad != null && i.cantidad !== "" ? ` · ${pc(i.cantidad)}${i.unidad ? " " + esc(i.unidad) : ""}` : ""}</li>`).join("")}</ul>` : ""}
+      ${pasos.length ? `<details><summary>Preparación · ${pasos.length} pasos</summary><ol>${pasos.map((t) => `<li>${esc(t)}</li>`).join("")}</ol></details>` : ""}
+      ${r.notas ? `<div class="src" style="font-size:.78rem;color:var(--ink-2)">${esc(r.notas)}</div>` : ""}<div class="src">Fuente: ${pc(r.fuente)}</div></article>`; }).join("")}</div>`;
+  }
+  const PTIPO = ["café", "matcha", "empaque", "otro"];
+  function proveedoresHTML() {
+    if (!S.proveedores.length) return empty("Todavía no hay proveedores.", "Aquí aparecen fincas, tostadores con maquila de marca propia e importadores de matcha, cada uno con fuente y estado.");
+    const rows = S.proveedores.slice().sort((a, b) => (PTIPO.indexOf(a.tipo) - PTIPO.indexOf(b.tipo)) || String(a.nombre || "").localeCompare(String(b.nombre || "")));
+    const dot = (e) => e === "elegido" ? "verde" : e === "contactado" ? "amarillo" : e === "descartado" ? "rojo" : "gris";
+    return `<div class="fichas">${rows.map((p) => { const w = safeUrl(p.contacto_web);
+      return `<article class="ficha"><div class="meta"><span class="chip" style="color:var(--ink-2)">${esc(p.tipo || "otro")}</span><span class="chip" style="color:var(--ink-2)"><span class="dot ${dot(p.estado)}"></span>${esc(p.estado || "por contactar")}</span>${p.verificado ? "" : `<span class="chip" style="color:var(--muted)">sin verificar</span>`}</div>
+      <h4>${esc(p.nombre || "Sin nombre")}</h4>
+      <dl><dt>Modalidad</dt><dd>${pc(p.modalidad)}</dd><dt>Origen</dt><dd>${pc(p.origen)}</dd><dt>Ofrece</dt><dd>${pc(p.que_ofrece)}</dd><dt>Mínimo</dt><dd>${pc(p.minimo_pedido)}</dd><dt>Precio ref.</dt><dd>${pc(p.precio_ref)}</dd>
+      ${p.ventajas ? `<dt>A favor</dt><dd>${esc(p.ventajas)}</dd>` : ""}${p.riesgos ? `<dt>Ojo</dt><dd>${esc(p.riesgos)}</dd>` : ""}</dl>
+      ${w ? `<a class="src" href="${esc(w)}" target="_blank" rel="noopener" style="color:var(--accent)">${esc(w.replace(/^https:\/\//, "").slice(0, 60))}</a>` : ""}<div class="src">Fuente: ${pc(p.fuente)}</div></article>`; }).join("")}</div>`;
   }
   function cupoHTML() {
     const c = S.cupos.find((x) => x._id === hoyYMD());
@@ -834,7 +866,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const extra = {
       estratega: () => estrategiaHTML() + materialHTML() + sec("Esta semana", S.semana && S.semana.semana ? "Semana del " + fecha(S.semana.semana + "T12:00:00-05:00", { day: "numeric", month: "long" }) : "Prioridades", semanaHTML()) + decs,
       contenido: () => propuestasHTML() + sec("Calendario de publicación", "Fecha y hora propuestas · nada sale sin tu aprobación", calendarioHTML() + `<div class="src" style="margin-top:8px">Al aprobar un post, el agente lo programa en Metricool en esa fecha y hora. Si la fecha ya pasó, toma el siguiente espacio libre. Para cambiar una fecha, usa "Pedir cambio" en el post.</div>`) + solicitudesHTML() + bibliotecaHTML() + decs + piezasHTML(id),
-      producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + decs,
+      producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + sec("Recetas", "Café, matcha y más · ingredientes y pasos", recetasHTML()) + sec("Proveedores", "Café de marca propia, matcha y empaques · cada dato con fuente", proveedoresHTML()) + decs,
       comunidad: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + decs,
       alianzas: () => sec("Calendario de eventos", "Modo eventos · Bogotá y Cundinamarca", empty("Primera búsqueda pendiente.", "Aquí aparece cada carrera, evento ciclista, triatlón o ciclovía con semáforo, fuente y fecha de verificación, más su tarjeta: ir, no ir o contactar.")) + decs,
       datos: () => sec("Números clave", "Números grandes, sin párrafos", numerosHTML()) + decs,
@@ -979,9 +1011,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (!canWrite) note("Estás viendo el Centro de mando en modo lectura.");
     window.claude.use("mcp").then((m) => { mcp = m; }, () => {});
     window.claude.use("assets").then((a) => { assets = a; assetsListo = true; if (loaded) renderAll(); }, () => { assetsListo = true; });
-    let pending = 12; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
+    let pending = 14; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
     const sub = (path) => { let first = true; db.collection(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
-    ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "cupos", "numeros", "agentes"].forEach(sub);
+    ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "recetas", "proveedores", "cupos", "numeros", "agentes"].forEach(sub);
     db.doc("estrategia/actual").onSnapshot((d) => { S.estrategia = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     db.doc("semana/actual").onSnapshot((d) => { S.semana = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
   })();
