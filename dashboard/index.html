@@ -138,6 +138,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 /* Manual de marca (páginas de Canva en grande) con revisión por página */
 .manual { display: grid; gap: 28px; }
+.mfinal{display:grid;gap:28px}.mfinal-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}.mfinal-h h2{margin:4px 0}.mfinal-p{margin:0;display:grid;gap:8px}.mfinal-p img{width:100%;display:block;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.mfinal-p figcaption{display:flex;justify-content:space-between;font-size:.8rem;color:var(--ink-2);letter-spacing:.04em}.mfinal-p .ok{color:var(--verde)}
 .mcmp-w{display:grid;gap:14px;overflow-x:auto}.mcmp{display:grid;grid-template-columns:110px repeat(var(--nv),minmax(200px,1fr));gap:12px;align-items:start}.mcmp-h>div{display:grid;gap:4px;align-content:start;font-size:.88rem}.mcmp-n{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2)}.mcmp img{width:100%;display:block;border-radius:6px}.alc{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.86rem;margin:6px 0}.alc label{display:flex;gap:6px;align-items:center}@media(max-width:640px){.mcmp{grid-template-columns:repeat(var(--nv),minmax(130px,1fr))}.mcmp-n{grid-column:1/-1;grid-auto-flow:column;justify-content:start}.mcmp-h>span{display:none}}
 .mopc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .mopc figure { margin: 0; display: grid; gap: 8px; align-content: start; }
@@ -1115,7 +1116,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"] };
   const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
   const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
-  let mTab = "aprobado", mConf = "";
+  let mTab = "final", mConf = "";
   const mSols = () => S.solicitudes.filter((x) => x.tipo === "marca").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
   const mSol = (n) => mSols().find((x) => x.alcance !== "manual" && Number(x.pagina) === Number(n));
   const mSolManual = () => mSols().find((x) => x.alcance === "manual");
@@ -1148,10 +1149,16 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         ${aprobada && acciones ? `<details class="hist"><summary>Cambiar algo de esta página</summary>${acciones}</details>` : acciones}</article>`; };
     const hist = mComs();
     const aprobarTodo = canWrite ? `<button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button>` : "";
-    const tabs = `<div class="subtabs" role="tablist"><button role="tab" data-mtab="aprobado" aria-selected="${mTab === "aprobado"}">Aprobado · ${ok} de ${ps.length}</button><button role="tab" data-mtab="historial" aria-selected="${mTab === "historial"}">Historial · ${hist.length}</button></div>`;
+    const tabs = `<div class="subtabs" role="tablist"><button role="tab" data-mtab="final" aria-selected="${mTab === "final"}">Marca final</button><button role="tab" data-mtab="aprobado" aria-selected="${mTab === "aprobado"}">Aprobaciones · ${ok} de ${ps.length}</button><button role="tab" data-mtab="historial" aria-selected="${mTab === "historial"}">Historial · ${hist.length}</button></div>`;
     const head = `<section>${tabs}</section>`;
     const sub = `${esc(m.fuente || "Canva")} · versión ${esc(m.version || 1)} · ${ok} de ${ps.length} páginas aprobadas`;
     const enlace = cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : "";
+    if (mTab === "final") {
+      const vEl = m.version_elegida;
+      const nota = ok === ps.length ? "Manual aprobado completo" : `${ok} de ${ps.length} páginas aprobadas · lo demás se revisa en Aprobaciones`;
+      return head + `<section class="mfinal"><div class="mfinal-h"><div><span class="eyebrow">Manual de marca</span><h2>${esc(m.titulo || "Manual de marca")}</h2><div class="src">${vEl ? "Versión " + esc(vEl) + " · " : ""}${esc(nota)}</div></div>${cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener">Abrir en Canva</a>` : ""}</div>
+        ${ps.map((p) => { const src = "/_blob/" + assetId(p.asset); return `<figure class="mfinal-p"><a href="${src}" target="_blank" rel="noopener" title="Ver en tamaño completo"><img src="${src}" alt="${esc(p.titulo || "Página " + p.n)}" loading="lazy"></a><figcaption><span>${esc(p.n)} · ${esc(p.titulo || "")}</span>${mEstado(p.n)[1] === "Aprobada" ? `<span class="ok">Aprobada</span>` : ""}</figcaption></figure>`; }).join("")}</section>`;
+    }
     if (mTab === "historial") {
       const histHTML = `<div class="mhist">${hist.length ? hist.slice().reverse().map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
         return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg && c.alcance !== "manual" ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Todo el manual${pg ? " · pedido desde la página " + esc(pg.n) : ""}</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}${c.tipo === "cambios" ? (() => { const so = mSols().find((x) => x.texto === c.texto && (Number(x.pagina) === Number(c.pagina) || x.alcance === "manual")); return so ? progresoHTML(so) : ""; })() : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
@@ -1193,6 +1200,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   library/       imágenes y videos aprobados
   web/           web de venta del piloto`;
     const man = manualHTML();
+    if (man && mTab === "final") return man;
     return (man || sec("Branding board", "Logo, colores, tipografía y aplicaciones · se lee de " + m.fuente, boardHTML() + `<div class="src">Los mockups son de referencia, no productos reales. Cuando apruebes un logo, colores o mockups nuevos, el agente Marca e identidad los pone en estas casillas.</div>`))
       + (man ? sec("Marca vigente", "Lo que usan hoy los agentes hasta que apruebes el manual", `<details class="hist"><summary>Ver el tablero de la marca actual</summary>${boardHTML()}</details>`) : "")
       + sec("Carpeta del proyecto", "Solo los agentes de " + proyecto.corto + " leen y escriben aquí", `<pre class="tree">${esc(tree)}</pre><div class="src">Lo único compartido entre proyectos es <code>templates/agents/</code>. Datos en el tablero: ${proyecto.prefijo ? "<code>" + esc(proyecto.prefijo) + "</code>" : "colecciones raíz (primer proyecto)"}.</div>`)
