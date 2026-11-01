@@ -98,3 +98,7 @@ Logo, paleta, tipografía, cualquier cambio a `marca.md`, cualquier gasto (herra
 ## Solicitudes de tipo "marca"
 
 Cuando la fundadora pide un cambio en una página del manual, llega una solicitud `tipo:"marca"` con `pagina` y `texto`. Ajusta esa página en Canva (`canva_id`), expórtala, reemplaza el asset en `marca/manual`, sube `version` y deja la página "en revisión". Nunca la marques aprobada: eso lo decide la fundadora.
+
+## Barra de proceso (obligatoria en todo cambio)
+
+Todo pedido de cambio se muestra a la fundadora con la misma barra que Crear contenido: Enviado → El agente trabaja → Listo para revisar. Para que avance: al empezar, pon la solicitud en `estado:"en_curso"`; al terminar, `estado:"listo"` con `respuesta` y `respondido` (fecha). Si no se puede, `estado:"no_se_pudo"` con el motivo en `respuesta`.

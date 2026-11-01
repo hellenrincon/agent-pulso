@@ -1111,6 +1111,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
   const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
   let mTab = "aprobado";
+  const mSols = () => S.solicitudes.filter((x) => x.tipo === "marca").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
+  const mSol = (n) => mSols().find((x) => Number(x.pagina) === Number(n));
   function manualHTML() {
     const m = S.manual; const ps = (m && Array.isArray(m.paginas)) ? m.paginas.filter((p) => assetId(p.asset)) : [];
     if (!ps.length) return "";
@@ -1119,9 +1121,12 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const pageHTML = (p, aprobada) => { const e = mEstado(p.n); const src = "/_blob/" + assetId(p.asset); const coms = mComs().filter((c) => c.pagina === p.n && c.texto);
       const acciones = canWrite ? `<textarea id="mc-${esc(p.n)}" maxlength="600" placeholder="Comentario o cambio para esta página (obligatorio para pedir cambio)" aria-label="Comentario página ${esc(p.n)}"></textarea>
         <div class="actions">${aprobada ? "" : `<button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}">Aprobar página</button>`}<button class="btn" data-mact="cambios" data-mp="${esc(p.n)}">Pedir cambio</button><button class="btn" data-mact="comentario" data-mp="${esc(p.n)}">Solo comentar</button></div>` : "";
+      const sol = mSol(p.n);
+      const prog = sol && !(aprobada && sol.estado === "listo") ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(sol.texto)}”</div>${progresoHTML(sol)}${sol.respuesta && sol.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(sol.respuesta)}</div>` : ""}</div>` : "";
       return `<article class="mpage" id="mp-${esc(p.n)}"><div class="mpage-h"><span class="n">${esc(p.n)}</span><span class="t">${esc(p.titulo || "Página " + p.n)}</span><span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span></div>
         <a class="mimg" href="${src}" target="_blank" rel="noopener" title="Abrir en tamaño completo"><img src="${src}" alt="Manual de marca, página ${esc(p.n)}: ${esc(p.titulo || "")}" loading="lazy"></a>
         ${coms.length ? coms.slice(-(aprobada ? 1 : 2)).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
+        ${prog}
         ${aprobada && acciones ? `<details class="hist"><summary>Cambiar algo de esta página</summary>${acciones}</details>` : acciones}</article>`; };
     const hist = mComs();
     const aprobarTodo = canWrite ? `<button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button>` : "";
@@ -1131,7 +1136,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const enlace = cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : "";
     if (mTab === "historial") {
       const histHTML = `<div class="mhist">${hist.length ? hist.slice().reverse().map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
-        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
+        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}${c.tipo === "cambios" ? (() => { const so = mSols().find((x) => Number(x.pagina) === Number(c.pagina) && x.texto === c.texto); return so ? progresoHTML(so) : ""; })() : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
       ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario general sobre el manual" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button>${aprobarTodo}</div>` : ""}`;
       return head + sec("Historial y comentarios del manual", "Todo queda guardado · lo más reciente arriba", histHTML);
     }

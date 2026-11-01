@@ -88,3 +88,7 @@ Logo, paleta, tipografía, cualquier cambio a `marca.md`, cualquier gasto (herra
 
 - `templates/prompts/marca-ideogram.md` (plantilla con espacios para cualquier marca)
 - `projects/<proyecto>/knowledge/prompts-ideogram.md` (la versión llena del proyecto)
+
+## Barra de proceso (obligatoria en todo cambio)
+
+Todo pedido de cambio se muestra a la fundadora con la misma barra que Crear contenido: Enviado → El agente trabaja → Listo para revisar. Para que avance: al empezar, pon la solicitud en `estado:"en_curso"`; al terminar, `estado:"listo"` con `respuesta` y `respondido` (fecha). Si no se puede, `estado:"no_se_pudo"` con el motivo en `respuesta`.
