@@ -147,3 +147,28 @@ Brand color palette board for "PULSO Coffee & More": seven vertical color swatch
 ```
 Instagram post, 4:5: ivory background (#F7F2E8) with soft white light, an iced matcha latte in a clear cup with emerald green (#1F6B52) and white layers, a small wine red (#5A1A28) PULSO sticker on the cup. Thin uppercase headline "FRESCO. LIMPIO. VERDE." in coffee brown (#5B3522), a handwritten line "para después de moverte" in wine red, light gray (#E4E2DD) thin frame, hairline gold heartbeat line at the bottom. Flat, airy, healthy.
 ```
+
+---
+
+## 8. Logo profesional (prompt de Alexander, ajustado el 1 nov 2026)
+
+Ajustes frente al original: corregido "Coffee", colores con código exacto, un solo símbolo claro (los logos con muchos elementos salen recargados), texto exacto entre comillas, y pedido explícito de vector plano sin sombras. **Ojo:** la tipografía "ligeramente redondeada" cambia la marca actual (Montserrat ligera y esquinas rectas); si la eliges, se actualiza `marca.md` al aprobar.
+
+**Configuración:** estilo Design · 1:1 · Magic Prompt apagado · 4 imágenes.
+
+**8A. Grano de café + ruta (principal)**
+```
+Professional logo design for the brand "PULSO COFFEE & MORE". Style: modern, natural, elegant and energetic, conveying wellbeing, vitality and trust. Symbol: a single coffee bean whose center line becomes a dynamic route path, like a running or cycling trail with a subtle heartbeat pulse, with one small emerald green leaf for freshness. Organic, flowing curves that suggest movement. Wordmark "PULSO" in a strong, modern, slightly rounded sans-serif, bold and very readable, with "COFFEE & MORE" smaller underneath with wide letter spacing. Colors: wine red #5A1A28, coffee brown #5B3522, emerald green #1F6B52, ivory #F7F2E8 details, light gray #E4E2DD accents. Pure white background, centered composition, clean high-quality flat vector, no gradients, no shadows, no 3D, no extra text. Evokes physical performance and holistic wellbeing.
+```
+
+**8B. Figura abstracta en movimiento**
+```
+Professional logo design for the brand "PULSO COFFEE & MORE". Symbol: an abstract figure in motion formed by two flowing strokes, wine red #5A1A28 and emerald green #1F6B52, that together shape a coffee bean and a runner's stride, energetic and organic. Wordmark "PULSO" in a strong, modern, slightly rounded sans-serif in coffee brown #5B3522, "COFFEE & MORE" smaller below in light gray #9A9893 with wide letter spacing. Modern, natural, elegant, conveying vitality and trust. Pure white background, centered, clean flat vector, minimal, no gradients, no shadows, no extra text.
+```
+
+**8C. Taza con línea de pulso**
+```
+Professional logo design for the brand "PULSO COFFEE & MORE". Symbol: a minimal coffee cup outline in coffee brown #5B3522 with a heartbeat line in wine red #5A1A28 rising from it like steam, ending in a small emerald green #1F6B52 leaf. Wordmark "PULSO" in a strong, modern, slightly rounded sans-serif in wine red, "COFFEE & MORE" smaller underneath with wide letter spacing. Fresh, healthy, pure, energetic. Pure white background, centered composition, clean high-quality flat vector, no gradients, no shadows, no extra text.
+```
+
+**Negative prompt:** `gradients, shadows, 3D, glossy, photorealistic, mockup, multiple logos, cluttered, extra words, misspelled text, watermark, busy background`
