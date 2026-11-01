@@ -94,3 +94,7 @@ Logo, paleta, tipografía, cualquier cambio a `marca.md`, cualquier gasto (herra
 
 - `templates/prompts/marca-ideogram.md` (plantilla con espacios para cualquier marca)
 - `knowledge/prompts-ideogram.md` (prompts de PULSO, secciones 1 a 9)
+
+## Solicitudes de tipo "marca"
+
+Cuando la fundadora pide un cambio en una página del manual, llega una solicitud `tipo:"marca"` con `pagina` y `texto`. Ajusta esa página en Canva (`canva_id`), expórtala, reemplaza el asset en `marca/manual`, sube `version` y deja la página "en revisión". Nunca la marques aprobada: eso lo decide la fundadora.

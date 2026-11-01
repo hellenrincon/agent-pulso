@@ -106,3 +106,10 @@ Pendiente → En curso → Esperando aprobación → Hecha
 3. Fechas en ISO 8601, zona horaria de Bogotá (`-05:00`).
 4. Lo no confirmado va como `null` o como el texto "por confirmar". Nunca un número inventado.
 5. Nada de contraseñas, tokens ni datos de pago en el tablero.
+
+## Manual de marca (revisión en grande)
+
+- `marca/manual` (doc): `{titulo, fuente, canva_id, canva_url, version, estado, paginas:[{n, titulo, asset}]}`. Las páginas se muestran a ancho completo en Marca y conocimiento.
+- `marca_comentarios` (colección, solo se agrega): `{pagina (0 = general), tipo: aprobado|cambios|comentario, texto, por, fecha, version, proyecto}`.
+- Pedir cambio crea una solicitud `{tipo:"marca", agente:"marca", pagina, canva_id, texto, estado:"pendiente"}`. La atiende el agente Marca e identidad: ajusta el diseño en Canva, exporta la página nueva y sube `version`.
+- Aprobaciones y cambios quedan también en `historial` (`tipo:"marca"`).

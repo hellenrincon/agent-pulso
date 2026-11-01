@@ -136,6 +136,22 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .b-m2 { aspect-ratio: 4 / 5; }
   .tipo-in { grid-template-columns: minmax(0, 1fr); gap: 12px; }
 }
+/* Manual de marca (páginas de Canva en grande) con revisión por página */
+.manual { display: grid; gap: 28px; }
+.mpage { display: grid; gap: 10px; }
+.mpage-h { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.mpage-h .n { font-family: var(--f-title); font-weight: 300; font-size: 1.6rem; color: var(--gold); line-height: 1; }
+.mpage-h .t { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .14em; font-weight: 500; font-size: .82rem; }
+.mpage-h .chip { margin-left: auto; }
+.mpage a.mimg { display: block; border: 1px solid var(--line); background: var(--panel); }
+.mpage a.mimg img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+.mpage .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.mpage textarea, .mhist textarea { min-height: 56px; }
+.mcom { font-size: .84rem; color: var(--ink-2); border-left: 2px solid var(--line); padding-left: 10px; }
+.mhist { display: grid; gap: 0; border-top: 1px solid var(--ink); }
+.mh { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+.mh .w { font-size: .72rem; color: var(--muted); }
+@media (max-width: 560px) { .mh { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
 .reglas { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: .9rem; }
 .ajuste { background: var(--panel); border: 1px solid var(--line); padding: 18px; display: grid; gap: 10px; align-content: start; }
 .ajuste .pt { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .12em; font-weight: 500; font-size: .8rem; }
@@ -476,7 +492,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const PROYECTOS = [{ id: "pulso", nombre: "PULSO Coffee & More", corto: "PULSO", prefijo: "", carpeta: "projects/pulso/",
     marca: { fuente: "projects/pulso/knowledge/marca.md", frase: "Good Coffee, Better Movement", colores: [["Vino", "#5A1A28", "Energía · protagonista"], ["Crema", "#F3E8D6", "Calma · fondo", 1], ["Café", "#5B3522", "Fuerza · RIDE"], ["Oliva", "#4A4B25", "Naturaleza · RUN"], ["Azul petróleo", "#17293A", "Agua · SWIM"], ["Dorado", "#B8913F", "Detalles · línea de pulso"]] } }];
   let proyecto = PROYECTOS[0];
-  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], historial: [], semana: null, board: null };
+  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], historial: [], marca_comentarios: [], semana: null, board: null, manual: null };
   let db = null, canWrite = false, busy = false, loaded = false;
   let tab = norm((location.hash || "").slice(1));
   if (!tab) { try { tab = norm(localStorage.getItem("pulso-tab")); } catch (e) {} }
@@ -1020,7 +1036,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (!vis.length) return filtros + empty("Nada con esos filtros.", "Prueba con otro agente, resultado o fecha.");
     const dias = []; vis.forEach((x) => { const k = ymdTZ(x.fecha); let g = dias.find((d) => d.k === k); if (!g) dias.push(g = { k, xs: [] }); g.xs.push(x); });
     const reabrible = (x) => {
-      if (!canWrite || x.resultado === "reabierta" || ultimaDe(x.ref) !== x) return "";
+      if (!canWrite || x.resultado === "reabierta" || ultimaDe(x.ref) !== x || (x.tipo !== "post" && x.tipo !== "decision")) return "";
       if (x.tipo === "post") { const p = S.propuestas.find((y) => y._id === x.ref); if (!p) return ""; if (p.metricool && p.metricool.fecha) return `<span class="src">Ya programado: se cambia en Metricool</span>`; if (!revOf(p)) return ""; }
       if (x.tipo === "decision") { const d = S.decisiones.find((y) => y._id === x.ref); if (!d || (d.estado || "pendiente") === "pendiente") return ""; }
       return hReabrir === x._id ? `<button class="btn primary" data-reabrir="${esc(x._id)}" data-ok="1">¿Reabrir? Sí</button><button class="btn" data-reabrir="">No</button>` : `<button class="btn" data-reabrir="${esc(x._id)}">Reabrir</button>`;
@@ -1028,7 +1044,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     return filtros + `<div class="src">El historial no se edita ni se borra. Reabrir crea una entrada nueva y devuelve la pieza a Pendientes. Los agentes lo leen antes de proponer algo parecido.</div>`
       + dias.map((g) => { const d = dia(g.k); return `<div class="hday"><h3>${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "long", day: "numeric", month: "long" }) : esc(g.k)}</h3>${g.xs.map((x) => { const r = RES[x.resultado] || ["gris", x.resultado || "—"]; return `<div class="hrow">
         <span class="hh">${fecha(x.fecha, { hour: "numeric", minute: "2-digit" })}</span>
-        <div class="hb"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${agent(x.agente)}<span class="src">${x.tipo === "post" ? "Post" : "Decisión"}</span></div>
+        <div class="hb"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${agent(x.agente)}<span class="src">${x.tipo === "post" ? "Post" : x.tipo === "marca" ? "Manual de marca" : "Decisión"}</span></div>
           <span class="ht">${x.tipo === "post" ? `<button class="back" style="width:auto;font-size:inherit;letter-spacing:0;text-transform:none;color:var(--ink);text-decoration:underline" data-tab="crear" data-rev="${esc(x.ref)}">${esc(x.titulo)}</button>` : esc(x.titulo)}</span>
           ${x.opcion_titulo ? `<span class="src">Opción elegida: <strong style="color:var(--ink-2)">${esc(x.opcion_titulo)}</strong></span>` : ""}
           ${x.nota ? `<span style="font-size:.86rem;color:var(--ink-2)">“${esc(x.nota)}”</span>` : ""}</div>
@@ -1090,6 +1106,28 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     <g transform="translate(110 80) scale(.42)">${EMBG}</g><text x="100" y="150" text-anchor="middle" font-family="Montserrat, Arial" font-weight="300" font-size="11" letter-spacing="4" fill="#F3E8D6">PULSO</text>
     <text x="100" y="164" text-anchor="middle" font-family="Montserrat, Arial" font-size="4.2" letter-spacing="1.4" fill="#B8913F">RUN • RIDE • SWIM</text></svg>`;
   const boardImg = (k) => { const b = S.board || {}; const v = b[k]; const src = assetId(v) ? "/_blob/" + assetId(v) : /^canva\/[a-z0-9-]+\.(png|jpg)$/.test(v || "") ? v : ""; return src ? `<img class="bimg" src="${esc(src)}" alt="${esc(k)} aprobado">` : ""; };
+  // Manual de marca: páginas reales de Canva en grande, cada una con aprobar / pedir cambio / comentar, e historial al final
+  const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"] };
+  const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
+  const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
+  function manualHTML() {
+    const m = S.manual; const ps = (m && Array.isArray(m.paginas)) ? m.paginas.filter((p) => assetId(p.asset)) : [];
+    if (!ps.length) return "";
+    const ok = ps.filter((p) => mEstado(p.n)[1] === "Aprobada").length;
+    const cu = safeUrl(m.canva_url);
+    const pages = ps.map((p) => { const e = mEstado(p.n); const src = "/_blob/" + assetId(p.asset); const coms = mComs().filter((c) => c.pagina === p.n && c.texto);
+      return `<article class="mpage" id="mp-${esc(p.n)}"><div class="mpage-h"><span class="n">${esc(p.n)}</span><span class="t">${esc(p.titulo || "Página " + p.n)}</span><span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span></div>
+        <a class="mimg" href="${src}" target="_blank" rel="noopener" title="Abrir en tamaño completo"><img src="${src}" alt="Manual de marca, página ${esc(p.n)}: ${esc(p.titulo || "")}" loading="lazy"></a>
+        ${coms.length ? coms.slice(-2).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
+        ${canWrite ? `<textarea id="mc-${esc(p.n)}" maxlength="600" placeholder="Comentario o cambio para esta página (obligatorio para pedir cambio)" aria-label="Comentario página ${esc(p.n)}"></textarea>
+        <div class="actions"><button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}">Aprobar página</button><button class="btn" data-mact="cambios" data-mp="${esc(p.n)}">Pedir cambio</button><button class="btn" data-mact="comentario" data-mp="${esc(p.n)}">Solo comentar</button></div>` : ""}</article>`; }).join("");
+    const hist = mComs();
+    const histHTML = `<div class="mhist">${hist.length ? hist.map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
+        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Lo que escribas en cada página queda aquí, en orden, hasta la versión final.</div>`}</div>
+      ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario general sobre el manual" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button><button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button></div>` : ""}`;
+    return sec("Manual de marca", `${esc(m.fuente || "Canva")} · versión ${esc(m.version || 1)} · ${ok} de ${ps.length} páginas aprobadas`, `${cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : ""}<div class="manual">${pages}</div>`)
+      + sec("Historial y comentarios del manual", "Todo queda guardado, del más antiguo al más reciente", histHTML);
+  }
   function boardHTML() {
     const m = proyecto.marca;
     const tile = (cls, label, inner, k) => `<div class="bt ${cls}"><span class="bl">${esc(label)}</span>${(k && boardImg(k)) || inner}</div>`;
@@ -1118,7 +1156,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   decisions/     historial de decisiones, una entrada por decisión
   library/       imágenes y videos aprobados
   web/           web de venta del piloto`;
-    return sec("Branding board", "Logo, colores, tipografía y aplicaciones · se lee de " + m.fuente, boardHTML() + `<div class="src">Los mockups son de referencia, no productos reales. Cuando apruebes un logo, colores o mockups nuevos, el agente Marca e identidad los pone en estas casillas.</div>`)
+    const man = manualHTML();
+    return (man || sec("Branding board", "Logo, colores, tipografía y aplicaciones · se lee de " + m.fuente, boardHTML() + `<div class="src">Los mockups son de referencia, no productos reales. Cuando apruebes un logo, colores o mockups nuevos, el agente Marca e identidad los pone en estas casillas.</div>`))
+      + (man ? sec("Marca vigente", "Lo que usan hoy los agentes hasta que apruebes el manual", `<details class="hist"><summary>Ver el tablero de la marca actual</summary>${boardHTML()}</details>`) : "")
       + sec("Carpeta del proyecto", "Solo los agentes de " + proyecto.corto + " leen y escriben aquí", `<pre class="tree">${esc(tree)}</pre><div class="src">Lo único compartido entre proyectos es <code>templates/agents/</code>. Datos en el tablero: ${proyecto.prefijo ? "<code>" + esc(proyecto.prefijo) + "</code>" : "colecciones raíz (primer proyecto)"}.</div>`)
       + sec("Independencia entre proyectos", "Reglas que el Centro de mando y los agentes cumplen", `<ul class="reglas">
         <li>Un agente solo lee y escribe dentro de <code>projects/&lt;su-proyecto&gt;/</code> y en el espacio de datos de su proyecto.</li>
@@ -1173,7 +1213,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   function renderAll() {
     renderNav();
     const scrollY = window.scrollY;
-    const drafts = {}; document.querySelectorAll("textarea[id^='cm-'], #rev-cm, #med-desc, #sol-txt").forEach((t) => { if (t.value) drafts[t.id] = t.value; });
+    const drafts = {}; document.querySelectorAll("textarea[id^='cm-'], textarea[id^='mc-'], #rev-cm, #med-desc, #sol-txt").forEach((t) => { if (t.value) drafts[t.id] = t.value; });
     const sel = {}; document.querySelectorAll(".dcard input[type=radio]:checked:not(:disabled)").forEach((r) => (sel[r.name] = r.value));
     if (!loaded) return;
     $("topbar").innerHTML = topbarHTML();
@@ -1215,6 +1255,24 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         await C("actividad").doc().set({ agente: "fundadora", accion: `Reabrió: ${h.titulo}`, pasa_a: h.agente || null, fecha: now });
         toast(h.tipo === "post" ? "Reabierto. El post vuelve a Crear para revisarlo." : "Reabierta. La decisión vuelve a Pendientes.");
       } catch (e) { toast("No se pudo reabrir. Inténtalo de nuevo."); } finally { busy = false; hReabrir = null; renderAll(); }
+      return;
+    }
+    const mb2 = ev.target.closest("button[data-mact]");
+    if (mb2 && db && canWrite && !busy) {
+      const act = mb2.dataset.mact; const n = Number(mb2.dataset.mp) || 0; const m = S.manual || {};
+      const pg = (m.paginas || []).find((p) => p.n === n);
+      const txt = ((($("mc-" + n) || {}).value) || "").trim();
+      if ((act === "cambios" || act === "comentario") && !txt) { toast(act === "cambios" ? "Escribe qué cambiarías en esta página." : "Escribe el comentario."); return; }
+      busy = true; const now = new Date().toISOString();
+      const titulo = pg ? `Manual de marca · página ${n}: ${pg.titulo || ""}` : "Manual de marca completo";
+      try {
+        await C("marca_comentarios").doc().set({ pagina: n || null, tipo: act, texto: txt, por: "fundadora", fecha: now, version: m.version || 1, proyecto: proyecto.id });
+        if (act !== "comentario") await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "marca", tipo: "marca", ref: pg ? "manual-p" + n : "manual", titulo, resultado: act === "cambios" ? "con_cambios" : "aprobada", nota: txt, opcion: null, opcion_titulo: "", por: "fundadora" });
+        if (act === "cambios") await C("solicitudes").doc().set({ tipo: "marca", agente: "marca", pagina: n, canva_id: m.canva_id || null, texto: txt, estado: "pendiente", fecha: now });
+        await C("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", comentario: "Comentó", manual_aprobado: "Aprobó" }[act]} ${titulo}${txt ? ": " + txt : ""}`, pasa_a: "marca", fecha: now });
+        if ($("mc-" + n)) $("mc-" + n).value = "";
+        toast({ aprobado: "Página aprobada. Quedó en el historial.", cambios: "Cambio enviado al agente Marca e identidad.", comentario: "Comentario guardado.", manual_aprobado: "Manual aprobado. El agente actualiza la marca." }[act]);
+      } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
       return;
     }
     const rb = ev.target.closest("[data-rev]");
@@ -1335,10 +1393,11 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (!canWrite) note("Estás viendo el Centro de mando en modo lectura.");
     window.claude.use("mcp").then((m) => { mcp = m; }, () => {});
     window.claude.use("assets").then((a) => { assets = a; assetsListo = true; if (loaded) renderAll(); }, () => { assetsListo = true; });
-    let pending = 15; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
+    let pending = 16; const ready = () => { if (pending > 0 && --pending === 0) { loaded = true; } if (loaded) renderAll(); };
     const sub = (path) => { let first = true; C(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
-    ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "recetas", "proveedores", "cupos", "numeros", "agentes", "historial"].forEach(sub);
+    ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "recetas", "proveedores", "cupos", "numeros", "agentes", "historial", "marca_comentarios"].forEach(sub);
     D("estrategia/actual").onSnapshot((d) => { S.estrategia = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
+    D("marca/manual").onSnapshot((d) => { S.manual = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     D("marca/board").onSnapshot((d) => { S.board = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     D("semana/actual").onSnapshot((d) => { S.semana = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
   })();
