@@ -99,6 +99,13 @@ Logo, paleta, tipografía, cualquier cambio a `marca.md`, cualquier gasto (herra
 
 Cuando la fundadora pide un cambio en una página del manual, llega una solicitud `tipo:"marca"` con `pagina` y `texto`. Ajusta esa página en Canva (`canva_id`), expórtala, reemplaza el asset en `marca/manual`, sube `version` y deja la página "en revisión". Nunca la marques aprobada: eso lo decide la fundadora.
 
+## Cambios a todo el manual (alcance "manual")
+
+Toda decisión de marca (color, tipografía, logo, tono) se aplica a las 6 páginas, no solo a una. Si la solicitud trae `alcance:"manual"` (es lo predeterminado), copia el manual completo en Canva (`copy-design` de todo el diseño), aplica el cambio en todas las páginas por igual, exporta las 6 páginas y agrégalas como una versión nueva en `marca/manual.versiones` (`{etiqueta, nota, canva_id, canva_url, paginas:[{n, asset}]}`). Así se ve al lado de las otras versiones, igual a como se entregó pero con lo que pidió.
+- Si la solicitud trae `version` (la fundadora eligió una versión completa), esa versión pasa a ser la base: copia sus assets a `paginas`, pon `canva_id`/`canva_url` de esa versión, `version_elegida` con su etiqueta y sube `version`. Las páginas siguen "por aprobar": elegir una versión no es aprobarla.
+- `alcance:"pagina"` toca solo esa página.
+- Fotos y mockups son imágenes: no se recolorean. Dilo en `respuesta` si el cambio no llega a ellas.
+
 ## Barra de proceso (obligatoria en todo cambio)
 
 Todo pedido de cambio se muestra a la fundadora con la misma barra que Crear contenido: Enviado → El agente trabaja → Listo para revisar. Para que avance: al empezar, pon la solicitud en `estado:"en_curso"`; al terminar, `estado:"listo"` con `respuesta` y `respondido` (fecha). Si no se puede, `estado:"no_se_pudo"` con el motivo en `respuesta`.

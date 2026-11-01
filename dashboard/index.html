@@ -138,6 +138,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 /* Manual de marca (páginas de Canva en grande) con revisión por página */
 .manual { display: grid; gap: 28px; }
+.mcmp-w{display:grid;gap:14px;overflow-x:auto}.mcmp{display:grid;grid-template-columns:110px repeat(var(--nv),minmax(200px,1fr));gap:12px;align-items:start}.mcmp-h>div{display:grid;gap:4px;align-content:start;font-size:.88rem}.mcmp-n{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2)}.mcmp img{width:100%;display:block;border-radius:6px}.alc{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.86rem;margin:6px 0}.alc label{display:flex;gap:6px;align-items:center}@media(max-width:640px){.mcmp{grid-template-columns:repeat(var(--nv),minmax(130px,1fr))}.mcmp-n{grid-column:1/-1;grid-auto-flow:column;justify-content:start}.mcmp-h>span{display:none}}
 .mopc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .mopc figure { margin: 0; display: grid; gap: 8px; align-content: start; }
 .mopc figcaption { font-size: .82rem; }
@@ -1116,7 +1117,17 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
   let mTab = "aprobado", mConf = "";
   const mSols = () => S.solicitudes.filter((x) => x.tipo === "marca").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
-  const mSol = (n) => mSols().find((x) => Number(x.pagina) === Number(n));
+  const mSol = (n) => mSols().find((x) => x.alcance !== "manual" && Number(x.pagina) === Number(n));
+  const mSolManual = () => mSols().find((x) => x.alcance === "manual");
+  const mVers = () => { const m = S.manual; return m && Array.isArray(m.versiones) ? m.versiones.filter((v) => Array.isArray(v.paginas) && v.paginas.some((q) => assetId(q.asset))) : []; };
+  function versionesHTML(ps) {
+    const vs = mVers(); if (vs.length < 2) return "";
+    const m = S.manual, el = m.version_elegida; const sm = mSolManual();
+    const cab = `<div class="mcmp mcmp-h" style="--nv:${vs.length}"><span></span>${vs.map((v, i) => `<div><strong>${esc(v.etiqueta)}</strong>${el === v.etiqueta ? ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>Elegida</span>` : ""}${v.nota ? `<div class="src">${esc(v.nota)}</div>` : ""}${safeUrl(v.canva_url) ? `<a href="${esc(v.canva_url)}" target="_blank" rel="noopener">Ver manual completo en Canva</a>` : ""}${canWrite && v.elegible !== false && el !== v.etiqueta ? (mConf === "v:" + i ? `<div class="actions"><button class="btn primary" data-mact="version" data-mp="0" data-mver="${i}">Sí, uso ${esc(v.etiqueta)} en todo el manual</button><button class="btn" data-mconf="">Cancelar</button></div>` : `<div class="actions"><button class="btn" data-mconf="v:${i}">Elegir ${esc(v.etiqueta)}</button></div>`) : ""}</div>`).join("")}</div>`;
+    const filas = ps.map((p) => `<div class="mcmp" style="--nv:${vs.length}"><span class="mcmp-n"><span class="n">${esc(p.n)}</span>${esc(p.titulo || "")}</span>${vs.map((v) => { const q = v.paginas.find((x) => Number(x.n) === Number(p.n)); const a = q && assetId(q.asset); return a ? `<a class="mimg" href="/_blob/${a}" target="_blank" rel="noopener"><img src="/_blob/${a}" alt="Página ${esc(p.n)}, ${esc(v.etiqueta)}" loading="lazy"></a>` : `<div class="src">Sin esta página</div>`; }).join("")}</div>`).join("");
+    const prog = sm ? `<div class="guia"><span class="eyebrow">Tu último pedido para todo el manual</span><div style="font-size:.86rem;margin:6px 0">“${esc(sm.texto)}”</div>${progresoHTML(sm)}${sm.respuesta && sm.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(sm.respuesta)}</div>` : ""}</div>` : "";
+    return sec("Versiones completas del manual", "Cada decisión de marca se aplica a las " + ps.length + " páginas · compara y elige", `<div class="src">Las mismas páginas que te entregamos, una al lado de la otra en cada color. Elegir una versión no aprueba páginas: solo le dice al agente cuál usar como base. Fotos y mockups son imágenes y conservan su color original.</div>${prog}<div class="mcmp-w">${cab}${filas}</div>`);
+  }
   function manualHTML() {
     const m = S.manual; const ps = (m && Array.isArray(m.paginas)) ? m.paginas.filter((p) => assetId(p.asset)) : [];
     if (!ps.length) return "";
@@ -1125,6 +1136,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const pageHTML = (p, aprobada) => { const e = mEstado(p.n); const src = "/_blob/" + assetId(p.asset); const coms = mComs().filter((c) => c.pagina === p.n && c.texto);
       const opcs = Array.isArray(p.opciones) ? p.opciones.filter((o) => assetId(o.asset)) : [];
       const acciones = canWrite ? `<textarea id="mc-${esc(p.n)}" maxlength="600" placeholder="Comentario o cambio para esta página (obligatorio para pedir cambio)" aria-label="Comentario página ${esc(p.n)}"></textarea>
+        <div class="alc" role="radiogroup" aria-label="Alcance del cambio"><span class="src">El cambio se aplica a:</span><label><input type="radio" name="alc-${esc(p.n)}" value="manual" checked> Todo el manual</label><label><input type="radio" name="alc-${esc(p.n)}" value="pagina"> Solo esta página</label></div>
         <div class="actions">${aprobada || opcs.length ? "" : `<button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}">Aprobar página</button>`}<button class="btn" data-mact="cambios" data-mp="${esc(p.n)}">Pedir cambio</button><button class="btn" data-mact="comentario" data-mp="${esc(p.n)}">Solo comentar</button></div>` : "";
       const sol = mSol(p.n);
       const prog = sol && !(aprobada && sol.estado === "listo") ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(sol.texto)}”</div>${progresoHTML(sol)}${sol.respuesta && sol.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(sol.respuesta)}</div>` : ""}</div>` : "";
@@ -1142,12 +1154,12 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const enlace = cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : "";
     if (mTab === "historial") {
       const histHTML = `<div class="mhist">${hist.length ? hist.slice().reverse().map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
-        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}${c.tipo === "cambios" ? (() => { const so = mSols().find((x) => Number(x.pagina) === Number(c.pagina) && x.texto === c.texto); return so ? progresoHTML(so) : ""; })() : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
-      ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario general sobre el manual" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button>${aprobarTodo}</div>` : ""}`;
+        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg && c.alcance !== "manual" ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Todo el manual${pg ? " · pedido desde la página " + esc(pg.n) : ""}</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}${c.tipo === "cambios" ? (() => { const so = mSols().find((x) => x.texto === c.texto && (Number(x.pagina) === Number(c.pagina) || x.alcance === "manual")); return so ? progresoHTML(so) : ""; })() : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
+      ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario o cambio para todo el manual (por ejemplo: usa azul petróleo en todas las páginas)" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button><button class="btn" data-mact="cambios" data-mp="0">Pedir cambio a todo el manual</button>${aprobarTodo}</div>` : ""}`;
       return head + sec("Historial y comentarios del manual", "Todo queda guardado · lo más reciente arriba", histHTML);
     }
     const apr = ps.filter((p) => mEstado(p.n)[1] === "Aprobada"), pend = ps.filter((p) => mEstado(p.n)[1] !== "Aprobada");
-    return head
+    return head + versionesHTML(ps)
       + sec("Manual de marca aprobado", sub, enlace + (apr.length ? `<div class="manual">${apr.map((p) => pageHTML(p, true)).join("")}</div>` : `<div class="src">Todavía no has aprobado páginas. Cuando apruebes una, sube aquí y queda como la marca oficial.</div>`) + (ok === ps.length && aprobarTodo ? `<div class="actions">${aprobarTodo}</div>` : ""))
       + (pend.length ? sec("Por aprobar", pend.length + (pend.length === 1 ? " página espera" : " páginas esperan") + " tu revisión", `<div class="manual">${pend.map((p) => pageHTML(p, false)).join("")}</div>`) : "");
   }
@@ -1290,18 +1302,22 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       const pg = (m.paginas || []).find((p) => p.n === n);
       let txt = ((($("mc-" + n) || {}).value) || "").trim();
       const opc = mb2.dataset.mopc != null && pg && Array.isArray(pg.opciones) ? pg.opciones[Number(mb2.dataset.mopc)] : null;
+      const vs = mVers(); const ver = mb2.dataset.mver != null ? vs[Number(mb2.dataset.mver)] : null;
+      const alcSel = document.querySelector(`input[name="alc-${n}"]:checked`);
+      const alcance = act === "version" || (act === "cambios" && (!n || !alcSel || alcSel.value === "manual")) ? "manual" : "pagina";
       mConf = "";
+      if (ver) txt = "Usar la versión " + (ver.etiqueta || "") + " en todo el manual (las " + ((m.paginas || []).length || 6) + " páginas)" + (txt ? ". " + txt : "");
       if (opc) txt = "Eligió la versión " + (opc.etiqueta || "") + (txt ? ". " + txt : "");
       if ((act === "cambios" || act === "comentario") && !txt) { toast(act === "cambios" ? "Escribe qué cambiarías en esta página." : "Escribe el comentario."); return; }
       busy = true; const now = new Date().toISOString();
-      const titulo = pg ? `Manual de marca · página ${n}: ${pg.titulo || ""}` : "Manual de marca completo";
+      const titulo = alcance === "manual" && act !== "aprobado" && act !== "comentario" ? "Manual de marca completo" + (pg ? ` (pedido desde la página ${n})` : "") : pg ? `Manual de marca · página ${n}: ${pg.titulo || ""}` : "Manual de marca completo";
       try {
-        await C("marca_comentarios").doc().set({ pagina: n || null, tipo: act, texto: txt, por: "fundadora", fecha: now, version: m.version || 1, proyecto: proyecto.id });
-        if (act !== "comentario") await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "marca", tipo: "marca", ref: pg ? "manual-p" + n : "manual", titulo, resultado: act === "cambios" ? "con_cambios" : "aprobada", nota: txt, opcion: null, opcion_titulo: "", por: "fundadora" });
-        if (act === "cambios") await C("solicitudes").doc().set({ tipo: "marca", agente: "marca", pagina: n, canva_id: m.canva_id || null, texto: txt, estado: "pendiente", fecha: now });
-        await C("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", comentario: "Comentó", manual_aprobado: "Aprobó" }[act]} ${titulo}${txt ? ": " + txt : ""}`, pasa_a: "marca", fecha: now });
+        await C("marca_comentarios").doc().set({ pagina: n || null, tipo: act === "version" ? "cambios" : act, alcance, texto: txt, por: "fundadora", fecha: now, version: m.version || 1, proyecto: proyecto.id });
+        if (act !== "comentario") await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "marca", tipo: "marca", ref: (alcance === "manual" && act !== "aprobado") || !pg ? "manual" : "manual-p" + n, titulo, resultado: act === "cambios" || act === "version" ? "con_cambios" : "aprobada", nota: txt, opcion: null, opcion_titulo: "", por: "fundadora" });
+        if (act === "cambios" || act === "version") await C("solicitudes").doc().set({ tipo: "marca", agente: "marca", alcance, pagina: alcance === "manual" ? null : n, desde_pagina: n || null, version: ver ? ver.etiqueta : null, canva_id: (ver && ver.canva_id) || m.canva_id || null, texto: txt, estado: "pendiente", fecha: now });
+        await C("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", comentario: "Comentó", version: "Eligió versión para", manual_aprobado: "Aprobó" }[act]} ${titulo}${txt ? ": " + txt : ""}`, pasa_a: "marca", fecha: now });
         if ($("mc-" + n)) $("mc-" + n).value = "";
-        toast({ aprobado: "Página aprobada. Quedó en el historial.", cambios: "Cambio enviado al agente Marca e identidad.", comentario: "Comentario guardado.", manual_aprobado: "Manual aprobado. El agente actualiza la marca." }[act]);
+        toast({ aprobado: "Página aprobada. Quedó en el historial.", version: "Listo. El agente aplica esa versión a todo el manual y te avisa aquí.", cambios: alcance === "manual" ? "Cambio enviado: se aplica a todas las páginas del manual." : "Cambio enviado al agente Marca e identidad.", comentario: "Comentario guardado.", manual_aprobado: "Manual aprobado. El agente actualiza la marca." }[act]);
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
       return;
     }
