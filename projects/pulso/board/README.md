@@ -21,7 +21,9 @@ El tablero es el **único canal** entre agentes. Vive en la base de datos del **
 | `agentes/{id}` | Estado de los agentes | Activo, inactivo o modo eventos |
 | `semana/actual` | Resumen del Estratega | Las 3 prioridades de la semana |
 | `solicitudes/{id}` | Pedidos de ajuste de la fundadora | Lo que pide cambiar sobre una foto/video (`medio`) o un post (`propuesta`): `texto`, `agente`, `estado` (pendiente, en_curso, listo, no_se_pudo), `respuesta` y `enlace` al resultado |
-| `medios/{id}` | Fotos y videos reales | Archivos que sube la fundadora desde las pestañas Contenido o Estratega. Cada documento guarda el id del archivo (`asset`), `tipo` (foto o video), `categoria`, `descripcion`, `subido` y `usado_en` (posts donde se usó). El archivo se ve en `/_blob/{asset}` |
+| `medios/{id}` | Fotos y videos reales | Archivos que sube la fundadora desde la sección Crear. Cada documento guarda el id del archivo (`asset`), `tipo` (foto o video), `categoria`, `descripcion`, `subido` y `usado_en` (posts donde se usó). El archivo se ve en `/_blob/{asset}` |
+| `historial/{id}` | Historial de decisiones | Una entrada por cada vez que la fundadora aprueba, comenta o rechaza (decisiones y posts): `fecha`, `proyecto`, `agente`, `tipo`, `ref`, `titulo`, `resultado` (aprobada, con_cambios, rechazada, reabierta), `nota`, `opcion`, `opcion_titulo`. **No se edita ni se borra**; reabrir crea una entrada nueva. Los agentes lo leen antes de proponer algo parecido |
+| `recetas/{id}` y `proveedores/{id}` | Menú y producto | Recetas con ingredientes y pasos; proveedores con fuente y estado |
 
 ## Campos
 

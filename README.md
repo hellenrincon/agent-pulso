@@ -4,21 +4,22 @@ Siete agentes de IA que trabajan para la fundadora y se comunican **solo** por u
 
 Fuente de verdad: *PULSO - Documento maestro de agentes* (20 oct 2026).
 
-| Carpeta | Qué hay |
-| --- | --- |
-| `knowledge/` | `marca.md` (documento de marca, solo lectura), `menu.md`, `reglas.md`, `conexiones.md` (Canva, Metricool, Instagram), `decisiones-fundadora.md`, `ejemplos/` |
-| `agents/` | Una ficha por agente |
-| `skills/` | Procedimientos repetibles |
-| `board/` | Esquema del tablero, conexión y exportes |
-| `dashboard/` | Código del Centro de mando |
-| `web/` | Web de venta del piloto (versión 1) |
+El repo está organizado por proyecto. Cada proyecto tiene su carpeta independiente y lo único compartido son las plantillas de agentes.
+
+```
+templates/agents/          # plantillas de agentes (único contenido compartido)
+projects/
+  pulso/                   # knowledge/, agents/, skills/, board/, decisions/, library/, web/
+dashboard/                 # código del Centro de mando (multiproyecto)
+docs/                      # notas de montaje
+```
 
 ## Agentes
 
 | # | Agente | Estado | Ficha |
 | --- | --- | --- | --- |
-| 1 | Estratega | Activo | `agents/estratega.md` |
-| 2 | Contenido | Activo | `agents/contenido.md` |
+| 1 | Estratega | Activo | `projects/pulso/agents/estratega.md` |
+| 2 | Contenido | Activo | `projects/pulso/agents/contenido.md` |
 | 3 | Producto y operaciones | Activo | por escribir |
 | 4 | Comunidad y ventas | Activo | por escribir |
 | 5 | Datos | Inactivo (fase 2) | por escribir |
@@ -27,4 +28,4 @@ Fuente de verdad: *PULSO - Documento maestro de agentes* (20 oct 2026).
 
 ## Reglas que no se negocian
 
-Nada se publica, se envía a clientes ni se paga sin la aprobación de la fundadora. Los agentes nunca reciben contraseñas. Todo sigue la línea gráfica de PULSO. Lo no confirmado se marca "por confirmar" y cada dato lleva su fuente. Detalle en `knowledge/reglas.md`.
+Nada se publica, se envía a clientes ni se paga sin la aprobación de la fundadora. Los agentes nunca reciben contraseñas. Todo sigue la línea gráfica de PULSO. Lo no confirmado se marca "por confirmar" y cada dato lleva su fuente. Detalle en `projects/pulso/knowledge/reglas.md`.
