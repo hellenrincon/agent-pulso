@@ -172,3 +172,19 @@ Professional logo design for the brand "PULSO COFFEE & MORE". Symbol: a minimal 
 ```
 
 **Negative prompt:** `gradients, shadows, 3D, glossy, photorealistic, mockup, multiple logos, cluttered, extra words, misspelled text, watermark, busy background`
+
+---
+
+## 9. Manual de marca / branding board (prompt de Alexander, corregido)
+
+Solo se corrigió la ortografía y se ordenó; el diseño lo propone Ideogram. Configuración: estilo Design · 16:9 o 4:5 · Magic Prompt encendido.
+
+```
+Manual de marca completo para "PULSO Coffee & More", con estilo natural y moderno. Presentación tipo branding board, profesional y con fondo limpio.
+
+Muestra el logo principal y sus versiones, e incluye mockups de camiseta, taza, termo, papelería y aplicación móvil.
+
+Incluye secciones completas de colores (con sus códigos), tipografía y aplicaciones de marca. Usa colores como vinotinto, café, marfil, verde esmeralda y acentos en blanco o gris claro, y una tipografía elegante y redondeada.
+```
+
+Nota: Ideogram entrega una sola imagen tipo tablero, ideal para ver la dirección. El manual completo (varias páginas, editable) lo arma el agente Marca e identidad en Canva cuando apruebes logo y paleta.
