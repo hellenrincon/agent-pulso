@@ -764,7 +764,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const st = x.estado || "pendiente"; const n = st === "pendiente" ? 1 : st === "en_curso" ? 2 : 3;
     const mal = st === "no_se_pudo";
     const pasos = ["Enviado", "El agente trabaja", mal ? "No se pudo" : "Listo para revisar"];
-    const nota = st === "pendiente" && x.urgente ? "Pediste hacerlo ahora: el agente empieza en unos minutos." : st === "pendiente" ? `El agente lo toma en su próxima revisión: ${proxRevision()}. Si es urgente, escríbele en el chat.`
+    const nota = st === "pendiente" && x.urgente ? "El agente empieza en un par de minutos." : st === "pendiente" ? `El agente lo toma en su próxima revisión: ${proxRevision()}. Si es urgente, escríbele en el chat.`
       : st === "en_curso" ? "El agente está haciendo el cambio ahora." : mal ? "Mira la respuesta del agente." : (x.respondido ? "Terminado " + fecha(x.respondido) : "Terminado");
     return `<div class="prog" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${n}" aria-label="Avance del pedido">
       <div class="prog-bar"><span class="${mal ? "mal" : ""} ${st === "en_curso" ? "vivo" : ""}" style="width:${n * 33.34}%"></span></div>
@@ -936,7 +936,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
           ${canWrite ? `<textarea id="rev-cm" placeholder="¿Qué cambiarías? (obligatorio para pedir cambios)" aria-label="Comentario sobre el post"></textarea>
-          <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios" data-ahora="1" title="El agente empieza en un par de minutos">Pedir cambio ahora</button><button class="btn" data-revact="cambios" title="El agente lo hace en su revisión de cada hora (7 am a 10 pm)">Pedir cambio en la próxima revisión</button><button class="btn" data-revact="descartado">Descartar</button></div>
+          <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios" title="El agente empieza de inmediato">Pedir cambio</button><button class="btn" data-revact="descartado">Descartar</button></div>
           <div class="src">"Ahora" despierta al agente al instante. "Próxima revisión" lo deja para ${proxRevision()}. Al aprobar, el agente lo pasa a Metricool enseguida.</div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
           <div class="rev-nav"><button class="btn" data-rev="${esc(ps[(idx - 1 + ps.length) % ps.length]._id)}">← Anterior</button><button class="btn" data-rev="${esc(ps[(idx + 1) % ps.length]._id)}">Siguiente →</button></div>
         </div>
@@ -1315,10 +1315,11 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       try {
         await C("marca_comentarios").doc().set({ pagina: n || null, tipo: act === "version" ? "cambios" : act, alcance, texto: txt, por: "fundadora", fecha: now, version: m.version || 1, proyecto: proyecto.id });
         if (act !== "comentario") await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "marca", tipo: "marca", ref: (alcance === "manual" && act !== "aprobado") || !pg ? "manual" : "manual-p" + n, titulo, resultado: act === "cambios" || act === "version" ? "con_cambios" : "aprobada", nota: txt, opcion: null, opcion_titulo: "", por: "fundadora" });
-        if (act === "cambios" || act === "version") await C("solicitudes").doc().set({ tipo: "marca", agente: "marca", alcance, pagina: alcance === "manual" ? null : n, desde_pagina: n || null, version: ver ? ver.etiqueta : null, canva_id: (ver && ver.canva_id) || m.canva_id || null, texto: txt, estado: "pendiente", fecha: now });
+        if (act === "cambios" || act === "version") await C("solicitudes").doc().set({ tipo: "marca", agente: "marca", alcance, pagina: alcance === "manual" ? null : n, desde_pagina: n || null, version: ver ? ver.etiqueta : null, canva_id: (ver && ver.canva_id) || m.canva_id || null, texto: txt, estado: "pendiente", fecha: now, urgente: true });
+        const yaVa = act === "cambios" || act === "version" ? await despertarAgente() : false;
         await C("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", comentario: "Comentó", version: "Eligió versión para", manual_aprobado: "Aprobó" }[act]} ${titulo}${txt ? ": " + txt : ""}`, pasa_a: "marca", fecha: now });
         if ($("mc-" + n)) $("mc-" + n).value = "";
-        toast({ aprobado: "Página aprobada. Quedó en el historial.", version: "Listo. El agente aplica esa versión a todo el manual y te avisa aquí.", cambios: alcance === "manual" ? "Cambio enviado: se aplica a todas las páginas del manual." : "Cambio enviado al agente Marca e identidad.", comentario: "Comentario guardado.", manual_aprobado: "Manual aprobado. El agente actualiza la marca." }[act]);
+        toast({ aprobado: "Página aprobada. Quedó en el historial.", version: yaVa ? "Listo. El agente ya empezó a aplicar esa versión a todo el manual; mira la barra." : `Enviado. El agente lo toma ${proxRevision()}.`, cambios: yaVa ? (alcance === "manual" ? "Cambio enviado: el agente ya empezó en todas las páginas; mira la barra." : "Cambio enviado: el agente ya empezó; mira la barra.") : `Cambio enviado. El agente lo toma ${proxRevision()}.`, comentario: "Comentario guardado.", manual_aprobado: "Manual aprobado. El agente actualiza la marca." }[act]);
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
       return;
     }
@@ -1334,7 +1335,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       if (!txt) { toast("Escribe qué debe hacer el agente."); return; }
       busy = true; const now = new Date().toISOString();
       try {
-        await C("solicitudes").doc().set({ tipo: "medio", medio: se.dataset.solenviar, texto: txt, agente: "contenido", estado: "pendiente", fecha: now });
+        await C("solicitudes").doc().set({ tipo: "medio", medio: se.dataset.solenviar, texto: txt, agente: "contenido", estado: "pendiente", fecha: now, urgente: true });
+        despertarAgente();
         await C("actividad").doc().set({ agente: "fundadora", accion: `Pidió un ajuste a Contenido: ${txt}`, pasa_a: "contenido", fecha: now });
         medPide = null; if ($("sol-txt")) $("sol-txt").value = ""; toast("Enviado. Contenido lo hace en Canva y te muestra el resultado aquí.");
       } catch (e) { toast("No se pudo enviar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
@@ -1359,7 +1361,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     }
     const ra = ev.target.closest("button[data-revact]");
     if (ra && db && canWrite && !busy) {
-      const act = ra.dataset.revact; const ahora = act === "aprobado" || !!ra.dataset.ahora; const p = S.propuestas.find((x) => x._id === revId); if (!p) return;
+      const act = ra.dataset.revact; const ahora = act !== "descartado"; const p = S.propuestas.find((x) => x._id === revId); if (!p) return;
       const cm = (($("rev-cm") || {}).value || "").trim();
       if (act === "cambios" && !cm) { toast("Escribe qué cambiarías antes de pedir el cambio."); return; }
       busy = true; document.querySelectorAll("button[data-revact]").forEach((x) => (x.disabled = true));
