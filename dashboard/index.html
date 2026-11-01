@@ -1114,7 +1114,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"] };
   const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
   const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
-  let mTab = "aprobado";
+  let mTab = "aprobado", mConf = "";
   const mSols = () => S.solicitudes.filter((x) => x.tipo === "marca").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
   const mSol = (n) => mSols().find((x) => Number(x.pagina) === Number(n));
   function manualHTML() {
@@ -1129,7 +1129,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       const sol = mSol(p.n);
       const prog = sol && !(aprobada && sol.estado === "listo") ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(sol.texto)}”</div>${progresoHTML(sol)}${sol.respuesta && sol.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(sol.respuesta)}</div>` : ""}</div>` : "";
       return `<article class="mpage" id="mp-${esc(p.n)}"><div class="mpage-h"><span class="n">${esc(p.n)}</span><span class="t">${esc(p.titulo || "Página " + p.n)}</span><span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span></div>
-        ${opcs.length && !aprobada ? `<div class="src">Elige una de las dos versiones. La que elijas queda como la página aprobada.</div><div class="mopc">${opcs.map((o, i) => { const os = "/_blob/" + assetId(o.asset); return `<figure><a class="mimg" href="${os}" target="_blank" rel="noopener"><img src="${os}" alt="Página ${esc(p.n)}, versión ${esc(o.etiqueta)}" loading="lazy"></a><figcaption><strong>${esc(o.etiqueta)}</strong>${o.nota ? ` · ${esc(o.nota)}` : ""}</figcaption>${canWrite ? `<button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}" data-mopc="${i}">Elegir ${esc(o.etiqueta)}</button>` : ""}</figure>`; }).join("")}</div>`
+        ${opcs.length && !aprobada ? `<div class="src">Dos versiones para comparar. Míralas aquí o en Canva; nada queda aprobado hasta que confirmes.</div><div class="mopc">${opcs.map((o, i) => { const os = "/_blob/" + assetId(o.asset); return `<figure><a class="mimg" href="${os}" target="_blank" rel="noopener"><img src="${os}" alt="Página ${esc(p.n)}, versión ${esc(o.etiqueta)}" loading="lazy"></a><figcaption><strong>${esc(o.etiqueta)}</strong>${o.nota ? ` · ${esc(o.nota)}` : ""}${safeUrl(o.canva_url) ? ` · <a href="${esc(o.canva_url)}" target="_blank" rel="noopener">Ver en Canva</a>` : ""}</figcaption>${canWrite ? (mConf === p.n + ":" + i ? `<div class="actions"><button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}" data-mopc="${i}">Sí, elijo ${esc(o.etiqueta)}</button><button class="btn" data-mconf="">Cancelar</button></div>` : `<button class="btn" data-mconf="${esc(p.n)}:${i}">Elegir ${esc(o.etiqueta)}</button>`) : ""}</figure>`; }).join("")}</div>`
         : `<a class="mimg" href="${src}" target="_blank" rel="noopener" title="Abrir en tamaño completo"><img src="${src}" alt="Manual de marca, página ${esc(p.n)}: ${esc(p.titulo || "")}" loading="lazy"></a>`}
         ${coms.length ? coms.slice(-(aprobada ? 1 : 2)).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
         ${prog}
@@ -1260,6 +1260,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ev.target.closest("[data-mas]")) { drawer(!$("side").classList.contains("open")); return; }
     const dt = ev.target.closest("[data-dectab]");
     if (dt) { decTab = dt.dataset.dectab; renderAll(); return; }
+    const mcf = ev.target.closest("button[data-mconf]");
+    if (mcf) { mConf = mcf.dataset.mconf; renderAll(); return; }
     const mt = ev.target.closest("[data-mtab]");
     if (mt) { mTab = mt.dataset.mtab; renderAll(); return; }
     if (ev.target.closest("[data-hlimpiar]")) { hAg = hRes = hDesde = ""; renderAll(); return; }
@@ -1288,6 +1290,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       const pg = (m.paginas || []).find((p) => p.n === n);
       let txt = ((($("mc-" + n) || {}).value) || "").trim();
       const opc = mb2.dataset.mopc != null && pg && Array.isArray(pg.opciones) ? pg.opciones[Number(mb2.dataset.mopc)] : null;
+      mConf = "";
       if (opc) txt = "Eligió la versión " + (opc.etiqueta || "") + (txt ? ". " + txt : "");
       if ((act === "cambios" || act === "comentario") && !txt) { toast(act === "cambios" ? "Escribe qué cambiarías en esta página." : "Escribe el comentario."); return; }
       busy = true; const now = new Date().toISOString();
