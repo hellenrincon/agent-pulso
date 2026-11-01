@@ -86,3 +86,11 @@ El Centro de mando tiene permiso `mcp` sobre el conector Claude Code Remote (sol
 ## Fotos de la fundadora a Canva (27 oct 2026)
 
 Mientras la red bloquee `www.canva.com` y `export-download.canva.com`, el flujo es: la fundadora sube la foto final a su Canva (carpeta "PULSO · Posts de arranque" o Subidos), el agente la busca con `list-folder-items` (ordenado por fecha), copia el diseño, cambia la foto con `update_fill` + `crop_media`, exporta y programa. Así se hizo el post 2 (Canva DAHZLG-wFJQ, foto MAHZLO1mDM4, Metricool 407423102, 2 nov 6:15 pm). Arreglo definitivo: agregar esos dos dominios en Project settings → Cloud environment → Network access → Allowed domains.
+
+## Canva · cuenta nueva (1 nov 2026)
+
+- Carpeta: "PULSO · Contenido Instagram" (FAHZs3Q24F8).
+- Diseño "PULSO · Contenido Instagram" (DAHZs0HU44c, https://canva.link/bmgu4im889w52v3): portada + posts 1 a 5 (páginas 2 a 6). Son las imágenes finales subidas como foto, no las capas editables: para editar texto o foto, se rehace la página o se comparte el diseño original desde la cuenta anterior.
+- Manual de marca: DAHZspdIvP4.
+- Pendiente: el video del post 10 (la subida desde el agente no acepta MP4; súbelo a mano en Canva). Posts 6 a 9 aún no tienen diseño.
+- Cada propuesta guarda `canva` (nuevo), `canva_pagina` y `canva_anterior`.

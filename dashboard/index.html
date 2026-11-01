@@ -1110,23 +1110,35 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"] };
   const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
   const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
+  let mTab = "aprobado";
   function manualHTML() {
     const m = S.manual; const ps = (m && Array.isArray(m.paginas)) ? m.paginas.filter((p) => assetId(p.asset)) : [];
     if (!ps.length) return "";
     const ok = ps.filter((p) => mEstado(p.n)[1] === "Aprobada").length;
     const cu = safeUrl(m.canva_url);
-    const pages = ps.map((p) => { const e = mEstado(p.n); const src = "/_blob/" + assetId(p.asset); const coms = mComs().filter((c) => c.pagina === p.n && c.texto);
+    const pageHTML = (p, aprobada) => { const e = mEstado(p.n); const src = "/_blob/" + assetId(p.asset); const coms = mComs().filter((c) => c.pagina === p.n && c.texto);
+      const acciones = canWrite ? `<textarea id="mc-${esc(p.n)}" maxlength="600" placeholder="Comentario o cambio para esta página (obligatorio para pedir cambio)" aria-label="Comentario página ${esc(p.n)}"></textarea>
+        <div class="actions">${aprobada ? "" : `<button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}">Aprobar página</button>`}<button class="btn" data-mact="cambios" data-mp="${esc(p.n)}">Pedir cambio</button><button class="btn" data-mact="comentario" data-mp="${esc(p.n)}">Solo comentar</button></div>` : "";
       return `<article class="mpage" id="mp-${esc(p.n)}"><div class="mpage-h"><span class="n">${esc(p.n)}</span><span class="t">${esc(p.titulo || "Página " + p.n)}</span><span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span></div>
         <a class="mimg" href="${src}" target="_blank" rel="noopener" title="Abrir en tamaño completo"><img src="${src}" alt="Manual de marca, página ${esc(p.n)}: ${esc(p.titulo || "")}" loading="lazy"></a>
-        ${coms.length ? coms.slice(-2).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
-        ${canWrite ? `<textarea id="mc-${esc(p.n)}" maxlength="600" placeholder="Comentario o cambio para esta página (obligatorio para pedir cambio)" aria-label="Comentario página ${esc(p.n)}"></textarea>
-        <div class="actions"><button class="btn primary" data-mact="aprobado" data-mp="${esc(p.n)}">Aprobar página</button><button class="btn" data-mact="cambios" data-mp="${esc(p.n)}">Pedir cambio</button><button class="btn" data-mact="comentario" data-mp="${esc(p.n)}">Solo comentar</button></div>` : ""}</article>`; }).join("");
+        ${coms.length ? coms.slice(-(aprobada ? 1 : 2)).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
+        ${aprobada && acciones ? `<details class="hist"><summary>Cambiar algo de esta página</summary>${acciones}</details>` : acciones}</article>`; };
     const hist = mComs();
-    const histHTML = `<div class="mhist">${hist.length ? hist.map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
-        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Lo que escribas en cada página queda aquí, en orden, hasta la versión final.</div>`}</div>
-      ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario general sobre el manual" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button><button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button></div>` : ""}`;
-    return sec("Manual de marca", `${esc(m.fuente || "Canva")} · versión ${esc(m.version || 1)} · ${ok} de ${ps.length} páginas aprobadas`, `${cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : ""}<div class="manual">${pages}</div>`)
-      + sec("Historial y comentarios del manual", "Todo queda guardado, del más antiguo al más reciente", histHTML);
+    const aprobarTodo = canWrite ? `<button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button>` : "";
+    const tabs = `<div class="subtabs" role="tablist"><button role="tab" data-mtab="aprobado" aria-selected="${mTab === "aprobado"}">Aprobado · ${ok} de ${ps.length}</button><button role="tab" data-mtab="historial" aria-selected="${mTab === "historial"}">Historial · ${hist.length}</button></div>`;
+    const head = `<section>${tabs}</section>`;
+    const sub = `${esc(m.fuente || "Canva")} · versión ${esc(m.version || 1)} · ${ok} de ${ps.length} páginas aprobadas`;
+    const enlace = cu ? `<a class="visual-link" href="${esc(cu)}" target="_blank" rel="noopener" style="justify-self:start">Abrir y editar en Canva</a>` : "";
+    if (mTab === "historial") {
+      const histHTML = `<div class="mhist">${hist.length ? hist.slice().reverse().map((c) => { const k = MTIPO[c.tipo] || ["gris", c.tipo]; const pg = ps.find((p) => p.n === c.pagina);
+        return `<div class="mh"><span class="w">${fecha(c.fecha)}<br>${esc(c.por === "fundadora" ? "Tú" : info(c.por).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${k[0]}"></span>${esc(k[1])}</span> ${pg ? `<span class="src">Página ${esc(pg.n)} · ${esc(pg.titulo || "")}</span>` : `<span class="src">Manual completo</span>`}${c.texto ? `<div style="margin-top:4px">“${esc(c.texto)}”</div>` : ""}${c.respuesta ? `<div class="src" style="margin-top:4px">Respuesta del agente: ${esc(c.respuesta)}</div>` : ""}</div></div>`; }).join("") : `<div class="src" style="padding:12px 0">Todavía no hay comentarios. Todo lo que escribas en el manual queda aquí, hasta la versión final.</div>`}</div>
+      ${canWrite ? `<textarea id="mc-0" maxlength="800" placeholder="Comentario general sobre el manual" aria-label="Comentario general"></textarea><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-mact="comentario" data-mp="0">Comentar</button>${aprobarTodo}</div>` : ""}`;
+      return head + sec("Historial y comentarios del manual", "Todo queda guardado · lo más reciente arriba", histHTML);
+    }
+    const apr = ps.filter((p) => mEstado(p.n)[1] === "Aprobada"), pend = ps.filter((p) => mEstado(p.n)[1] !== "Aprobada");
+    return head
+      + sec("Manual de marca aprobado", sub, enlace + (apr.length ? `<div class="manual">${apr.map((p) => pageHTML(p, true)).join("")}</div>` : `<div class="src">Todavía no has aprobado páginas. Cuando apruebes una, sube aquí y queda como la marca oficial.</div>`) + (ok === ps.length && aprobarTodo ? `<div class="actions">${aprobarTodo}</div>` : ""))
+      + (pend.length ? sec("Por aprobar", pend.length + (pend.length === 1 ? " página espera" : " páginas esperan") + " tu revisión", `<div class="manual">${pend.map((p) => pageHTML(p, false)).join("")}</div>`) : "");
   }
   function boardHTML() {
     const m = proyecto.marca;
@@ -1237,6 +1249,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ev.target.closest("[data-mas]")) { drawer(!$("side").classList.contains("open")); return; }
     const dt = ev.target.closest("[data-dectab]");
     if (dt) { decTab = dt.dataset.dectab; renderAll(); return; }
+    const mt = ev.target.closest("[data-mtab]");
+    if (mt) { mTab = mt.dataset.mtab; renderAll(); return; }
     if (ev.target.closest("[data-hlimpiar]")) { hAg = hRes = hDesde = ""; renderAll(); return; }
     const ts = ev.target.closest("[data-themeset]");
     if (ts) { const k = ts.dataset.themeset; if (k === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = k; try { localStorage.setItem("pulso-theme", k); } catch (e) {} renderAll(); return; }
