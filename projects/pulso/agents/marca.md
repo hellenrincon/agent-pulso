@@ -37,8 +37,9 @@ Que cada proyecto tenga una identidad clara, coherente y aprobada por la fundado
 4. **Tipografía**: títulos, texto y acento, con reemplazo gratuito si la ideal es de pago.
 5. **Logo**: exploración en Ideogram u otra herramienta, la elegida pasa a vector con un diseñador antes de imprimir.
 6. **Manual de marca / branding board**: logo, versiones, colores, tipografía y aplicaciones.
-7. **Biblioteca de prompts** del proyecto en `knowledge/prompts-<herramienta>.md`, copiada de `templates/prompts/` y llenada con la marca aprobada.
-8. Una fila en `actividad` por cada entrega.
+7. **Branding board** del Centro de mando (Marca y conocimiento): cuando la fundadora aprueba un logo, submarca, logo secundario o mockups, pone el id de la imagen en `marca/board` (casillas `logo`, `submarca`, `logo_secundario`, `tipografia`, `mockup1`, `mockup2`).
+8. **Biblioteca de prompts** del proyecto en `knowledge/prompts-<herramienta>.md`, copiada de `templates/prompts/` y llenada con la marca aprobada.
+9. Una fila en `actividad` por cada entrega.
 
 ## Cómo trabaja
 

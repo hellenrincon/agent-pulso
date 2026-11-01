@@ -106,6 +106,36 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .sw { display: grid; gap: 4px; align-content: end; min-height: 120px; padding: 14px; font-size: .74rem; }
 .sw b { font-family: var(--f-title); font-weight: 500; text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; }
 .tree { background: var(--panel); border: 1px solid var(--line); padding: 16px 18px; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: .8rem; line-height: 1.7; overflow-x: auto; white-space: pre; margin: 0; }
+/* Branding board: tablero visual de la marca (colores reales de la marca, no cambian con el tema) */
+.board { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.bt { position: relative; border: 1px solid var(--line); overflow: hidden; display: grid; place-items: center; min-height: 160px; padding: 34px 18px 18px; }
+.bt > .bl { position: absolute; left: 14px; top: 12px; font-size: .6rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 600; opacity: .7; }
+.bt img.bimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: inherit; }
+.b-logo { grid-column: span 8; aspect-ratio: 16 / 9; background: #F3E8D6; color: #5A1A28; }
+.b-sub { grid-column: span 4; background: #17293A; color: #F3E8D6; }
+.b-cols { grid-column: span 12; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.b-col { border: 1px solid var(--line); aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; padding: 12px; font-size: .72rem; }
+.b-col b { font-family: var(--f-title); font-weight: 500; text-transform: uppercase; letter-spacing: .14em; font-size: .66rem; }
+.b-sec { grid-column: span 4; background: #FBF5EA; color: #5A1A28; }
+.b-tipo { grid-column: span 8; background: #FBF5EA; color: #17293A; place-items: stretch; }
+.b-m1 { grid-column: span 8; aspect-ratio: 16 / 11; background: #F3E8D6; color: #5A1A28; padding: 0; }
+.b-m2 { grid-column: span 4; background: #E9E4DA; color: #17293A; padding: 0; }
+.b-m1 svg, .b-m2 svg { width: 100%; height: 100%; display: block; }
+.bw { font-family: var(--f-title); font-weight: 300; letter-spacing: .42em; font-size: clamp(1.6rem, 4vw, 3rem); line-height: 1; padding-left: .42em; }
+.bs { font-size: clamp(.55rem, 1.2vw, .78rem); letter-spacing: .4em; margin-top: 10px; text-align: center; }
+.tipo-in { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: center; width: 100%; }
+.tipo-aa { font-family: var(--f-title); font-weight: 300; font-size: clamp(3.4rem, 8vw, 6rem); line-height: 1; color: #5A1A28; }
+.tipo-l { display: grid; gap: 10px; min-width: 0; }
+.tipo-l span { display: block; overflow-wrap: anywhere; }
+.pil { display: flex; gap: 14px; justify-content: center; }
+.pil span { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-size: .58rem; letter-spacing: .16em; font-weight: 600; color: #F3E8D6; border: 1px solid rgba(243,232,214,.5); }
+@media (max-width: 760px) {
+  .b-logo, .b-sub, .b-sec, .b-tipo, .b-m1, .b-m2 { grid-column: span 12; }
+  .b-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .b-sub, .b-sec { min-height: 190px; }
+  .b-m2 { aspect-ratio: 4 / 5; }
+  .tipo-in { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
 .reglas { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: .9rem; }
 .ajuste { background: var(--panel); border: 1px solid var(--line); padding: 18px; display: grid; gap: 10px; align-content: start; }
 .ajuste .pt { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .12em; font-weight: 500; font-size: .8rem; }
@@ -446,7 +476,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const PROYECTOS = [{ id: "pulso", nombre: "PULSO Coffee & More", corto: "PULSO", prefijo: "", carpeta: "projects/pulso/",
     marca: { fuente: "projects/pulso/knowledge/marca.md", frase: "Good Coffee, Better Movement", colores: [["Vino", "#5A1A28", "Energía · protagonista"], ["Crema", "#F3E8D6", "Calma · fondo", 1], ["Café", "#5B3522", "Fuerza · RIDE"], ["Oliva", "#4A4B25", "Naturaleza · RUN"], ["Azul petróleo", "#17293A", "Agua · SWIM"], ["Dorado", "#B8913F", "Detalles · línea de pulso"]] } }];
   let proyecto = PROYECTOS[0];
-  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], historial: [], semana: null };
+  const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], historial: [], semana: null, board: null };
   let db = null, canWrite = false, busy = false, loaded = false;
   let tab = norm((location.hash || "").slice(1));
   if (!tab) { try { tab = norm(localStorage.getItem("pulso-tab")); } catch (e) {} }
@@ -1043,6 +1073,40 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     proyectos: proyectosHTML
   };
 
+  // Branding board: cada casilla se dibuja con la marca; si el agente Marca e identidad deja una imagen aprobada en marca/board, se muestra esa
+  const EMB = (s) => `<svg viewBox="0 0 54 54" width="${s}" height="${s}" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width=".8"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/><path d="M40 23.5 C43.5 27 40.5 31 44 34.5" fill="none" stroke="#F3E8D6" stroke-width="1.2"/></svg>`;
+  const EMBG = '<circle cx="27" cy="27" r="26" fill="#F3E8D6"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/>';
+  const MONO = '<svg viewBox="0 0 54 54" width="120" height="120" aria-hidden="true"><rect width="54" height="54" fill="#5A1A28"/><path d="M8 29 H18 L21 22 L25 36 L29 14 L32 29 H36" fill="none" stroke="#F3E8D6" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#F3E8D6" transform="rotate(25 42 29)"/><path d="M40 23.5 C43.5 27 40.5 31 44 34.5" fill="none" stroke="#5A1A28" stroke-width="1.2"/></svg>';
+  const MOCK1 = `<svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mockup de vaso y termo PULSO"><rect width="320" height="220" fill="#F3E8D6"/><rect x="0" y="176" width="320" height="44" fill="#e6d8c0"/>
+    <path d="M92 58 L168 58 L159 196 L101 196 Z" fill="#ffffff" fill-opacity=".45" stroke="#17293A" stroke-width="1.2"/><path d="M95 88 L165 88 L159 194 L101 194 Z" fill="#2a170e"/><path d="M95 88 L165 88 L164 100 L96 100 Z" fill="#C9A27A" fill-opacity=".9"/>
+    <g fill="#ffffff" fill-opacity=".3" stroke="#ffffff" stroke-opacity=".6"><rect x="104" y="104" width="20" height="20" transform="rotate(-12 114 114)"/><rect x="134" y="110" width="22" height="22" transform="rotate(10 145 121)"/></g>
+    <path d="M86 50 L174 50 L172 60 L88 60 Z" fill="#5A1A28"/><path d="M90 50 Q130 30 170 50 Z" fill="#5A1A28"/><path d="M140 40 L152 10" stroke="#5A1A28" stroke-width="6"/>
+    <g transform="translate(111 138) scale(.7)">${EMBG}</g>
+    <rect x="212" y="62" width="44" height="134" fill="#4A4B25"/><rect x="216" y="44" width="36" height="20" fill="#2f3018"/><rect x="212" y="88" width="44" height="2" fill="#B8913F"/>
+    <g transform="translate(220 112) scale(.52)">${EMBG}</g><text x="234" y="168" text-anchor="middle" font-family="Montserrat, Arial" font-size="9" letter-spacing="3" fill="#F3E8D6">RUN</text>
+    <path d="M0 206 H120 L128 206 L134 196 L142 214 L150 190 L156 206 H320" fill="none" stroke="#B8913F" stroke-width="1.2"/></svg>`;
+  const MOCK2 = `<svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mockup de camiseta PULSO"><rect width="200" height="250" fill="#E9E4DA"/>
+    <path d="M62 52 L84 40 Q100 54 116 40 L138 52 L170 84 L150 104 L140 94 L140 222 L60 222 L60 94 L50 104 L30 84 Z" fill="#17293A"/>
+    <g transform="translate(110 80) scale(.42)">${EMBG}</g><text x="100" y="150" text-anchor="middle" font-family="Montserrat, Arial" font-weight="300" font-size="11" letter-spacing="4" fill="#F3E8D6">PULSO</text>
+    <text x="100" y="164" text-anchor="middle" font-family="Montserrat, Arial" font-size="4.2" letter-spacing="1.4" fill="#B8913F">RUN • RIDE • SWIM</text></svg>`;
+  const boardImg = (k) => { const b = S.board || {}; const v = b[k]; const src = assetId(v) ? "/_blob/" + assetId(v) : /^canva\/[a-z0-9-]+\.(png|jpg)$/.test(v || "") ? v : ""; return src ? `<img class="bimg" src="${esc(src)}" alt="${esc(k)} aprobado">` : ""; };
+  function boardHTML() {
+    const m = proyecto.marca;
+    const tile = (cls, label, inner, k) => `<div class="bt ${cls}"><span class="bl">${esc(label)}</span>${(k && boardImg(k)) || inner}</div>`;
+    return `<div class="board">
+      ${tile("b-logo", "Logo", `<div style="display:grid;justify-items:center;gap:14px">${EMB(96)}<div><div class="bw">PULSO</div><div class="bs">COFFEE &amp; MORE</div></div></div>`, "logo")}
+      ${tile("b-sub", "Submarca", `<div style="display:grid;justify-items:center;gap:16px"><div class="pil"><span style="background:#4A4B25">RUN</span><span style="background:#5B3522">RIDE</span><span style="background:#2f4a63">SWIM</span></div><svg viewBox="0 0 160 16" width="150" height="16" aria-hidden="true"><path d="M0 10 H64 L70 10 L75 3 L81 15 L87 1 L92 10 H160" fill="none" stroke="#B8913F" stroke-width="1.2"/></svg><span style="font-size:.62rem;letter-spacing:.3em">RUN • RIDE • SWIM</span></div>`, "submarca")}
+      <div class="b-cols">${m.colores.map((c) => `<div class="b-col" style="background:${esc(c[1])};color:${c[3] ? "#17293A" : "#F3E8D6"}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span><span style="opacity:.8;font-size:.64rem">${esc(c[2])}</span></div>`).join("")}</div>
+      ${tile("b-sec", "Logo secundario", `<div style="display:grid;justify-items:center;gap:10px">${MONO}<span style="font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;opacity:.75">Ícono para perfil y app</span></div>`, "logo_secundario")}
+      ${tile("b-tipo", "Tipografía", `<div class="tipo-in"><div class="tipo-aa">Aa</div><div class="tipo-l">
+        <span style="font-family:var(--f-title);font-weight:300;text-transform:uppercase;letter-spacing:.24em;font-size:1.15rem">Montserrat Light</span><span style="font-size:.7rem;opacity:.7;margin-top:-6px">Títulos · mayúscula, letras espaciadas</span>
+        <span style="font-size:1rem">Montserrat Regular para los textos, frases cortas.</span>
+        <span style="font-family:var(--f-hand);font-size:1.7rem;color:#5A1A28;line-height:1">${esc(m.frase)}</span><span style="font-size:.7rem;opacity:.7;margin-top:-6px">Caveat · una frase por pieza (manuscrita final por confirmar)</span>
+        <span style="font-size:.78rem;letter-spacing:.06em;opacity:.8">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ · 0123456789</span></div></div>`, "tipografia")}
+      ${tile("b-m1", "Mockup", MOCK1, "mockup1")}
+      ${tile("b-m2", "Mockup", MOCK2, "mockup2")}
+    </div>`;
+  }
   // Marca y conocimiento: la carpeta del proyecto y su independencia
   function marcaHTML() {
     const m = proyecto.marca;
@@ -1054,11 +1118,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   decisions/     historial de decisiones, una entrada por decisión
   library/       imágenes y videos aprobados
   web/           web de venta del piloto`;
-    return sec("Carpeta del proyecto", "Solo los agentes de " + proyecto.corto + " leen y escriben aquí", `<pre class="tree">${esc(tree)}</pre><div class="src">Lo único compartido entre proyectos es <code>templates/agents/</code>. Datos en el tablero: ${proyecto.prefijo ? "<code>" + esc(proyecto.prefijo) + "</code>" : "colecciones raíz (primer proyecto)"}.</div>`)
-      + sec("Línea gráfica", "Se lee de " + m.fuente, `<div class="swatches">${m.colores.map((c) => `<div class="sw" style="background:${esc(c[1])};color:${c[3] ? "#17293A" : "#F3E8D6"}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span><span style="opacity:.85">${esc(c[2])}</span></div>`).join("")}</div>
-        <div class="ajustes-grid"><div class="ajuste"><span class="eyebrow">Títulos</span><span style="font-family:var(--f-title);font-weight:300;text-transform:uppercase;letter-spacing:.24em;font-size:1.2rem">Montserrat Light</span><span class="src">Mayúscula, letras espaciadas</span></div>
-        <div class="ajuste"><span class="eyebrow">Texto</span><span style="font-size:1rem">Montserrat Regular, frases cortas y verbos de movimiento.</span></div>
-        <div class="ajuste"><span class="eyebrow">Frase destacada</span><span class="hand">${esc(m.frase)}</span><span class="src">Caveat provisional; la manuscrita final está por confirmar</span></div></div>`)
+    return sec("Branding board", "Logo, colores, tipografía y aplicaciones · se lee de " + m.fuente, boardHTML() + `<div class="src">Los mockups son de referencia, no productos reales. Cuando apruebes un logo, colores o mockups nuevos, el agente Marca e identidad los pone en estas casillas.</div>`)
+      + sec("Carpeta del proyecto", "Solo los agentes de " + proyecto.corto + " leen y escriben aquí", `<pre class="tree">${esc(tree)}</pre><div class="src">Lo único compartido entre proyectos es <code>templates/agents/</code>. Datos en el tablero: ${proyecto.prefijo ? "<code>" + esc(proyecto.prefijo) + "</code>" : "colecciones raíz (primer proyecto)"}.</div>`)
       + sec("Independencia entre proyectos", "Reglas que el Centro de mando y los agentes cumplen", `<ul class="reglas">
         <li>Un agente solo lee y escribe dentro de <code>projects/&lt;su-proyecto&gt;/</code> y en el espacio de datos de su proyecto.</li>
         <li>Toda consulta y escritura lleva el identificador del proyecto. Sin proyecto activo no se hace nada.</li>
@@ -1278,6 +1339,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const sub = (path) => { let first = true; C(path).onSnapshot((snap) => { S[path] = snap.docs.filter((d) => d.exists).map((d) => Object.assign({ _id: d.id }, d.data())); if (first) { first = false; ready(); } else renderAll(); }, () => { if (first) { first = false; ready(); } }); };
     ["solicitudes", "medios", "propuestas", "tareas", "decisiones", "actividad", "mensajes", "calendario", "menu", "recetas", "proveedores", "cupos", "numeros", "agentes", "historial"].forEach(sub);
     D("estrategia/actual").onSnapshot((d) => { S.estrategia = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
+    D("marca/board").onSnapshot((d) => { S.board = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
     D("semana/actual").onSnapshot((d) => { S.semana = d.exists ? d.data() : null; if (loaded) renderAll(); }, () => {});
   })();
 })();
