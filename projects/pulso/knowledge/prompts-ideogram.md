@@ -111,3 +111,39 @@ Instagram post template, 4:5: cream background (#F3E8D6), a wide space for a pho
 4. Las imágenes de vasos, carrito y merch son de concepto. No se publican como si fueran el producto real.
 
 Si conectamos Ideogram por API más adelante (necesita clave y un servidor), estos mismos prompts quedan como plantilla para que el agente los use solo.
+
+---
+
+## 7. Paleta ampliada: salud, frescura y pureza (propuesta del 1 nov 2026)
+
+Pedido de Alexander: vinotinto, café, marfil, verde esmeralda y acentos en blanco o gris claro, junto con los colores que ya tenemos. Los hex de marfil, esmeralda y gris son **propuestos**; se confirman al aprobar la paleta.
+
+| Color | Hex | Estado | Papel |
+| --- | --- | --- | --- |
+| Vinotinto | #5A1A28 | Actual (vino) | Protagonista, energía |
+| Café | #5B3522 | Actual | Fuerza, texto secundario |
+| Marfil | #F7F2E8 | Propuesto (más claro y limpio que la crema #F3E8D6) | Fondo, pureza |
+| Verde esmeralda | #1F6B52 | Propuesto | Salud, frescura, matcha |
+| Blanco | #FFFFFF | Propuesto como acento | Luz, limpieza |
+| Gris claro | #E4E2DD | Propuesto como acento | Aire, separadores |
+| Dorado | #B8913F | Actual, solo detalle fino | Línea de pulso |
+
+**Bloque de paleta para pegar al final de cualquier prompt:**
+```
+Color palette: wine red #5A1A28 and coffee brown #5B3522 as main colors, ivory #F7F2E8 background, emerald green #1F6B52 as a fresh accent, with clean white #FFFFFF and light gray #E4E2DD highlights, and only a hairline of gold #B8913F. The palette should feel healthy, fresh and pure: natural, clean, lots of white space, no dark or heavy areas.
+```
+
+**7A. Logo con la paleta nueva** · Design · 1:1
+```
+Minimalist logo emblem for a Bogotá coffee brand called "PULSO". An ivory circle (#F7F2E8) with a thin clean white outline, containing a single fine heartbeat line in wine red (#5A1A28) that ends turning into a coffee bean in coffee brown (#5B3522), with one small emerald green (#1F6B52) leaf sprouting from the bean. Below, the word "PULSO" in a light, wide, uppercase geometric sans-serif with very generous letter spacing in wine red, and "COFFEE & MORE" smaller in light gray (#9A9893). Flat vector, solid colors, sharp edges, airy, healthy, fresh and pure. Ivory background.
+```
+
+**7B. Muestra de paleta (para verla antes de aprobar)** · Design · 16:9
+```
+Brand color palette board for "PULSO Coffee & More": seven vertical color swatches side by side, flat and clean, labeled underneath in thin uppercase sans-serif: "VINOTINTO #5A1A28", "CAFÉ #5B3522", "MARFIL #F7F2E8", "ESMERALDA #1F6B52", "BLANCO #FFFFFF", "GRIS CLARO #E4E2DD", "DORADO #B8913F". Small "PULSO" logo top left with a thin heartbeat line. Ivory background, minimal, lots of white space, fresh and pure.
+```
+
+**7C. Post de bebida con la paleta nueva** · Design · 4:5
+```
+Instagram post, 4:5: ivory background (#F7F2E8) with soft white light, an iced matcha latte in a clear cup with emerald green (#1F6B52) and white layers, a small wine red (#5A1A28) PULSO sticker on the cup. Thin uppercase headline "FRESCO. LIMPIO. VERDE." in coffee brown (#5B3522), a handwritten line "para después de moverte" in wine red, light gray (#E4E2DD) thin frame, hairline gold heartbeat line at the bottom. Flat, airy, healthy.
+```
