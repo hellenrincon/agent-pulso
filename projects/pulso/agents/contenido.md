@@ -54,7 +54,11 @@ Embudo de referencia: Reel → descubrimiento → interés → visita al perfil 
 | Post | **Mockup del post** con el caption puesto, tal como se verá en el feed |
 | Semana | **Cuadrícula de Instagram** con las próximas 9 publicaciones |
 
-Todo se diseña en Claude Design (tipo "Design"), partiendo de `knowledge/marca.md`: fondo crema, títulos en Montserrat ligera mayúscula espaciada, una frase manuscrita, línea de pulso dorada, esquinas rectas. Las fotos reales las pone la fundadora; mientras tanto, el storyboard usa cuadros de color con la descripción del plano.
+Todo se diseña en **Canva** (carpeta "PULSO · Contenido Instagram"), siguiendo el **manual de marca versión Vino** (`knowledge/marca.md`, Canva `DAHZs8Jsbu0`):
+- Colores: vino `#5A1A28` como protagonista; fondo crema `#F3E8D6` o marfil `#F7F2E8`; fondos de producto en café `#5B3522` u oliva `#4A4B25`; dorado `#B8913F` solo en líneas finas y detalles. Nada de azul marino en textos.
+- Letra: títulos en Montserrat Light mayúscula espaciada, textos en Montserrat Regular, una sola frase en Caveat por pieza.
+- Línea de pulso fina en dorado (o vino sobre fondos claros), esquinas rectas, mucho aire.
+- Cierre o firma: el emblema del logo (círculo crema, PULSO, línea de pulso y grano en vino) o "PULSO / COFFEE & MORE" en vino o crema. Nunca un logo distinto al del manual. Las fotos reales las pone la fundadora; mientras tanto, el storyboard usa cuadros de color con la descripción del plano.
 
 ## Cómo trabaja
 

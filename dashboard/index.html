@@ -7,7 +7,7 @@
 /* Layout: menú lateral fijo (barra inferior en celular), selector de proyecto arriba del menú; secciones apiladas, esquinas rectas y mucho aire */
 :root {
   --vino: #5A1A28; --crema: #F3E8D6; --cafe: #5B3522; --oliva: #4A4B25; --petroleo: #17293A; --dorado: #B8913F;
-  --bg: #F3E8D6; --panel: #FBF5EA; --ink: #17293A; --ink-2: #5B3522; --muted: #7d6a5c; --line: #e2d3bb;
+  --bg: #F3E8D6; --panel: #FBF5EA; --ink: #5A1A28; --ink-2: #5B3522; --muted: #7d6a5c; --line: #e2d3bb;
   --accent: #5A1A28; --accent-ink: #F3E8D6; --gold: #B8913F;
   --verde: #4F7A3A; --amarillo: #C9A227; --rojo: #A8322D;
   --run: #4A4B25; --ride: #5B3522; --swim: #17293A; --cafe-pilar: #5A1A28;
@@ -496,7 +496,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const TZ = "America/Bogota";
   // Proyectos: cada uno con su carpeta, su marca y su espacio de datos. PULSO fue el primero y usa las colecciones raíz; los nuevos usan proyectos/<id>/<colección>.
   const PROYECTOS = [{ id: "pulso", nombre: "PULSO Coffee & More", corto: "PULSO", prefijo: "", carpeta: "projects/pulso/",
-    marca: { fuente: "projects/pulso/knowledge/marca.md", frase: "Good Coffee, Better Movement", colores: [["Vino", "#5A1A28", "Energía · protagonista"], ["Crema", "#F3E8D6", "Calma · fondo", 1], ["Café", "#5B3522", "Fuerza · RIDE"], ["Oliva", "#4A4B25", "Naturaleza · RUN"], ["Azul petróleo", "#17293A", "Agua · SWIM"], ["Dorado", "#B8913F", "Detalles · línea de pulso"]] } }];
+    marca: { fuente: "projects/pulso/knowledge/marca.md", frase: "Good Coffee, Better Movement", colores: [["Vino", "#5A1A28", "Protagonista · textos y logo"], ["Crema", "#F3E8D6", "Fondo cálido", 1], ["Marfil", "#F7F2E8", "Fondo limpio", 1], ["Café", "#5B3522", "Cercano y natural"], ["Oliva", "#4A4B25", "Naturaleza"], ["Azul petróleo", "#17293A", "Fondos oscuros"], ["Dorado", "#B8913F", "Detalles premium"]] } }];
   let proyecto = PROYECTOS[0];
   const S = { solicitudes: [], medios: [], propuestas: [], estrategia: null, tareas: [], decisiones: [], actividad: [], mensajes: [], calendario: [], menu: [], recetas: [], proveedores: [], cupos: [], numeros: [], agentes: [], historial: [], marca_comentarios: [], semana: null, board: null, manual: null };
   let db = null, canWrite = false, busy = false, loaded = false;
@@ -1096,8 +1096,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   };
 
   // Branding board: cada casilla se dibuja con la marca; si el agente Marca e identidad deja una imagen aprobada en marca/board, se muestra esa
-  const EMB = (s) => `<svg viewBox="0 0 54 54" width="${s}" height="${s}" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width=".8"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/><path d="M40 23.5 C43.5 27 40.5 31 44 34.5" fill="none" stroke="#F3E8D6" stroke-width="1.2"/></svg>`;
-  const EMBG = '<circle cx="27" cy="27" r="26" fill="#F3E8D6"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5B3522" transform="rotate(25 42 29)"/>';
+  const EMB = (s) => `<svg viewBox="0 0 54 54" width="${s}" height="${s}" aria-hidden="true"><circle cx="27" cy="27" r="26" fill="#F3E8D6" stroke="#5A1A28" stroke-width=".8"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5A1A28" transform="rotate(25 42 29)"/><path d="M40 23.5 C43.5 27 40.5 31 44 34.5" fill="none" stroke="#F3E8D6" stroke-width="1.2"/></svg>`;
+  const EMBG = '<circle cx="27" cy="27" r="26" fill="#F3E8D6"/><path d="M6 29 H17 L20 22 L24 36 L28 14 L31 29 H36" fill="none" stroke="#5A1A28" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#5A1A28" transform="rotate(25 42 29)"/>';
   const MONO = '<svg viewBox="0 0 54 54" width="120" height="120" aria-hidden="true"><rect width="54" height="54" fill="#5A1A28"/><path d="M8 29 H18 L21 22 L25 36 L29 14 L32 29 H36" fill="none" stroke="#F3E8D6" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="29" rx="5" ry="7" fill="#F3E8D6" transform="rotate(25 42 29)"/><path d="M40 23.5 C43.5 27 40.5 31 44 34.5" fill="none" stroke="#5A1A28" stroke-width="1.2"/></svg>';
   const MOCK1 = `<svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mockup de vaso y termo PULSO"><rect width="320" height="220" fill="#F3E8D6"/><rect x="0" y="176" width="320" height="44" fill="#e6d8c0"/>
     <path d="M92 58 L168 58 L159 196 L101 196 Z" fill="#ffffff" fill-opacity=".45" stroke="#17293A" stroke-width="1.2"/><path d="M95 88 L165 88 L159 194 L101 194 Z" fill="#2a170e"/><path d="M95 88 L165 88 L164 100 L96 100 Z" fill="#C9A27A" fill-opacity=".9"/>
@@ -1202,7 +1202,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const man = manualHTML();
     if (man && mTab === "final") return man;
     return (man || sec("Branding board", "Logo, colores, tipografía y aplicaciones · se lee de " + m.fuente, boardHTML() + `<div class="src">Los mockups son de referencia, no productos reales. Cuando apruebes un logo, colores o mockups nuevos, el agente Marca e identidad los pone en estas casillas.</div>`))
-      + (man ? sec("Marca vigente", "Lo que usan hoy los agentes hasta que apruebes el manual", `<details class="hist"><summary>Ver el tablero de la marca actual</summary>${boardHTML()}</details>`) : "")
+      + (man ? sec("Tablero de marca", "Resumen con la paleta final del manual versión Vino", `<details class="hist"><summary>Ver el tablero</summary>${boardHTML()}</details>`) : "")
       + sec("Carpeta del proyecto", "Solo los agentes de " + proyecto.corto + " leen y escriben aquí", `<pre class="tree">${esc(tree)}</pre><div class="src">Lo único compartido entre proyectos es <code>templates/agents/</code>. Datos en el tablero: ${proyecto.prefijo ? "<code>" + esc(proyecto.prefijo) + "</code>" : "colecciones raíz (primer proyecto)"}.</div>`)
       + sec("Independencia entre proyectos", "Reglas que el Centro de mando y los agentes cumplen", `<ul class="reglas">
         <li>Un agente solo lee y escribe dentro de <code>projects/&lt;su-proyecto&gt;/</code> y en el espacio de datos de su proyecto.</li>

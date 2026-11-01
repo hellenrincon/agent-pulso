@@ -15,7 +15,7 @@ Base: `knowledge/marca.md` (paleta, tipografía, logo y estilo). Todo lo que sal
 
 **Negative prompt (para todos):** `gradients, 3D bevel, glossy, neon, drop shadows, rounded corners, cartoon mascot, clip art, extra text, misspelled words, watermark, cluttered background`
 
-**Paleta (va dentro de cada prompt):** vino #5A1A28 · crema #F3E8D6 · café #5B3522 · oliva #4A4B25 · azul petróleo #17293A · dorado #B8913F
+**Paleta (va dentro de cada prompt):** vino #5A1A28 (protagonista: textos y logo) · crema #F3E8D6 · marfil #F7F2E8 · café #5B3522 · oliva #4A4B25 · dorado #B8913F (solo detalles) · azul petróleo #17293A solo en fondos oscuros puntuales. Marca final: manual versión Vino (1 nov 2026).
 
 ---
 
@@ -28,7 +28,7 @@ Minimalist logo emblem for a Bogotá coffee brand called "PULSO". A cream circle
 
 **1B. Logotipo horizontal** · Design · 3:1
 ```
-Horizontal wordmark logo: the word "PULSO" in thin uppercase geometric sans-serif with very wide letter spacing, wine red (#5A1A28). The letter "U" is subtly crossed by a fine gold (#B8913F) heartbeat line that ends in a tiny coffee bean. Small text "COFFEE & MORE" aligned under it in petroleum blue (#17293A). Flat vector, minimal, premium, sporty. Cream background (#F3E8D6).
+Horizontal wordmark logo: the word "PULSO" in thin uppercase geometric sans-serif with very wide letter spacing, wine red (#5A1A28). The letter "U" is subtly crossed by a fine gold (#B8913F) heartbeat line that ends in a tiny coffee bean. Small text "COFFEE & MORE" aligned under it in wine red (#5A1A28). Flat vector, minimal, premium, sporty. Cream background (#F3E8D6).
 ```
 
 **1C. Ícono para perfil de Instagram** · Design · 1:1
@@ -38,7 +38,7 @@ App-icon style monogram for "PULSO": a wine red (#5A1A28) square with a cream (#
 
 **1D. Versión en negativo** · Design · 1:1
 ```
-The "PULSO" logo emblem in reversed colors: cream (#F3E8D6) heartbeat line ending in a coffee bean and cream wordmark "PULSO" with "COFFEE & MORE" below, on a solid petroleum blue background (#17293A). Fine gold (#B8913F) accent line. Flat vector, minimal, wide letter spacing.
+The "PULSO" logo emblem in reversed colors: cream (#F3E8D6) heartbeat line ending in a coffee bean and cream wordmark "PULSO" with "COFFEE & MORE" below, on a solid wine red background (#5A1A28). Fine gold (#B8913F) accent line. Flat vector, minimal, wide letter spacing.
 ```
 
 ## 2. Sellos de los pilares RUN • RIDE • SWIM
@@ -50,7 +50,7 @@ Set of three minimalist circular badges side by side, flat vector, same style. B
 
 **2B. Línea de pilares para encabezados** · Design · 4:1
 ```
-Typographic banner reading "RUN • RIDE • SWIM" in thin uppercase sans-serif with extra wide letter spacing, petroleum blue (#17293A) on cream (#F3E8D6). A single fine gold (#B8913F) heartbeat line runs underneath across the full width. Flat, minimal, elegant.
+Typographic banner reading "RUN • RIDE • SWIM" in thin uppercase sans-serif with extra wide letter spacing, wine red (#5A1A28) on cream (#F3E8D6). A single fine gold (#B8913F) heartbeat line runs underneath across the full width. Flat, minimal, elegant.
 ```
 
 ## 3. Frase de marca
@@ -62,7 +62,7 @@ Elegant brand quote card: the handwritten script text "Good Coffee, Better Movem
 
 **3B. Idea central** · Design · 4:5
 ```
-Minimal Instagram post: large thin uppercase sans-serif headline "EL CAFÉ SABE DIFERENTE" and on the next line, in handwritten script, "después de moverte". Petroleum blue (#17293A) background, cream (#F3E8D6) text, a fine gold (#B8913F) heartbeat line crossing the bottom third. Small "PULSO" logo at the bottom center. Flat design, sharp corners, airy.
+Minimal Instagram post: large thin uppercase sans-serif headline "EL CAFÉ SABE DIFERENTE" and on the next line, in handwritten script, "después de moverte". Wine red (#5A1A28) background, cream (#F3E8D6) text, a fine gold (#B8913F) heartbeat line crossing the bottom third. Small "PULSO" logo at the bottom center. Flat design, sharp corners, airy.
 ```
 
 ## 4. Vasos y empaque (ilustración de concepto)
@@ -91,14 +91,14 @@ A small wine red (#5A1A28) coffee cart with a cream striped awning, parked by a 
 
 **5B. Gorra y camiseta** · Realistic · 1:1
 ```
-Flat lay of a cream baseball cap and a petroleum blue (#17293A) t-shirt, both with a small embroidered "PULSO" heartbeat logo in cream and gold. Light wood surface, a running shoe and an iced coffee beside them. Minimal, warm natural light, top-down view.
+Flat lay of a cream baseball cap and a wine red (#5A1A28) t-shirt, both with a small embroidered "PULSO" heartbeat logo in cream and gold. Light wood surface, a running shoe and an iced coffee beside them. Minimal, warm natural light, top-down view.
 ```
 
 ## 6. Plantilla de post para Instagram
 
 **6A. Portada de post** · Design · 4:5
 ```
-Instagram post template, 4:5: cream background (#F3E8D6), a wide space for a photo in the upper two thirds framed by a thin petroleum blue line, a thin uppercase headline "TU MATCHA SABE AMARGO POR ESTO" in wine red (#5A1A28) below it, a handwritten script line "y tiene arreglo" in gold (#B8913F), and the small "PULSO" logo bottom right. Sharp corners, lots of air, flat design.
+Instagram post template, 4:5: cream background (#F3E8D6), a wide space for a photo in the upper two thirds framed by a thin wine red line, a thin uppercase headline "TU MATCHA SABE AMARGO POR ESTO" in wine red (#5A1A28) below it, a handwritten script line "y tiene arreglo" in gold (#B8913F), and the small "PULSO" logo bottom right. Sharp corners, lots of air, flat design.
 ```
 
 ---

@@ -75,10 +75,12 @@ Logo, paleta, tipografía, cualquier cambio a `marca.md`, cualquier gasto (herra
 
 ## Estado en PULSO (1 nov 2026)
 
-- Marca base: `knowledge/marca.md` (vino, crema, café, oliva, petróleo, dorado; Montserrat ligera + Caveat).
-- Propuesta abierta: paleta ampliada con marfil, verde esmeralda, blanco y gris claro (`knowledge/prompts-ideogram.md`, sección 7). **Por aprobar.**
+- **Marca final: manual versión Vino**, elegida por la fundadora el 1 nov 2026. Canva `DAHZs8Jsbu0` (https://www.canva.com/d/kkAbq3ZzerP6vtY). Resumen en `knowledge/marca.md`: vino protagonista en títulos, textos y logo; crema y marfil de fondo; café, oliva y petróleo para fondos puntuales; dorado en detalles; Montserrat + Caveat.
+- Toda pieza nueva o ajuste de marca sale de ese manual. Si algo no está en el manual, se pregunta; no se inventa.
+- Las 6 páginas siguen "por aprobar" una a una en el Centro de mando. Nunca las marques aprobadas.
+- Verde esmeralda: aparece como **propuesta** en el manual. Blanco y gris claro de la paleta ampliada: **por aprobar**.
 - Propuesta abierta: tipografía "ligeramente redondeada" (cambia la actual). **Por aprobar.**
-- Borrador del manual de marca en Canva (generado el 1 nov 2026 con el conector): diseño `DAHZspdIvP4`, https://canva.link/tid4y1pgyj0jhgx. **Por revisar y aprobar.**
+- Versiones anteriores del manual (referencia, no usar): azul marino `DAHZspdIvP4` y azul petróleo `DAHZs7E1gwo`.
 - Exploración de logo en Ideogram: la hace la fundadora a mano y sube las opciones a Crear → Biblioteca.
 
 ## Herramientas e integraciones

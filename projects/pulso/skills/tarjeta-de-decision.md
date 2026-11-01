@@ -10,7 +10,7 @@ Siempre que algo se vaya a publicar, enviar a clientes, pagar, contactar a algui
 2. `propuesta`: vista rápida, máximo 5 líneas. Qué se decide y por qué ahora.
 3. `opciones`: 2 o 3, cada una con título corto y una línea de consecuencia.
 4. `recomendada` + `porque`: una razón concreta (marca, presupuesto, tiempo de la fundadora).
-5. `visual`: enlace a la pieza en Claude Design (storyboard, mockup, tarjeta) cuando exista. Si se puede mostrar, no se describe.
+5. `visual`: enlace a la pieza en Canva (storyboard, mockup, tarjeta) cuando exista. Si se puede mostrar, no se describe.
 6. `fuentes`: de dónde sale cada dato. Lo no confirmado, "por confirmar".
 7. Pasa la tarea a `esperando_aprobacion` y deja una fila en `actividad`.
 8. **Nunca** cambies `estado` ni `respuesta`: eso lo hace la fundadora desde el dashboard.
