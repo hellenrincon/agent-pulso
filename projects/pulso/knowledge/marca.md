@@ -91,3 +91,7 @@ Vaso crema con tapa vino; vasos transparentes RUN (crema), RIDE (café oscuro) y
 ## Cómo se usa en diseño
 
 Toda pieza visual (Claude Design, dashboard, web) parte de esta página. Los tokens de color y tipografía de arriba son los mismos que usan `dashboard/` y `web/`.
+
+## Firma del logo en piezas de contenido (2 nov 2026)
+- La fundadora dijo que el emblema con círculo crema "en las fotos se ve muy feo". Propuesta vigente: **firma sutil**, el logo solo en línea y de un color, sin círculo de fondo: crema #F3E8D6 sobre fotos o fondos oscuros, vino #5A1A28 sobre fondos claros. Archivos: library/manual-marca/vino/firma_crema.png y firma_vino.png.
+- Canva: copia "PULSO · Contenido Instagram · Firma sutil" (DAHZvSfey6g). Está por confirmar cuál versión elige en cada post.
