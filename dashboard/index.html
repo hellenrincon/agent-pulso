@@ -146,6 +146,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .mopc figcaption { font-size: .82rem; }
 .mopc .btn { justify-self: start; }
 .pvers { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.undo { border:1px solid var(--line); background:var(--panel); padding:10px 12px; margin:8px 0; font-size:.86rem; }
+.undo .actions { margin-top:8px; }
 .pvers a.mimg { display: block; border: 1px solid var(--line); background: var(--panel); }
 .pvers a.mimg img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
 .mpage { display: grid; gap: 10px; }
@@ -718,7 +720,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
   let revId = null;
   // Versiones de un post para comparar (como en Marca): elegir pide dos clics y no aprueba el post
-  let pvConf = "";
+  let pvConf = "", deshConf = "";
   const imgOk = (u) => /^canva\/[a-z0-9-]+\.png$/.test(u || "");
   function postVersHTML(p) {
     const vs = (Array.isArray(p.versiones) ? p.versiones : []).filter((v) => imgOk(v.img));
@@ -952,6 +954,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo pasa solo a Metricool en menos de una hora (revisa cada hora de 7 am a 10 pm), en la fecha y hora del calendario. No tienes que hacer nada más.</div>` : ""}
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
+          ${canWrite && (r === "aprobado" || r === "descartado") ? (p.metricool && p.metricool.fecha ? `<div class="src">Ya está programado en Metricool: para deshacerlo, bórralo o cámbialo allá con el enlace de arriba.</div>` : deshConf === "p:" + p._id ? `<div class="undo"><span>¿Deshacer ${r === "aprobado" ? "la aprobación" : "el descarte"}? El post vuelve a Por revisar y no se programa.</span><div class="actions"><button class="btn primary" data-deshacer="p:${esc(p._id)}" data-ok="1">Sí, deshacer</button><button class="btn" data-deshacer="">Cancelar</button></div></div>` : `<div class="actions"><button class="btn" data-deshacer="p:${esc(p._id)}">↶ Deshacer ${r === "aprobado" ? "aprobación" : "descarte"}</button></div>`) : ""}
           ${canWrite ? `<textarea id="rev-cm" placeholder="¿Qué cambiarías? (obligatorio para pedir cambios)" aria-label="Comentario sobre el post"></textarea>
           <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios" title="El agente empieza de inmediato">Pedir cambio</button><button class="btn" data-revact="descartado">Descartar</button></div>
           <div class="src">Pedir cambio despierta al agente al instante y ves el avance en la barra. Al aprobar, el agente lo pasa a Metricool enseguida.</div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
@@ -1155,9 +1158,9 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     <text x="100" y="164" text-anchor="middle" font-family="Montserrat, Arial" font-size="4.2" letter-spacing="1.4" fill="#B8913F">RUN • RIDE • SWIM</text></svg>`;
   const boardImg = (k) => { const b = S.board || {}; const v = b[k]; const src = assetId(v) ? "/_blob/" + assetId(v) : /^canva\/[a-z0-9-]+\.(png|jpg)$/.test(v || "") ? v : ""; return src ? `<img class="bimg" src="${esc(src)}" alt="${esc(k)} aprobado">` : ""; };
   // Manual de marca: páginas reales de Canva en grande, cada una con aprobar / pedir cambio / comentar, e historial al final
-  const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"] };
+  const MTIPO = { aprobado: ["verde", "Aprobada"], cambios: ["amarillo", "Pide cambios"], comentario: ["gris", "Comentario"], manual_aprobado: ["verde", "Manual aprobado"], deshecho: ["gris", "Aprobación deshecha"] };
   const mComs = () => S.marca_comentarios.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
-  const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios")).pop(); return u ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
+  const mEstado = (n) => { const u = mComs().filter((c) => c.pagina === n && (c.tipo === "aprobado" || c.tipo === "cambios" || c.tipo === "deshecho")).pop(); return u && u.tipo !== "deshecho" ? MTIPO[u.tipo] : ["gris", "Por revisar"]; };
   let mTab = "final", mConf = "";
   const mSols = () => S.solicitudes.filter((x) => x.tipo === "marca").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
   const mSol = (n) => mSols().find((x) => x.alcance !== "manual" && Number(x.pagina) === Number(n));
@@ -1188,6 +1191,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         : `<a class="mimg" href="${src}" target="_blank" rel="noopener" title="Abrir en tamaño completo"><img src="${src}" alt="Manual de marca, página ${esc(p.n)}: ${esc(p.titulo || "")}" loading="lazy"></a>`}
         ${coms.length ? coms.slice(-(aprobada ? 1 : 2)).map((c) => `<div class="mcom"><strong>${esc((MTIPO[c.tipo] || ["", "Nota"])[1])}</strong> · ${fecha(c.fecha)} · “${esc(c.texto)}”</div>`).join("") : ""}
         ${prog}
+        ${aprobada && canWrite ? (deshConf === "m:" + p.n ? `<div class="undo"><span>¿Deshacer la aprobación de esta página? Vuelve a Por aprobar.</span><div class="actions"><button class="btn primary" data-deshacer="m:${esc(p.n)}" data-ok="1">Sí, deshacer</button><button class="btn" data-deshacer="">Cancelar</button></div></div>` : `<div class="actions"><button class="btn" data-deshacer="m:${esc(p.n)}">↶ Deshacer aprobación</button></div>`) : ""}
         ${aprobada && acciones ? `<details class="hist"><summary>Cambiar algo de esta página</summary>${acciones}</details>` : acciones}</article>`; };
     const hist = mComs();
     const aprobarTodo = canWrite ? `<button class="btn primary" data-mact="manual_aprobado" data-mp="0" ${ok === ps.length ? "" : "disabled title=\"Aprueba primero cada página\""}>Aprobar manual completo</button>` : "";
@@ -1353,6 +1357,34 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const pj = ev.target.closest("[data-proj]");
     if (pj) { const np = PROYECTOS.find((x) => x.id === pj.dataset.proj); if (np && np.id !== proyecto.id) { proyecto = np; location.reload(); return; } go("inicio"); return; }
     if (ev.target.closest("[data-despertar]") && canWrite && !busy) { busy = true; const ok = await despertarAgente(); busy = false; toast(ok ? "Listo: el agente revisa en un par de minutos." : `No se pudo despertar ahora. Revisa ${proxRevision()}.`); return; }
+    const dh = ev.target.closest("button[data-deshacer]");
+    if (dh && db && canWrite && !busy) {
+      const k = dh.dataset.deshacer || "";
+      if (!k || !dh.dataset.ok) { deshConf = k; renderAll(); return; }
+      deshConf = ""; busy = true; const now = new Date().toISOString();
+      try {
+        if (k.startsWith("p:")) {
+          const p = S.propuestas.find((x) => x._id === k.slice(2)); const r = p && revOf(p);
+          if (!p || (r !== "aprobado" && r !== "descartado")) throw new Error("estado");
+          if (p.metricool && p.metricool.fecha) { toast("Ya está programado: se cambia en Metricool."); return; }
+          const u = ultimaDe(p._id); const titulo = `Post ${p.orden} · ${p.titulo_img || ""}`; const que = r === "aprobado" ? "la aprobación" : "el descarte";
+          await D("propuestas/" + p._id).update({ revision: null });
+          await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo, resultado: "reabierta", nota: "Deshizo " + que, opcion: null, opcion_titulo: "", reabre: u ? u._id : null, por: "fundadora" });
+          await C("actividad").doc().set({ agente: "fundadora", accion: `Deshizo ${que} del post ${p.orden} "${p.titulo_img || ""}"`, pasa_a: "contenido", fecha: now });
+          cTab = "revisar"; revId = p._id;
+          toast("Listo, deshecho. El post volvió a Por revisar y no se programa.");
+        } else if (k.startsWith("m:")) {
+          const n = Number(k.slice(2)); const pg = ((S.manual || {}).paginas || []).find((x) => Number(x.n) === n);
+          if (!pg || mEstado(n)[1] !== "Aprobada") throw new Error("estado");
+          const titulo = `Manual de marca · página ${n}: ${pg.titulo || ""}`; const u = ultimaDe("manual-p" + n);
+          await C("marca_comentarios").doc().set({ pagina: n, tipo: "deshecho", alcance: "pagina", texto: "Deshizo la aprobación", por: "fundadora", fecha: now, version: (S.manual || {}).version || 1, proyecto: proyecto.id });
+          await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "marca", tipo: "marca", ref: "manual-p" + n, titulo, resultado: "reabierta", nota: "Deshizo la aprobación", opcion: null, opcion_titulo: "", reabre: u ? u._id : null, por: "fundadora" });
+          await C("actividad").doc().set({ agente: "fundadora", accion: `Deshizo la aprobación de ${titulo}`, pasa_a: "marca", fecha: now });
+          toast("Listo, deshecho. La página volvió a Por aprobar.");
+        }
+      } catch (e) { toast("No se pudo deshacer. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
     const rh = ev.target.closest("button[data-reabrir]");
     if (rh && db && canWrite && !busy) {
       const h = S.historial.find((x) => x._id === rh.dataset.reabrir);
@@ -1435,6 +1467,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ra && db && canWrite && !busy) {
       const act = ra.dataset.revact; const ahora = act !== "descartado"; const p = S.propuestas.find((x) => x._id === revId); if (!p) return;
       const cm = (($("rev-cm") || {}).value || "").trim();
+      if (act === "aprobado" && revOf(p) !== "aprobado" && !ra.dataset.ok) { ra.dataset.ok = "1"; ra.textContent = cm ? "¿Aprobar? Escribiste un cambio: confirma" : "¿Seguro? Sí, aprobar"; setTimeout(() => { if (ra.isConnected) { delete ra.dataset.ok; ra.textContent = "Aprobar"; } }, 5000); return; }
       if (act === "cambios" && !cm) { toast("Escribe qué cambiarías antes de pedir el cambio."); return; }
       busy = true; document.querySelectorAll("button[data-revact]").forEach((x) => (x.disabled = true));
       const now = new Date().toISOString();
