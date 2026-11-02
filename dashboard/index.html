@@ -145,6 +145,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .mopc figure { margin: 0; display: grid; gap: 8px; align-content: start; }
 .mopc figcaption { font-size: .82rem; }
 .mopc .btn { justify-self: start; }
+.pvers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.pvers a.mimg { display: block; border: 1px solid var(--line); background: var(--panel); }
+.pvers a.mimg img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
 .mpage { display: grid; gap: 10px; }
 .mpage-h { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
 .mpage-h .n { font-family: var(--f-title); font-weight: 300; font-size: 1.6rem; color: var(--gold); line-height: 1; }
@@ -714,6 +717,16 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const REV = { aprobado: ["verde", "Aprobado"], cambios: ["amarillo", "Pide cambios"], descartado: ["rojo", "Descartado"] };
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
   let revId = null;
+  // Versiones de un post para comparar (como en Marca): elegir pide dos clics y no aprueba el post
+  let pvConf = "";
+  const imgOk = (u) => /^canva\/[a-z0-9-]+\.png$/.test(u || "");
+  function postVersHTML(p) {
+    const vs = (Array.isArray(p.versiones) ? p.versiones : []).filter((v) => imgOk(v.img));
+    if (vs.length < 2) return p.mejora ? `<div class="guia"><span class="eyebrow">Mejorado en Canva</span><div style="font-size:.86rem;margin-top:6px">${esc(p.mejora)}</div></div>` : "";
+    const el = p.version_elegida || "";
+    const prog = !!(p.metricool && p.metricool.fecha);
+    return `<div class="guia"><span class="eyebrow">Versiones en Canva para comparar</span><div class="src" style="margin:4px 0 8px">${esc(p.mejora || "")} ${el ? "" : "Todavía no has elegido. "}Elegir una versión no aprueba el post${prog ? "; como ya está programado, el agente cambia la imagen en Metricool por la que elijas" : ""}.</div><div class="mopc pvers">${vs.map((v, i) => { const src = v.img + "?v=" + (Number(p.img_v) || 1); return `<figure><a class="mimg" href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="Post ${esc(p.orden)}, versión ${esc(v.etiqueta)}" loading="lazy"></a><figcaption><strong>${esc(v.etiqueta)}</strong>${el === v.etiqueta ? ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>Elegida</span>` : ""}${v.nota ? ` · ${esc(v.nota)}` : ""}${safeUrl(v.canva_url) ? ` · <a href="${esc(v.canva_url)}" target="_blank" rel="noopener">Ver en Canva</a>` : ""}</figcaption>${canWrite && el !== v.etiqueta ? (pvConf === p._id + ":" + i ? `<div class="actions"><button class="btn primary" data-pver="${i}" data-pid="${esc(p._id)}">Sí, uso ${esc(v.etiqueta)}</button><button class="btn" data-pvconf="">Cancelar</button></div>` : `<button class="btn" data-pvconf="${esc(p._id)}:${i}">Elegir ${esc(v.etiqueta)}</button>`) : ""}</figure>`; }).join("")}</div></div>`;
+  }
 
   /* ---------- Fotos y videos reales (biblioteca compartida de Contenido y Estratega) ---------- */
   let medPide = null, medBorrar = null, mcp = null;
@@ -935,7 +948,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${(() => { const u = S.solicitudes.filter((x) => x.propuesta === p._id).sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")))[0]; return u ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(u.texto)}”</div>${progresoHTML(u)}${u.respuesta && u.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(u.respuesta)}</div>` : ""}</div>` : ""; })()}
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
-          ${p.mejora ? `<div class="guia"><span class="eyebrow">Mejorado en Canva</span><div style="font-size:.86rem;margin-top:6px">${esc(p.mejora)}</div>${/^canva\/[a-z0-9-]+\.png$/.test(p.img_antes || "") ? `<a class="src" href="${esc(p.img_antes)}" target="_blank" rel="noopener">Ver cómo estaba antes</a>` : ""}</div>` : ""}
+          ${postVersHTML(p)}
           ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo pasa solo a Metricool en menos de una hora (revisa cada hora de 7 am a 10 pm), en la fecha y hora del calendario. No tienes que hacer nada más.</div>` : ""}
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
@@ -1310,6 +1323,26 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ev.target.closest("[data-mas]")) { drawer(!$("side").classList.contains("open")); return; }
     const dt = ev.target.closest("[data-dectab]");
     if (dt) { decTab = dt.dataset.dectab; renderAll(); return; }
+    const pvc = ev.target.closest("button[data-pvconf]");
+    if (pvc) { pvConf = pvc.dataset.pvconf; renderAll(); return; }
+    const pvb = ev.target.closest("button[data-pver]");
+    if (pvb && db && canWrite && !busy) {
+      const p = S.propuestas.find((x) => x._id === pvb.dataset.pid);
+      const v = p && Array.isArray(p.versiones) ? p.versiones.filter((x) => imgOk(x.img))[Number(pvb.dataset.pver)] : null;
+      pvConf = "";
+      if (!p || !v) { renderAll(); return; }
+      busy = true; const now = new Date().toISOString(); const prog = !!(p.metricool && p.metricool.fecha);
+      const titulo = `Post ${p.orden}: ${p.titulo_img || ""}`; const txt = "Eligió la versión " + (v.etiqueta || "") + " del diseño";
+      try {
+        await D("propuestas/" + p._id).update({ version_elegida: v.etiqueta, img: v.img, img_v: (Number(p.img_v) || 1) + 1, canva: safeUrl(v.canva_url) ? v.canva_url : p.canva || null, version_fecha: now });
+        await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo, resultado: "con_cambios", nota: txt, opcion: null, opcion_titulo: v.etiqueta || "", por: "fundadora" });
+        let yaVa = false;
+        if (prog) { await C("solicitudes").doc().set({ tipo: "post", agente: "contenido", propuesta: p._id, version: v.etiqueta || null, img: v.img, texto: `Cambiar la imagen ya programada en Metricool del post ${p.orden} por la versión ${v.etiqueta} (${v.img}). Mantener fecha, hora y texto.`, estado: "pendiente", fecha: now, urgente: true }); yaVa = await despertarAgente(); }
+        await C("actividad").doc().set({ agente: "fundadora", accion: `${txt}: ${titulo}`, pasa_a: "contenido", fecha: now });
+        toast(prog ? (yaVa ? "Listo. El agente ya está cambiando la imagen en Metricool; mira el avance aquí." : `Listo. El agente cambia la imagen en Metricool ${proxRevision()}.`) : "Versión elegida. El post sigue esperando tu aprobación.");
+      } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
     const mcf = ev.target.closest("button[data-mconf]");
     if (mcf) { mConf = mcf.dataset.mconf; renderAll(); return; }
     const mt = ev.target.closest("[data-mtab]");
