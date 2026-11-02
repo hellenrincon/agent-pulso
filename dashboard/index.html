@@ -138,6 +138,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 /* Manual de marca (páginas de Canva en grande) con revisión por página */
 .manual { display: grid; gap: 28px; }
+.capr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.capr{border:0;padding:0;background:none;cursor:pointer;text-align:left;display:grid;gap:8px;color:inherit;font:inherit}.capr .ph,.capr img,.capr>div:first-child{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}.capr.on{outline:2px solid var(--accent);outline-offset:3px}.capr-t{display:grid;gap:2px;font-size:.86rem}
 .mfinal{display:grid;gap:28px}.mfinal-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}.mfinal-h h2{margin:4px 0}.mfinal-p{margin:0;display:grid;gap:8px}.mfinal-p img{width:100%;display:block;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.mfinal-p figcaption{display:flex;justify-content:space-between;font-size:.8rem;color:var(--ink-2);letter-spacing:.04em}.mfinal-p .ok{color:var(--verde)}
 .mcmp-w{display:grid;gap:14px;overflow-x:auto}.mcmp{display:grid;grid-template-columns:110px repeat(var(--nv),minmax(200px,1fr));gap:12px;align-items:start}.mcmp-h>div{display:grid;gap:4px;align-content:start;font-size:.88rem}.mcmp-n{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2)}.mcmp img{width:100%;display:block;border-radius:6px}.alc{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.86rem;margin:6px 0}.alc label{display:flex;gap:6px;align-items:center}@media(max-width:640px){.mcmp{grid-template-columns:repeat(var(--nv),minmax(130px,1fr))}.mcmp-n{grid-column:1/-1;grid-auto-flow:column;justify-content:start}.mcmp-h>span{display:none}}
 .mopc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
@@ -906,13 +907,14 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const mu = m.cancion ? `<div class="guia"><span class="eyebrow">Música sugerida</span><div style="margin-top:6px"><strong>${esc(m.cancion)}</strong> · ${esc(m.artista || "")}</div>${m.por_que ? `<div style="font-size:.86rem">${esc(m.por_que)}</div>` : ""}${m.alternativa ? `<div class="src">Alternativa: ${esc(m.alternativa)}</div>` : ""}${m.fuente ? `<div class="src">Fuente: ${esc(m.fuente)}</div>` : ""}${m.nota ? `<div class="src" style="color:var(--accent)">${esc(m.nota)}</div>` : ""}<div class="src">${/reel/i.test(p.formato || "") ? "En Reels, el agente intenta agregarla desde Metricool. Si Instagram no lo permite para tu cuenta, se publica con el sonido original y te avisa para agregarla en la app." : "Instagram no deja poner música en fotos y carruseles programados: si la quieres, agrégala en la app justo después de que se publique."}</div></div>` : "";
     return hk + mu;
   }
-  function propuestasHTML() {
-    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
+  function propuestasHTML(lista, titulo, sub) {
+    const todos = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
+    const ps = lista || todos;
     if (!ps.length) return "";
     if (!revId || !ps.find((p) => p._id === revId)) revId = (ps.find((p) => !revOf(p)) || ps[0])._id;
     const idx = ps.findIndex((p) => p._id === revId); const p = ps[idx];
     const n = { aprobado: 0, cambios: 0, descartado: 0, pend: 0 };
-    ps.forEach((x) => { const r = revOf(x); n[r || "pend"]++; });
+    todos.forEach((x) => { const r = revOf(x); n[r || "pend"]++; });
     const seg = (k, c) => n[k] ? `<span style="flex:${n[k]};background:${c}"></span>` : "";
     const r = revOf(p); const rv = p.revision || {};
     const strip = ps.map((x) => { const rr = revOf(x); return `<button class="thumb ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}: ${esc(x.titulo_img)}">${visual(x)}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}"></i></button>`; }).join("");
@@ -924,7 +926,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       <div class="review">
         <div class="phone">${postCard(p)}</div>
         <div class="rev-side">
-          <div><span class="eyebrow">Post ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
+          <div><span class="eyebrow">Post ${esc(p.orden)} · ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
           <div class="rev-meta"><div><span class="eyebrow">Se publicaría</span><span>${pubTxt(p)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
           ${p.publicar && p.publicar.motivo ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
@@ -938,16 +940,20 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
           ${canWrite ? `<textarea id="rev-cm" placeholder="¿Qué cambiarías? (obligatorio para pedir cambios)" aria-label="Comentario sobre el post"></textarea>
           <div class="actions"><button class="btn primary" data-revact="aprobado">${r === "aprobado" ? "Aprobado ✓" : "Aprobar"}</button><button class="btn" data-revact="cambios" title="El agente empieza de inmediato">Pedir cambio</button><button class="btn" data-revact="descartado">Descartar</button></div>
-          <div class="src">"Ahora" despierta al agente al instante. "Próxima revisión" lo deja para ${proxRevision()}. Al aprobar, el agente lo pasa a Metricool enseguida.</div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
+          <div class="src">Pedir cambio despierta al agente al instante y ves el avance en la barra. Al aprobar, el agente lo pasa a Metricool enseguida.</div>` : `<div class="src">Solo la fundadora puede aprobar posts.</div>`}
           <div class="rev-nav"><button class="btn" data-rev="${esc(ps[(idx - 1 + ps.length) % ps.length]._id)}">← Anterior</button><button class="btn" data-rev="${esc(ps[(idx + 1) % ps.length]._id)}">Siguiente →</button></div>
         </div>
       </div>`;
+    return sec(titulo || "Revisión de posts", sub || "Un post a la vez: aprueba, pide un cambio o descarta", review);
+  }
+  function perfilHTML() {
+    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); if (!ps.length) return "";
     const tiles = ps.filter((x) => revOf(x) !== "descartado").reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${visual(x)}${imgOf(x) ? "" : `<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span>`}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
     const perfil = `<div class="perfil"><div class="pgrid" aria-label="Así se vería el perfil">${tiles}</div>
       <div class="bio"><strong>PULSO Coffee &amp; More | Bogotá</strong><span>Café para gente en movimiento</span><span>RUN • RIDE • SWIM</span><span>Bogotá · Próximamente</span><span class="pc">Enlace a la lista de espera: por confirmar</span>
       <span class="hand" style="margin-top:10px">Los descartados desaparecen del perfil</span>
-      ${safeUrl(p.lienzo) ? `<a class="visual-link" href="${esc(p.lienzo)}" target="_blank" rel="noopener" style="margin-top:10px">Editar los diseños en Claude Design</a>` : ""}</div></div>`;
-    return sec("Revisión de posts", "Un post a la vez: aprueba, pide un cambio o descarta", review) + sec("Así se vería tu perfil", "Se actualiza con lo que apruebas", perfil);
+      </div></div>`;
+    return sec("Así se vería tu perfil", "Se actualiza con lo que apruebas", perfil);
   }
   function revisionBanner() {
     const pend = S.propuestas.filter((p) => !revOf(p)).length;
@@ -1074,10 +1080,32 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     return `<div class="table-scroll"><table><thead><tr><th>Uso</th><th>Herramienta</th><th>Estado</th></tr></thead><tbody>${HERR.map((h) => `<tr><td>${esc(h[0])}</td><td style="font-weight:500">${esc(h[1])}</td><td><span class="chip" style="color:var(--ink-2)"><span class="dot ${h[2] ? "verde" : "gris"}"></span>${h[2] ? "Conectado" : "Por confirmar"}</span><div class="src">${esc(h[3])}</div></td></tr>`).join("")}</tbody></table></div>
       <ul class="reglas" style="font-size:.84rem;color:var(--ink-2)"><li>Las claves de API van solo en el servidor, nunca en el navegador ni en manos de los agentes.</li><li>Tope de gasto mensual por proyecto: <span class="pc">por confirmar</span>. Al llegar, el agente te pide permiso antes de seguir.</li><li>Las imágenes hechas con IA son para ambiente y fondos. No muestran un producto que no existe.</li><li>Nada se publica sin tu aprobación.</li></ul>`;
   }
+  let cTab = null;
   function crearHTML() {
-    return `<div class="fases">${PASOS.map((p, i) => `<div class="fase"><span class="fn">${i + 1}</span><span style="font-family:var(--f-title);text-transform:uppercase;letter-spacing:.12em;font-weight:500;font-size:.78rem">${esc(p[0])}</span><span class="src" style="font-size:.78rem">${esc(p[1])}</span></div>`).join("")}</div>`
-      + propuestasHTML() + solicitudesHTML() + bibliotecaHTML() + piezasHTML("contenido")
-      + sec("Herramientas creativas", "Qué hace cada una y si ya está conectada", herramientasHTML());
+    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
+    const apr = ps.filter((x) => revOf(x) === "aprobado"), porRev = ps.filter((x) => revOf(x) !== "aprobado" && revOf(x) !== "descartado"), desc = ps.filter((x) => revOf(x) === "descartado");
+    const hist = S.historial.filter((x) => x.tipo === "post").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
+    if (!cTab) cTab = porRev.length ? "revisar" : "aprobado";
+    const tb = (k, l) => `<button role="tab" data-ctab="${k}" aria-selected="${cTab === k}">${l}</button>`;
+    const tabs = `<section><div class="subtabs" role="tablist">${tb("aprobado", "Aprobado · " + apr.length)}${tb("revisar", "Por revisar · " + porRev.length)}${tb("historial", "Historial · " + hist.length)}${tb("biblioteca", "Biblioteca y herramientas")}</div></section>`;
+    if (cTab === "aprobado") {
+      const cards = apr.map((x) => { const mc = x.metricool && x.metricool.fecha; return `<button class="capr ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}">${visual(x)}<span class="capr-t"><b>${esc(x.orden)} · ${esc(x.titulo_img || "")}</b><span class="src">${mc ? "Programado · " + fecha(x.metricool.fecha, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "Aprobado · pasa a Metricool en la próxima hora"}</span></span></button>`; }).join("");
+      return tabs + sec("Contenido aprobado", apr.length ? "Listo para publicar o ya programado en Instagram" : "", apr.length ? `<div class="capr-g">${cards}</div>` : `<div class="src">Todavía no hay posts aprobados. Revisa los que esperan en Por revisar.</div>`)
+        + (apr.length && apr.find((x) => x._id === revId) ? propuestasHTML(apr, "Detalle", "Texto, fecha y enlaces del post aprobado") : "")
+        + perfilHTML();
+    }
+    if (cTab === "historial") {
+      const filas = hist.map((x) => { const r = RES[x.resultado] || ["gris", x.resultado || "—"]; return `<div class="mh"><span class="w">${fecha(x.fecha)}<br>${esc(x.por === "fundadora" ? "Tú" : info(x.agente).n)}</span><div><span class="chip" style="color:var(--ink-2)"><span class="dot ${r[0]}"></span>${esc(r[1])}</span> <button class="back" style="width:auto;font-size:inherit;letter-spacing:0;text-transform:none;color:var(--ink);text-decoration:underline" data-rev="${esc(x.ref)}">${esc(x.titulo)}</button>${x.nota ? `<div style="margin-top:4px">“${esc(x.nota)}”</div>` : ""}</div></div>`; }).join("");
+      return tabs + sec("Historial de contenido", "Todo lo que aprobaste, cambiaste o descartaste · lo más reciente arriba", hist.length ? `<div class="mhist">${filas}</div>` : `<div class="src">Todavía no hay decisiones sobre posts.</div>`)
+        + solicitudesHTML()
+        + (desc.find((x) => x._id === revId) ? propuestasHTML(desc, "Post descartado", "Puedes volver a aprobarlo o pedir un cambio") : "")
+        + (desc.length ? sec("Descartados", desc.length + (desc.length === 1 ? " post" : " posts"), `<div class="capr-g">${desc.map((x) => `<button class="capr" data-rev="${esc(x._id)}">${visual(x)}<span class="capr-t"><b>${esc(x.orden)} · ${esc(x.titulo_img || "")}</b></span></button>`).join("")}</div>`) : "");
+    }
+    if (cTab === "biblioteca") return tabs + bibliotecaHTML() + piezasHTML("contenido") + sec("Herramientas creativas", "Qué hace cada una y si ya está conectada", herramientasHTML());
+    const enCurso = S.solicitudes.filter((x) => x.estado === "pendiente" || x.estado === "en_curso");
+    return tabs + `<div class="fases">${PASOS.map((p, i) => `<div class="fase"><span class="fn">${i + 1}</span><span style="font-family:var(--f-title);text-transform:uppercase;letter-spacing:.12em;font-weight:500;font-size:.78rem">${esc(p[0])}</span><span class="src" style="font-size:.78rem">${esc(p[1])}</span></div>`).join("")}</div>`
+      + (porRev.length ? propuestasHTML(porRev) : sec("Por revisar", "", `<div class="src">No hay posts esperando tu revisión. Lo aprobado está en la pestaña Aprobado.</div>`))
+      + (enCurso.length ? sec("Pedidos en curso", "El agente ya los está haciendo", enCurso.map((x) => `<div class="guia"><div style="font-size:.86rem">“${esc(x.texto)}”</div>${progresoHTML(x)}</div>`).join("")) : "");
   }
 
   const linkBand = (t, k, l) => `<div class="off-band"><span>${esc(t)}</span><button class="btn" data-tab="${k}">${esc(l)} →</button></div>`;
@@ -1331,8 +1359,10 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
       return;
     }
+    const ct = ev.target.closest("button[data-ctab]");
+    if (ct) { cTab = ct.dataset.ctab; renderAll(); return; }
     const rb = ev.target.closest("[data-rev]");
-    if (rb) { const rt = rb.dataset.tab && norm(rb.dataset.tab); if (rt && rt !== tab) { revId = rb.dataset.rev; go(rt); return; } revId = rb.dataset.rev; if ($("rev-cm")) $("rev-cm").value = ""; renderAll(); const ph = document.querySelector(".review"); if (ph && ph.getBoundingClientRect().top < 0) ph.scrollIntoView({ block: "start" }); return; }
+    if (rb) { { const pp = S.propuestas.find((x) => x._id === rb.dataset.rev); if (pp) { const rr = revOf(pp); cTab = rr === "aprobado" ? "aprobado" : rr === "descartado" ? "historial" : "revisar"; } } const rt = rb.dataset.tab && norm(rb.dataset.tab); if (rt && rt !== tab) { revId = rb.dataset.rev; go(rt); return; } revId = rb.dataset.rev; if ($("rev-cm")) $("rev-cm").value = ""; renderAll(); const ph = document.querySelector(".review"); if (ph && ph.getBoundingClientRect().top < 0) ph.scrollIntoView({ block: "start" }); return; }
     const mf = ev.target.closest("button[data-medfil]");
     if (mf) { medFiltro = mf.dataset.medfil; renderAll(); return; }
     const mp = ev.target.closest("button[data-medpide]");
