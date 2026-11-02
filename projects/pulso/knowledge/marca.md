@@ -95,3 +95,10 @@ Toda pieza visual (Claude Design, dashboard, web) parte de esta página. Los tok
 ## Firma del logo en piezas de contenido (2 nov 2026)
 - La fundadora dijo que el emblema con círculo crema "en las fotos se ve muy feo". Propuesta vigente: **firma sutil**, el logo solo en línea y de un color, sin círculo de fondo: crema #F3E8D6 sobre fotos o fondos oscuros, vino #5A1A28 sobre fondos claros. Archivos: library/manual-marca/vino/firma_crema.png y firma_vino.png.
 - Canva: copia "PULSO · Contenido Instagram · Firma sutil" (DAHZvSfey6g). Está por confirmar cuál versión elige en cada post.
+
+## Vasos PULSO (referencia de la fundadora, 2 nov 2026)
+Imagen: `library/referencias/vasos-fundadora.png`.
+- Vaso caliente con tapa, un color por pilar: vino = RUN, verde oliva = RIDE, azul marino = SWIM. Logo en línea dorado (pulso + PULSO + COFFEE & MORE) y una línea de montaña dorada abajo.
+- Vaso frío transparente con funda del mismo color por pilar y la palabra RUN / RIDE / SWIM en la funda.
+- Frase en letra a mano sobre vaso frío: "Más energía para tus kilómetros".
+- En fotos de contenido se usan estos vasos, nunca vasos de otras marcas. Post 6 usa el vaso RIDE (Canva DAHZvdRxn-Q).
