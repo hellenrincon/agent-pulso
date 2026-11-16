@@ -29,7 +29,7 @@ Las 4 skills de HyperFrames están guardadas en el repo (`.claude/skills/`), as�
 | **Letra Caveat** | La frase manuscrita del manual de marca. Montserrat ya viene con HyperFrames. | Se instala |
 | **Permisos de red** | `huggingface.co` y `us.aws.cdn.hf.co` (bajar el modelo de Whisper la primera vez), `www.instagram.com` y `www.tiktok.com` (yt-dlp). | Permitidos el 16 nov 2026 |
 
-**Pendiente de red:** los vídeos de Instagram y TikTok se bajan de servidores que cambian de nombre (`scontent-xxx.cdninstagram.com`, `v19-webapp-prime.us.tiktok.com`…). yt-dlp ya **lee** los datos del vídeo, pero para **bajarlo** hay que permitir esos dominios con comodín (`*.cdninstagram.com`, `*.fbcdn.net`, `*.tiktok.com`, `*.tiktokcdn.com`, `*.tiktokcdn-us.com`) en Configuración del proyecto → Entorno en la nube → Acceso a la red. Mientras tanto, la fundadora puede subir el vídeo de referencia a la biblioteca.
+**Pendiente de red:** los vídeos de Instagram se bajan de servidores que cambian de nombre (`scontent-xxx.cdninstagram.com`). yt-dlp ya **lee** los datos del vídeo, pero para **bajarlo** hay que permitir `*.cdninstagram.com` y `*.fbcdn.net` con comodín en Configuración del proyecto → Entorno en la nube → Acceso a la red. PULSO solo tiene Instagram por ahora; TikTok sirve únicamente para estudiar referencias de otras cuentas y es opcional (`*.tiktok.com`, `*.tiktokcdn.com`, `*.tiktokcdn-us.com`). Mientras tanto, la fundadora puede subir el vídeo de referencia a la biblioteca.
 
 Instagram a veces pide iniciar sesión para ver un Reel. **Nunca** se le da la contraseña al agente (`knowledge/reglas.md`): si un Reel lo pide, se usa otro enlace o la fundadora sube el vídeo.
 

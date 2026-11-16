@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prueba rápida de las 4 herramientas. Crea todo en una carpeta temporal y no toca el repo.
-# Necesita acceso a huggingface.co (modelo de Whisper, la primera vez) y a TikTok/Instagram (yt-dlp).
+# Necesita acceso a huggingface.co (modelo de Whisper, la primera vez) y a Instagram (yt-dlp).
 set -uo pipefail
 AQUI="$(cd "$(dirname "$0")" && pwd)"
 export HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1 PATH="$AQUI/node_modules/.bin:$PATH"
@@ -24,11 +24,11 @@ if curl -fsSL -o "$TMP/voz.flac" https://huggingface.co/datasets/Narsil/asr_dumm
   bien "subtítulos: $(sed -n 3p "$TMP/voz.srt")"
 else mal "Whisper no transcribió (¿está permitido huggingface.co?)"; fi
 
-echo "3. yt-dlp: leer los datos de un vídeo público de TikTok (sin bajarlo)"
-if INFO="$(yt-dlp --skip-download --print '%(extractor)s %(duration)ss %(width)sx%(height)s' \
-     'https://www.tiktok.com/@scout2015/video/6718335390845095173' 2>/dev/null)" && [ -n "$INFO" ]; then
+echo "3. yt-dlp: leer los datos de un vídeo público de Instagram (sin bajarlo)"
+if INFO="$(yt-dlp --skip-download --print '%(extractor)s %(width)sx%(height)s' \
+     'https://www.instagram.com/p/aye83DjauH/' 2>/dev/null)" && [ -n "$INFO" ]; then
   bien "$INFO"
-else mal "yt-dlp no llegó a TikTok (¿está permitido tiktok.com?)"; fi
+else mal "yt-dlp no llegó a Instagram (¿está permitido www.instagram.com?)"; fi
 
 echo "4. HyperFrames: armar un Reel con gancho y subtítulos y exportarlo a MP4"
 if [ -f "$TMP/voz.palabras.json" ] \
