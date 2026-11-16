@@ -144,6 +144,19 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .mopc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .mopc figure { margin: 0; display: grid; gap: 8px; align-content: start; }
 .mopc figcaption { font-size: .82rem; }
+.zwrap { position: relative; }
+.zbtn { position: absolute; top: 8px; right: 8px; z-index: 2; min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: 999px; background: rgba(23,41,58,.78); color: #F3E8D6; font: 600 .74rem/1 Montserrat, sans-serif; letter-spacing: .08em; padding: 0 12px; cursor: pointer; }
+.zbtn:hover { background: rgba(90,26,40,.92); }
+#visor { position: fixed; inset: 0; z-index: 9999; background: rgba(12,14,18,.98); backdrop-filter: blur(6px); display: none; grid-template-rows: auto 1fr auto; color: #F3E8D6; }
+#visor.on { display: grid; }
+#visor .vtop { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; gap: 10px; font-size: .82rem; letter-spacing: .06em; }
+#visor .vstage { position: relative; display: grid; place-items: center; min-height: 0; padding: 0 56px; }
+#visor .vstage img, #visor .vstage video { max-width: 100%; max-height: calc(100dvh - 140px); object-fit: contain; display: block; }
+#visor .vcap { padding: 10px 16px 16px; font-size: .86rem; text-align: center; max-width: 760px; margin: 0 auto; line-height: 1.45; }
+#visor button { background: none; border: 1px solid rgba(243,232,214,.4); color: inherit; min-width: 44px; min-height: 44px; border-radius: 999px; cursor: pointer; font-size: 1.1rem; }
+#visor .vnav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.4); }
+#visor .vprev { left: 8px; } #visor .vnext { right: 8px; }
+@media (max-width: 600px) { #visor .vstage { padding: 0 6px; } #visor .vnav { top: auto; bottom: 8px; transform: none; } }
 .mopc .btn { justify-self: start; }
 .pvers { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 .undo { border:1px solid var(--line); background:var(--panel); padding:10px 12px; margin:8px 0; font-size:.86rem; }
@@ -743,8 +756,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (vs.length < 2 && !(hayVid && original)) return p.mejora ? `<div class="guia"><span class="eyebrow">Mejorado en Canva</span><div style="font-size:.86rem;margin-top:6px">${esc(p.mejora)}</div></div>` : "";
     const el = p.version_elegida || "";
     const prog = !!(p.metricool && p.metricool.fecha);
-    const orig = original ? `<figure><video src="/_blob/${vidAct}" controls preload="metadata" playsinline></video><figcaption><strong>Tu video original</strong>${assetId(p.video) !== vidAct ? "" : ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>En uso</span>`} · el que subiste</figcaption></figure>` : "";
-    return `<div class="guia"><span class="eyebrow">Versiones para comparar</span><div class="src" style="margin:4px 0 8px">${esc(p.mejora || "")} ${el ? "" : "Todavía no has elegido. "}Elegir una versión no aprueba el post${prog ? "; como ya está programado, el agente cambia el material en Metricool por el que elijas" : ""}.</div><div class="mopc pvers">${orig}${vs.map((v, i) => { const vid = assetId(v.video); const src = vid ? "/_blob/" + vid : v.img + "?v=" + (Number(p.img_v) || 1); const media = vid ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<a class="mimg" href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="Post ${esc(p.orden)}, versión ${esc(v.etiqueta)}" loading="lazy"></a>`; return `<figure>${media}<figcaption><strong>${esc(v.etiqueta)}</strong>${vid ? ` <span class="chip">Video</span>` : ""}${el === v.etiqueta ? ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>Elegida</span>` : ""}${v.nota ? ` · ${esc(v.nota)}` : ""}${safeUrl(v.canva_url) ? ` · <a href="${esc(v.canva_url)}" target="_blank" rel="noopener">Ver en Canva</a>` : ""}</figcaption>${canWrite && el !== v.etiqueta ? (pvConf === p._id + ":" + i ? `<div class="actions"><button class="btn primary" data-pver="${i}" data-pid="${esc(p._id)}">Sí, uso ${esc(v.etiqueta)}</button><button class="btn" data-pvconf="">Cancelar</button></div>` : `<button class="btn" data-pvconf="${esc(p._id)}:${i}">Elegir ${esc(v.etiqueta)}</button>`) : ""}</figure>`; }).join("")}</div></div>`;
+    const orig = original ? `<figure><div class="zwrap"><video src="/_blob/${vidAct}" controls preload="metadata" playsinline></video><button class="zbtn" data-zoom="/_blob/${vidAct}" data-ztipo="video" data-zcap="Post ${esc(p.orden)} · Tu video original" aria-label="Ver grande">⤢</button></div><figcaption><strong>Tu video original</strong>${assetId(p.video) !== vidAct ? "" : ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>En uso</span>`} · el que subiste</figcaption></figure>` : "";
+    return `<div class="guia"><span class="eyebrow">Versiones para comparar</span><div class="src" style="margin:4px 0 8px">${esc(p.mejora || "")} ${el ? "" : "Todavía no has elegido. "}Elegir una versión no aprueba el post${prog ? "; como ya está programado, el agente cambia el material en Metricool por el que elijas" : ""}.</div><div class="mopc pvers">${orig}${vs.map((v, i) => { const vid = assetId(v.video); const src = vid ? "/_blob/" + vid : v.img + "?v=" + (Number(p.img_v) || 1); const zc = `Post ${p.orden} · ${v.etiqueta || ""}${v.nota ? " · " + v.nota : ""}`; const media = `<div class="zwrap">${vid ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<a class="mimg" href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="Post ${esc(p.orden)}, versión ${esc(v.etiqueta)}" loading="lazy"></a>`}<button class="zbtn" data-zoom="${esc(src)}" data-ztipo="${vid ? "video" : "img"}" data-zcap="${esc(zc)}" aria-label="Ver grande">⤢</button></div>`; return `<figure>${media}<figcaption><strong>${esc(v.etiqueta)}</strong>${vid ? ` <span class="chip">Video</span>` : ""}${el === v.etiqueta ? ` <span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>Elegida</span>` : ""}${v.nota ? ` · ${esc(v.nota)}` : ""}${safeUrl(v.canva_url) ? ` · <a href="${esc(v.canva_url)}" target="_blank" rel="noopener">Ver en Canva</a>` : ""}</figcaption>${canWrite && el !== v.etiqueta ? (pvConf === p._id + ":" + i ? `<div class="actions"><button class="btn primary" data-pver="${i}" data-pid="${esc(p._id)}">Sí, uso ${esc(v.etiqueta)}</button><button class="btn" data-pvconf="">Cancelar</button></div>` : `<button class="btn" data-pvconf="${esc(p._id)}:${i}">Elegir ${esc(v.etiqueta)}</button>`) : ""}</figure>`; }).join("")}</div></div>`;
   }
 
 
@@ -798,7 +811,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const vis = ms.filter((m) => filtro === "todas" || m.categoria === filtro);
     const postDe = (m) => { const p = S.propuestas.find((y) => y._id === m.propuesta); return p ? " · Post " + esc(p.orden) : ""; };
     const vista = (m) => { if (!assetId(m.asset)) { let host = ""; try { host = new URL(m.enlace).hostname.replace(/^www\./, ""); } catch (e) {} return `<a class="med-enl" href="${esc(m.enlace)}" target="_blank" rel="noopener"><strong>${esc(host || "Enlace")}</strong><span>Abrir referencia ↗</span></a><span class="chip">Enlace</span>`; }
-      const src = "/_blob/" + assetId(m.asset); return `${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span>`; };
+      const src = "/_blob/" + assetId(m.asset); const zc = [ETAPAS[etapaOf(m)][0], m.categoria, m.descripcion].filter(Boolean).join(" · ") + postDe(m).replace(/&[^;]+;/g, ""); return `<div class="zwrap">${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<button class="zbtn" data-zoom="${src}" data-ztipo="${m.tipo === "video" ? "video" : "img"}" data-zcap="${esc(zc)}" aria-label="Ver grande">⤢</button></div><span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span>`; };
     const grid = vis.length ? `<div class="med-grid">${vis.map((m) => `<div class="med ${medPide === m._id ? "open" : ""}">
         <div class="med-v">${vista(m)}</div>
         <div class="med-b"><span>${esc(m.descripcion || m.nombre || "Sin descripción")}</span><span class="src">${esc(m.categoria || "")} · ${fecha(m.subido, { day: "numeric", month: "short" })}${postDe(m)}${m.por === "agente" ? " · Lo subió un agente" : ""}${(m.usado_en || []).length ? " · Usada en " + esc(m.usado_en.join(", ")) : ""}</span>
@@ -1372,7 +1385,49 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   renderNav();
 
   /* ---------- Acciones de la fundadora ---------- */
+  // Visor grande: muestra fotos, diseños y videos a pantalla completa, con flechas para pasar
+  const visor = { lista: [], i: 0, el: null };
+  function visorPinta() {
+    const v = visor.el, it = visor.lista[visor.i]; if (!v || !it) return;
+    const st = v.querySelector(".vstage"); st.querySelectorAll("img,video").forEach((x) => { if (x.pause) x.pause(); x.remove(); });
+    const m = document.createElement(it.tipo === "video" ? "video" : "img"); m.src = it.src;
+    if (it.tipo === "video") { m.controls = true; m.playsInline = true; m.autoplay = true; } else m.alt = it.cap || "Vista grande";
+    st.prepend(m);
+    v.querySelector(".vcap").textContent = it.cap || "";
+    v.querySelector(".vnum").textContent = visor.lista.length > 1 ? `${visor.i + 1} de ${visor.lista.length}` : "";
+    v.querySelectorAll(".vnav").forEach((b) => { b.hidden = visor.lista.length < 2; });
+  }
+  function visorAbre(btn) {
+    if (!visor.el) {
+      const v = document.createElement("div"); v.id = "visor"; v.setAttribute("role", "dialog"); v.setAttribute("aria-modal", "true"); v.setAttribute("aria-label", "Vista grande");
+      v.innerHTML = `<div class="vtop"><span class="vnum"></span><span style="display:flex;gap:8px"><a class="vabrir" target="_blank" rel="noopener" style="color:inherit;align-self:center;font-size:.78rem">Abrir aparte ↗</a><button class="vcerrar" aria-label="Cerrar">✕</button></span></div><div class="vstage"><button class="vnav vprev" aria-label="Anterior">‹</button><button class="vnav vnext" aria-label="Siguiente">›</button></div><div class="vcap"></div>`;
+      document.body.appendChild(v); visor.el = v;
+      v.addEventListener("click", (e) => {
+        if (e.target.closest(".vcerrar") || e.target === v || e.target.classList.contains("vstage")) return visorCierra();
+        if (e.target.closest(".vprev")) return visorMueve(-1);
+        if (e.target.closest(".vnext")) return visorMueve(1);
+      });
+      let x0 = null;
+      v.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+      v.addEventListener("touchend", (e) => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) visorMueve(dx < 0 ? 1 : -1); });
+    }
+    const caja = btn.closest(".med-grid, .pvers") || btn.parentElement;
+    const bs = Array.from(caja.querySelectorAll("[data-zoom]"));
+    visor.lista = bs.map((b) => ({ src: b.dataset.zoom, tipo: b.dataset.ztipo, cap: b.dataset.zcap }));
+    visor.i = Math.max(0, bs.indexOf(btn));
+    document.querySelectorAll("video").forEach((x) => { if (x.pause) x.pause(); });
+    visor.el.classList.add("on"); document.body.style.overflow = "hidden";
+    visorPinta(); visorLink(); visor.el.querySelector(".vcerrar").focus();
+  }
+  function visorLink() { const a = visor.el && visor.el.querySelector(".vabrir"); const it = visor.lista[visor.i]; if (a && it) a.href = it.src; }
+  function visorMueve(d) { if (visor.lista.length < 2) return; visor.i = (visor.i + d + visor.lista.length) % visor.lista.length; visorPinta(); visorLink(); }
+  function visorCierra() { if (!visor.el) return; visor.el.querySelectorAll("video").forEach((x) => x.pause()); visor.el.classList.remove("on"); document.body.style.overflow = ""; }
+  const visorOn = () => !!(visor.el && visor.el.classList.contains("on"));
   document.addEventListener("click", async (ev) => {
+    const zb = ev.target.closest("[data-zoom]");
+    if (zb) { ev.preventDefault(); visorAbre(zb); return; }
+    const mi = ev.target.closest(".pvers a.mimg");
+    if (mi) { const b = mi.parentElement.querySelector("[data-zoom]"); if (b) { ev.preventDefault(); visorAbre(b); return; } }
     if (ev.target.closest("#scrim")) { drawer(false); return; }
     if (ev.target.closest("[data-mas]")) { drawer(!$("side").classList.contains("open")); return; }
     const dt = ev.target.closest("[data-dectab]");
@@ -1602,7 +1657,10 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (t === "drop") { if (z.dataset.postdrop) subirParaPost(ev.dataTransfer.files, z.dataset.postdrop); else subirMedios(ev.dataTransfer.files); }
   }));
   window.addEventListener("hashchange", () => go((location.hash || "").slice(1)));
-  document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") drawer(false); });
+  document.addEventListener("keydown", (ev) => {
+    if (visorOn()) { if (ev.key === "Escape") visorCierra(); else if (ev.key === "ArrowRight") visorMueve(1); else if (ev.key === "ArrowLeft") visorMueve(-1); return; }
+    if (ev.key === "Escape") drawer(false);
+  });
 
   /* ---------- Conexión con el tablero ---------- */
   function note(t) { const el = $("estado-db"); el.textContent = t; el.hidden = !t; }
