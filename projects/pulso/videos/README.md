@@ -8,3 +8,5 @@
 | `salida/` | MP4 y `.srt` terminados, antes de subirlos a la biblioteca |
 
 Los vídeos y audios no se suben al repo (ver `.gitignore`): pesan mucho. Lo aprobado vive en la biblioteca del Centro de mando.
+
+Equivalencia con la biblioteca (`medios.etapa` en el tablero y `library/`): `crudos/` = **bruto**, `referencias/` = **referencia**, `salida/` = **terminado**. Un Reel aprobado se sube con `etapa: "terminado"` y `propuesta` = id del post.

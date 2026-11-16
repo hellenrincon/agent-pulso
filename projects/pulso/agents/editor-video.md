@@ -22,7 +22,8 @@
 
 | Qué | Dónde |
 | --- | --- |
-| Vídeos crudos de la fundadora | `medios` con `tipo: "video"` (archivo en `/_blob/{asset}`) |
+| Vídeos crudos de la fundadora | `medios` con `tipo: "video"` y `etapa: "bruto"` (archivo en `/_blob/{asset}`) |
+| Vídeos de referencia subidos | `medios` con `etapa: "referencia"` |
 | Guion y storyboard aprobados | `tareas` con `agente: "editor-video"` y el enlace al guion de Contenido |
 | Enlaces de referencia (Instagram, TikTok) | `solicitudes` con `agente: "editor-video"` |
 | Música elegida | Campo `musica` de la propuesta (skill `musica-para-reels`) |
@@ -30,7 +31,7 @@
 
 ## Entrega (escribe en el tablero)
 
-1. **MP4 del Reel** (1080×1920, H.264, sonido a −14 LUFS) subido a la biblioteca (`medios`, `categoria: "reel-editado"`).
+1. **MP4 del Reel** (1080×1920, H.264, sonido a −14 LUFS) subido a la biblioteca (`medios` con `etapa: "terminado"`, `categoria: "reel-editado"` y `propuesta` = id del post).
 2. **Subtítulos** `.srt` junto al MP4, por si la fundadora prefiere ponerlos desde Instagram.
 3. **3 fotogramas** (gancho, momento clave, cierre) para verlo sin abrir el vídeo.
 4. **Una tarjeta de decisión** por Reel con la skill `tarjeta-de-decision`.

@@ -4,7 +4,7 @@
 **Herramientas:** `tools/editor-video/` (instalar con `bash tools/editor-video/instalar.sh`).
 
 ## Entrada
-- Vídeos crudos de la fundadora (`medios`, `tipo: "video"`), guardados en `videos/crudos/`.
+- Vídeos crudos de la fundadora (`medios`, `tipo: "video"`, `etapa: "bruto"`), guardados en `videos/crudos/`.
 - Guion aprobado (skill `guion-de-reel`): gancho, escenas, segundos, texto en pantalla, cierre.
 - Música (campo `musica` de la propuesta) o "sonido original".
 
@@ -22,7 +22,7 @@
    Para algo más (títulos por escena, transiciones, cierre con emblema), leer primero la skill `hyperframes` y buscar bloques con `npx hyperframes catalog`.
 4. **Revisar.** Dentro de la carpeta del proyecto: `npx hyperframes check` (0 errores), `npx hyperframes snapshot` en el gancho, el momento clave y el cierre, y `npx hyperframes audio reel.mp4 --json` después de exportar.
 5. **Exportar.** `npx hyperframes render -o ../../salida/<reel>.mp4`.
-6. **Entregar.** Subir MP4 y `.srt` a `medios` (`categoria: "reel-editado"`), tarjeta de decisión con los 3 fotogramas y una línea de qué cambió frente al guion.
+6. **Entregar.** Subir MP4 y `.srt` a `medios` (`etapa: "terminado"`, `categoria: "reel-editado"`, `propuesta` = id del post), tarjeta de decisión con los 3 fotogramas y una línea de qué cambió frente al guion.
 
 ## Lista de control antes de la tarjeta
 - [ ] 1080×1920, 15 a 30 s, gancho legible en los primeros 2 s.
