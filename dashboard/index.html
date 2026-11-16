@@ -785,7 +785,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const listo = (p) => !!piezaOf(p);
   const vidOf = (p) => { const z = piezaOf(p); return z ? (z.tipo === "video" ? "/_blob/" + z.asset : "") : vidOf0(p); };
   const fotoOf = (p) => { const z = piezaOf(p); return z && z.tipo !== "video" ? "/_blob/" + z.asset : ""; };
-  const visual = (p) => fotoOf(p) ? `<img src="${fotoOf(p)}" alt="Post ${esc(p.orden)} terminado: ${esc(p.titulo_img)}" loading="lazy">` : vidOf(p) ? `<video src="${vidOf(p)}#t=6" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
+  const visual = (p) => fotoOf(p) ? `<img src="${fotoOf(p)}" alt="Post ${esc(p.orden)} terminado: ${esc(p.titulo_img)}" loading="lazy">` : vidOf(p) ? `<video src="${vidOf(p)}#t=${(Number(p.portada_ms) || 1000) / 1000}" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
   const colorTinta = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#F3E8D6";
   const REV = { aprobado: ["verde", "Aprobado"], cambios: ["amarillo", "Pide cambios"], descartado: ["rojo", "Descartado"] };
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
