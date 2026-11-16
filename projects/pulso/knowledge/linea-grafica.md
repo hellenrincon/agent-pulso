@@ -24,7 +24,7 @@ Así se ve el perfil cuando funciona: cada fila de 3 lleva **crema · foto compl
 
 - **Posición 1 y 3 de cada fila (crema)**: fondo crema con la foto real enmarcada o en recuadros, título grande en condensada gruesa vino, una frase en Caveat con subrayado dorado y la línea de pulso. Ejemplos: post 1 (Hola, somos PULSO) y post 3 (Detrás de PULSO).
 - **Posición 2 de cada fila (foto completa)**: foto o video a sangre, oscuro, con el texto encima (degradado suave) y la firma sutil. Ejemplo: post 2 (RUN • RIDE • SWIM). Los Reels van aquí.
-- **Reels en posición crema**: la portada es el cuadro final crema con el logo (portada_ms en la propuesta).
+- **Reels en posición crema**: el video arranca con una entrada crema de 2 s (foto enmarcada, título condensado, frase en Caveat), que es también su portada (portada_ms). Lo importante va en el centro 3:4, que es lo que muestra la cuadrícula.
 - **El orden manda**: en Instagram la fila se arma por orden de publicación, así que el calendario reparte las piezas en ese patrón (1 crema, 2 foto completa, 3 crema, 4 crema, 5 foto completa…). Si dos piezas de foto completa quedarían seguidas en la misma fila, se cambia el orden o se rehace una en versión crema.
 - **Revisión**: en el Centro de mando, "Así se vería tu perfil" muestra los posts en orden de publicación. Antes de proponer fechas, mira que cada fila cumpla el patrón.
 
