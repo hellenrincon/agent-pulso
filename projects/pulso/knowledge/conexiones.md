@@ -65,6 +65,9 @@ En "Revisión de posts", cada post tiene "Tu material para este post": la fundad
 - La revisión programada (cada hora) la atiende: monta el material en una copia del diseño de Canva. Mientras canva.com siga bloqueado en esta sesión, Contenido prepara la versión ajustada con ffmpeg y la muestra en el tablero (`resultado`), y el paso a Canva lo hace la fundadora arrastrando el archivo.
 - Nada se programa sin que la fundadora apruebe el post.
 
+## Primero el contenido, después el calendario (16 nov 2026)
+Cambio pedido el 16 nov: aprobar un post ya no lo programa. Orden: 1) la fundadora aprueba el contenido en Crear; 2) Contenido propone fecha solo para lo aprobado (`solicitudes` tipo `calendario`); 3) la fundadora aprueba las fechas en Calendario (`publicar.estado = "aprobado"`, solicitud tipo `programar`); 4) la revisión programada lo pasa a Metricool. Las fechas de la tabla de abajo quedan como tentativas: se muestran en Calendario solo cuando el contenido del post está aprobado.
+
 ## Calendario de publicación (27 oct 2026)
 Cada propuesta lleva `publicar {fecha, motivo, fuente, estado}`, una fecha y hora propuestas que la fundadora ve antes de aprobar. La colección `calendario` enlaza cada fila con su `propuesta` y tiene `hora`.
 Horas: según Metricool (mejor hora Instagram, Bogotá, consultado 27 oct 2026), los picos son 10 am y 6 pm entre semana, y 10 am los fines de semana.

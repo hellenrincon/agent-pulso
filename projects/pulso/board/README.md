@@ -76,6 +76,7 @@ Solo la fundadora cambia `estado` y `respuesta` (desde el dashboard). Un agente 
 
 ### `calendario/{id}`
 `{ "fecha": "2026-10-26", "formato": "Reel | Story | Post | Carrusel", "titulo": "...", "pilar": "RUN | RIDE | SWIM | CAFÉ", "estado": "idea | guion | grabado | editado | aprobado | publicado", "gancho": "...", "visual": "url", "tarea": "id", "fuente": "..." }`
+Desde el 16 nov el calendario se arma **después** del contenido: solo lleva posts con contenido aprobado (`propuesta` = id). `estado`: `propuesto` (fecha propuesta por Contenido) → `aprobado` (la fundadora aprobó la fecha) → `programado` (ya en Metricool). La fecha aprobada vive también en `propuestas/{id}.publicar.estado = "aprobado"`.
 
 ### `menu/{id}`
 `{ "nombre": "Cold Brew", "estado": "candidata | piloto | aprobada", "costo": null, "precio": null, "foto": "url o null", "fuente": "..." }`

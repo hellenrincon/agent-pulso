@@ -17,7 +17,7 @@
 7. **Checklist de grabación:** el de la ficha de Contenido.
 8. **Tiempo de la fundadora:** minutos de grabación estimados.
 9. **Storyboard en Canva:** una tira de escenas 9:16, fondo crema, textos en vino, número de escena, segundos y texto en pantalla, frase manuscrita del gancho.
-10. **Tablero:** fila en `calendario` (estado `guion`), tarea `esperando_aprobacion` y tarjeta en `decisiones`.
+10. **Tablero:** la pieza va a `propuestas` para que la fundadora apruebe el contenido (sin fecha), tarea `esperando_aprobacion`. La fila en `calendario` se crea después, cuando el contenido esté aprobado.
 
 ## Plantilla
 ```
