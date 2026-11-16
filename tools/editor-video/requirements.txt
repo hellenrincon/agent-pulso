@@ -1,0 +1,8 @@
+# Herramientas de Python del editor de vídeos (se instalan con instalar.sh)
+# Whisper local: saca los subtítulos del audio sin mandar el vídeo a ningún servicio
+faster-whisper==1.2.1
+# faster-whisper 1.2.1 falla con av 16 o más nuevo (error "metadata_errors")
+av>=14,<16
+# yt-dlp: baja vídeos de Instagram y TikTok con su enlace.
+# curl-cffi deja a yt-dlp hacerse pasar por un navegador (TikTok lo pide)
+yt-dlp[default,curl-cffi]>=2026.10.26

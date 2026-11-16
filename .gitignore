@@ -1,0 +1,13 @@
+node_modules/
+__pycache__/
+.hyperframes/
+# Vídeos de trabajo del editor: pesan mucho; los aprobados van a la biblioteca del Centro de mando
+projects/*/videos/**/*.mp4
+projects/*/videos/**/*.mov
+projects/*/videos/**/*.webm
+projects/*/videos/**/*.m4a
+projects/*/videos/**/*.mp3
+projects/*/videos/**/*.wav
+projects/*/videos/**/*.info.json
+projects/*/videos/trabajo/*
+!projects/*/videos/trabajo/.gitkeep

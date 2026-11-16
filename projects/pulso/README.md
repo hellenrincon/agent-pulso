@@ -11,6 +11,7 @@ Identificador del proyecto: `pulso`. Espacio de datos en el Centro de mando: col
 | `skills/` | Procedimientos repetibles de PULSO |
 | `board/` | Esquema del tablero, conexión y exportes |
 | `decisions/` | Historial de decisiones exportado: una entrada por decisión |
+| `videos/` | Carpetas de trabajo del Editor de vídeos (los vídeos no se suben al repo) |
 | `library/` | Índice de imágenes y videos aprobados (los archivos viven en la biblioteca del Centro de mando) |
 | `web/` | Web de venta del piloto |
 
