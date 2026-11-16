@@ -43,3 +43,15 @@ Los posts 3, 4, 5, 7 y 8 ya usan la firma sutil. Ajustes hechos el 16 nov (versi
 | 9 Muy pronto | Ajustado | MUY PRONTO en mayúscula espaciada crema, frase en Caveat |
 
 Cómo se hicieron: el API de Canva no deja cambiar la letra de un texto y desde este entorno no se pueden bajar exports de Canva. Por eso los textos se compusieron con las fuentes reales (Montserrat y Caveat) sobre el diseño anterior. Para tenerlos en Canva, la fundadora arrastra el PNG a su diseño.
+
+## Segunda revisión: ¿es la mejor línea? (16 nov 2026)
+
+Comparando los 9 posts con el manual, todavía no:
+
+1. **Letra de los títulos.** El texto del manual dice "Montserrat Light", pero todas sus páginas están hechas con una letra condensada (parece Barlow Condensed): títulos gruesos en vino (LOGO PRINCIPAL, TIPOGRAFÍA) y subtítulos finos espaciados. Los posts usan títulos finos, que se pierden en miniatura. **Por confirmar con la fundadora.**
+2. **Fondos.** El manual es claro (crema y marfil, mucho aire). 5 de los 9 posts son oscuros (negro o café), y el feed se ve más de cafetería nocturna que de movimiento.
+3. **Dorado.** En los posts 4, 5, 7 y 8 la frase en Caveat va en dorado. La regla dice dorado solo para líneas; la frase va en vino o crema con el subrayado dorado.
+4. **Post 5.** La frase en Caveat queda cortada en el borde izquierdo ("ero máquinas").
+5. **Personas.** Solo los posts 2 y 3 muestran gente. El manual muestra deportistas reales en Bogotá.
+
+Lo que sí funciona: la paleta, la línea de pulso, la firma sutil y los posts 1, 3 y 9.
