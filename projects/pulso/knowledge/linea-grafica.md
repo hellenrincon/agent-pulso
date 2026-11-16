@@ -14,7 +14,7 @@
 | Textos | Montserrat Regular |
 | Frase especial | Caveat, una sola frase por pieza, con un subrayado dorado a mano si cabe |
 | Línea de pulso | Fina, dorada, o vino sobre fondos claros. Esquinas rectas, mucho aire |
-| Logo en fotos | **Firma sutil**: pulso + PULSO + COFFEE & MORE en línea, de un color (crema sobre foto, vino sobre claro). El emblema con círculo solo va en fondos lisos o en merch, nunca encima de una foto |
+| Logo en fotos | **Firma sutil**: el logo solo en línea y de un color, sin círculo relleno (`firma_crema.png` sobre fotos, `firma_vino.png` sobre claro). El emblema con círculo crema relleno no va encima de una foto |
 | Fotos | Luz natural cálida, Bogotá con montañas, gente real corriendo o pedaleando, vasos PULSO (nunca de otra marca) |
 | Cierre | "Good Coffee, Better Movement" o la firma |
 
@@ -22,22 +22,24 @@
 
 1. ¿El título está en mayúscula espaciada y la frase especial en Caveat? Nada de Arial, Helvetica ni cursivas genéricas.
 2. ¿Hay una sola frase manuscrita?
-3. ¿El logo es la firma sutil cuando va sobre una foto?
+3. ¿El logo sobre una foto es la firma sutil (en línea, sin círculo relleno)?
 4. ¿El dorado está solo en líneas y detalles?
 5. ¿El color va con el pilar (RUN vino, RIDE oliva, SWIM petróleo)?
 6. ¿El texto se lee bien sobre la foto? Si no, usa una franja o un degradado suave en un color de la paleta.
 7. ¿No inventa precios, fechas ni cifras? Lo que no está confirmado se marca "por confirmar".
 
-## Revisión de los posts actuales (16 nov 2026, diseños en Brutos)
+## Revisión de los posts (16 nov 2026)
 
-| Post | Cumple | Para dejarlo terminado |
+Los posts 3, 4, 5, 7 y 8 ya usan la firma sutil. Ajustes hechos el 16 nov (versión "Línea gráfica" en cada post y en Terminados, sin aprobar):
+
+| Post | Estado | Qué se ajustó |
 | --- | --- | --- |
-| 1 Hola | Sí: vino y crema, mayúscula espaciada, Caveat, pulso dorado | Nada de línea gráfica |
-| 2 Pilares | Casi: tipografía y pulso bien | Teñir cada franja con su color de pilar (vino, oliva, petróleo) |
-| 3 Detrás de PULSO | Casi: crema, arco, Caveat | Cambiar el emblema de la esquina por la firma sutil vino. La foto debe ser real de la fundadora |
-| 4 Matcha | Casi: tipografía y pulso bien | Cambiar el emblema por la firma sutil crema |
-| 5 Cold brew | Casi | Igual que el 4 |
-| 6 Ciclovía | No: el título y la frase van en letra genérica, y el emblema está sobre la foto | Título en mayúscula espaciada, frase en Caveat, firma sutil. El vaso RIDE está bien |
-| 7 Dirty Matcha | No: letra genérica, y "Dirty Matcha" casi no se lee | Rehacer el texto con la línea gráfica y una franja para que se lea. Firma sutil |
-| 8 Tonic | No: letra genérica y cursiva | Igual que el 7 |
-| 9 Muy pronto | A medias: fondo vino y emblema en fondo liso están bien | "MUY PRONTO" en mayúscula espaciada crema o vino, no en dorado grueso. La frase en Caveat |
+| 1 Hola | Cumple | Nada |
+| 2 Pilares | Ajustado | Cada franja con el color de su pilar |
+| 3, 4, 5 | Cumplen | Nada de línea gráfica. El post 3 sigue esperando la foto real de la fundadora |
+| 6 Ciclovía | Ajustado | Título en Montserrat Light espaciada, frase en Caveat, franja oliva (RIDE) |
+| 7 Dirty Matcha | Ajustado (portada) | Título y Caveat sobre fondo oscuro. El video del Reel sigue con los textos viejos |
+| 8 Tonic | Ajustado (portada) | Igual que el 7 |
+| 9 Muy pronto | Ajustado | MUY PRONTO en mayúscula espaciada crema, frase en Caveat |
+
+Cómo se hicieron: el API de Canva no deja cambiar la letra de un texto y desde este entorno no se pueden bajar exports de Canva. Por eso los textos se compusieron con las fuentes reales (Montserrat y Caveat) sobre el diseño anterior. Para tenerlos en Canva, la fundadora arrastra el PNG a su diseño.
