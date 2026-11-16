@@ -31,10 +31,22 @@ Embudo de referencia: Reel → descubrimiento → interés → visita al perfil 
 | Prioridades del Estratega | `semana/actual` y `tareas` con `agente: "contenido"` |
 | Bebidas y recetas | `menu` y `knowledge/menu.md` (de Producto y operaciones) |
 | Pedidos de ajuste | `solicitudes` con `agente: "contenido"` y `estado: "pendiente"`. Se hacen en Canva, se marca `en_curso` y luego `listo` con `respuesta` y `enlace`; nada se publica sin aprobación |
-| Fotos y videos reales | `medios` (los sube la fundadora). Se usan antes que cualquier imagen generada; al usar uno se anota el post en `usado_en` |
+| Fotos y videos en bruto | `medios` con `etapa: "bruto"` (los sube la fundadora). Se usan antes que cualquier imagen generada; al usar uno se anota el post en `usado_en` |
+| Referencias | `medios` con `etapa: "referencia"` (archivos o enlaces de Reels y TikToks, manual de marca). Se estudian, nunca se publican |
+| Piezas terminadas de la fundadora | `medios` con `etapa: "terminado"` y una solicitud `material` con `terminado: true`: se agregan como versión del post sin cambiarlas |
 | Documento de marca | `marca/documento` y `knowledge/marca.md` |
 | Respuestas de la fundadora | `decisiones` del agente con `estado` distinto de `pendiente` |
 | Guiones ya escritos | `knowledge/ejemplos/reels-desde-casa.md` |
+
+## Dónde se carga todo (biblioteca en tres carpetas)
+
+| Carpeta | Centro de mando (`medios.etapa`) | Repo | Qué hace Contenido |
+| --- | --- | --- | --- |
+| Brutos | `bruto` | `library/brutos/` (solo README; los archivos viven en el tablero) · vídeo: `videos/crudos/` | Lo toma como material de partida y lo monta en una copia de Canva |
+| Referencias | `referencia` | `library/referencias/` · vídeo: `videos/referencias/` | Lo lee antes de proponer: ritmo, gancho, estilo. No lo copia ni lo publica |
+| Terminados | `terminado` | `library/terminados/` · vídeo: `videos/salida/` | Sube aquí cada pieza lista, con `propuesta` = id del post, y la agrega en `versiones` del post para que la fundadora elija |
+
+Regla: cada pieza terminada lleva su post (`propuesta`). Sin post no se puede revisar ni programar. Detalle en `library/README.md`.
 
 ## Entrega (escribe en el tablero)
 
@@ -44,7 +56,8 @@ Embudo de referencia: Reel → descubrimiento → interés → visita al perfil 
 4. **Ideas de fotos e historias**: 3 a 5 Stories diarias (encuesta, detrás de cámara, receta, pregunta).
 5. **Piezas visuales en Claude Design**: storyboard del Reel, mockup del post con el caption puesto y cuadrícula de 9.
 6. **Una tarjeta de decisión** por pieza o por bloque semanal, con el enlace al diseño.
-7. Una fila en `actividad` por cada entrega, con `pasa_a: "estratega"`.
+7. **Cada pieza lista** (export de Canva o Reel editado) se sube como asset y queda en `medios` con `etapa: "terminado"`, `propuesta`, `por: "agente"`.
+8. Una fila en `actividad` por cada entrega, con `pasa_a: "estratega"`.
 
 ## Cómo presenta
 
@@ -93,7 +106,7 @@ Todo se diseña en **Canva** (carpeta "PULSO · Contenido Instagram"), siguiendo
 | Claude Design (tipo "Design") | Storyboards, mockups, carruseles, portadas, historias | Disponible |
 | Metricool | Programar en Instagram solo lo aprobado, y medir | Conectado · marca `7638555` · `@pulso.coffee.co` · flujo en `knowledge/conexiones.md` |
 | Canva | Diseño de posts | Conectado (plan gratis) · carpeta en `knowledge/conexiones.md` |
-| Fotos y videos reales | Material de la fundadora | Colección `medios` del tablero |
+| Biblioteca (brutos, referencias, terminados) | Material de la fundadora y piezas listas | Colección `medios` del tablero, campo `etapa` |
 | Fotos libres (Unsplash, Pexels) | Fondos y ambiente, con crédito | Disponible por enlace |
 
 ## Skills que usa

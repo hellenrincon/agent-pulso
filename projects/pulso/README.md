@@ -11,7 +11,7 @@ Identificador del proyecto: `pulso`. Espacio de datos en el Centro de mando: col
 | `skills/` | Procedimientos repetibles de PULSO |
 | `board/` | Esquema del tablero, conexión y exportes |
 | `decisions/` | Historial de decisiones exportado: una entrada por decisión |
-| `library/` | Índice de imágenes y videos aprobados (los archivos viven en la biblioteca del Centro de mando) |
+| `library/` | Biblioteca en tres carpetas: `brutos/`, `referencias/` y `terminados/`, iguales a las del Centro de mando. Ver `library/README.md` |
 | `web/` | Web de venta del piloto |
 
 Las rutas dentro de estos archivos (`knowledge/…`, `skills/…`, `board/…`) son relativas a esta carpeta. El código del Centro de mando está en `dashboard/`, en la raíz del repo.

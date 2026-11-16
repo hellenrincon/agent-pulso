@@ -345,6 +345,16 @@ footer .wrap { padding-block: 22px; display: flex; gap: 16px; justify-content: s
 .med-up input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .med-form { display: flex; flex-direction: column; gap: 10px; }
 .med-form select, .med-form input[type=text] { width: 100%; font: inherit; font-size: .88rem; padding: 9px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.med-etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+.med-etapas button { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); cursor: pointer; text-align: left; min-width: 0; }
+.med-etapas button strong { font-family: var(--f-title); text-transform: uppercase; letter-spacing: .14em; font-weight: 500; font-size: .74rem; overflow: hidden; text-overflow: ellipsis; }
+.med-etapas button span { font-size: .8rem; color: var(--muted); }
+.med-etapas button.on { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.med-etapas button.on span { color: var(--bg); }
+@media (max-width: 480px) { .med-etapas button { flex-direction: column; gap: 2px; padding: 10px; } .med-etapas button strong { font-size: .64rem; letter-spacing: .08em; } }
+.med-link { display: flex; gap: 8px; }
+.med-link input { flex: 1; min-width: 0; font: inherit; font-size: .88rem; padding: 9px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.med-enl { position: absolute; inset: 0; padding-top: 34px !important; display: flex; flex-direction: column; justify-content: center; gap: 4px; width: 100%; height: 100%; padding: 14px; background: var(--bg); color: var(--ink); text-decoration: none; font-size: .8rem; word-break: break-word; }
 .med-filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
 .med-filtros button { background: transparent; color: var(--ink-2); cursor: pointer; }
 .med-filtros button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -740,32 +750,56 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     catch (e) { return false; }
   }
   const btnQuitar = (id, cls) => medBorrar === id ? `<button class="${cls} si" data-medborrar="${esc(id)}" data-ok="1">¿Seguro? Quitar</button><button class="${cls}" data-medborrar="">No</button>` : `<button class="${cls}" data-medborrar="${esc(id)}" aria-label="Quitar este archivo">Quitar</button>`;
-  let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "";
+  let assets = null, assetsListo = false, medFiltro = "todas", medCat = "Bebidas", subiendo = "", medEtapa = "bruto";
+  // Biblioteca en tres carpetas: brutos (sin editar), referencias (inspiración, no se publica) y terminados (listos para revisar y publicar)
+  const ETAPAS = {
+    bruto: ["Brutos", "Fotos y tomas tal como salen del celular, sin editar. Contenido y el Editor de vídeo los cortan y los montan en los posts."],
+    referencia: ["Referencias", "Ideas para inspirarse: Reels o TikToks que te gustan, capturas, el manual de marca. Nunca se publican."],
+    terminado: ["Terminados", "Piezas listas para revisar y publicar: posts exportados de Canva y Reels editados. Si eliges el post, aparecen en su revisión."]
+  };
+  const etapaOf = (m) => ETAPAS[m.etapa] ? m.etapa : (m.por === "agente" ? "referencia" : "bruto");
+  const esMedio = (m) => assetId(m.asset) || m.enlace;
   const MED_CATS = ["Bebidas", "Tú y el equipo", "Carrito y lugar", "Deporte y comunidad", "Otro"];
   const MED_ERR = { too_large: "pesa más de 20 MB", unsupported_type: "ese formato no se acepta (usa JPG, PNG, HEIC o MP4)", quota_exceeded: "se llenó el espacio de la biblioteca", not_granted: "solo la fundadora puede subir archivos" };
   function bibliotecaHTML() {
-    const ms = S.medios.filter((m) => assetId(m.asset)).sort((a, b) => String(b.subido || "").localeCompare(String(a.subido || "")));
+    const todos = S.medios.filter(esMedio).sort((a, b) => String(b.subido || "").localeCompare(String(a.subido || "")));
+    const et = ETAPAS[medEtapa] ? medEtapa : "bruto";
+    const ms = todos.filter((m) => etapaOf(m) === et);
+    const carpetas = `<div class="med-etapas" role="tablist">${Object.keys(ETAPAS).map((k) => `<button role="tab" aria-selected="${k === et}" class="${k === et ? "on" : ""}" data-medetapa="${k}"><strong>${esc(ETAPAS[k][0])}</strong><span>${todos.filter((m) => etapaOf(m) === k).length}</span></button>`).join("")}</div>
+      <div class="src" style="margin:-4px 0 14px">${esc(ETAPAS[et][1])}</div>`;
+    const posts = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)).filter((p) => revOf(p) !== "descartado");
+    const extra = et === "terminado"
+      ? `<select id="med-post" aria-label="Para qué post"><option value="">¿Para qué post es? (opcional)</option>${posts.map((p) => `<option value="${esc(p._id)}">Post ${esc(p.orden)} · ${esc(p.titulo_img || p.formato || "")}</option>`).join("")}</select>`
+      : et === "referencia"
+      ? `<div class="med-link"><input type="url" id="med-url" maxlength="400" placeholder="O pega un enlace de Instagram o TikTok" aria-label="Enlace de referencia"><button class="btn" data-medlink="1">Guardar enlace</button></div>` : "";
     const up = assets && canWrite ? `<div class="med-up">
         <label class="drop" id="med-drop"><input type="file" id="med-file" accept="image/*,video/*" multiple>
-          <strong>${subiendo ? esc(subiendo) : "Subir fotos o videos"}</strong>
+          <strong>${subiendo ? esc(subiendo) : "Subir a " + esc(ETAPAS[et][0])}</strong>
           <span class="src">${subiendo ? "No cierres la página mientras termina." : "Toca para elegirlos o arrástralos aquí. Puedes subir varios a la vez."}</span></label>
         <div class="med-form">
           <span class="eyebrow">¿Qué muestran?</span>
           <select id="med-cat" aria-label="Categoría">${MED_CATS.map((c) => `<option ${c === medCat ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
-          <input type="text" id="med-desc" maxlength="160" placeholder="Descripción corta (opcional): matcha con hielo en la ventana" aria-label="Descripción">
-          <span class="src">Fotos y videos de hasta 20 MB. Contenido y Estratega los usan para armar los posts con imágenes reales, y nada se publica sin tu aprobación.</span>
+          <input type="text" id="med-desc" maxlength="160" placeholder="${et === "referencia" ? "Qué te gusta de esto (opcional): el gancho, los cortes rápidos" : "Descripción corta (opcional): matcha con hielo en la ventana"}" aria-label="Descripción">
+          ${extra}
+          <span class="src">Fotos y videos de hasta 20 MB. Nada se publica sin tu aprobación.</span>
         </div></div>`
       : assetsListo && db ? `<div class="src" style="margin-bottom:14px">Para subir archivos abre el Centro de mando con la cuenta de la fundadora.</div>` : "";
     const cats = MED_CATS.filter((c) => ms.some((m) => m.categoria === c));
-    const filt = cats.length > 1 ? `<div class="med-filtros">${["todas"].concat(cats).map((c) => `<button class="chip ${c === medFiltro ? "on" : ""}" data-medfil="${esc(c)}">${c === "todas" ? "Todas · " + ms.length : esc(c) + " · " + ms.filter((m) => m.categoria === c).length}</button>`).join("")}</div>` : "";
-    const vis = ms.filter((m) => medFiltro === "todas" || m.categoria === medFiltro);
-    const grid = vis.length ? `<div class="med-grid">${vis.map((m) => { const src = "/_blob/" + assetId(m.asset); return `<div class="med ${medPide === m._id ? "open" : ""}">
-        <div class="med-v">${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span></div>
-        <div class="med-b"><span>${esc(m.descripcion || m.nombre || "Sin descripción")}</span><span class="src">${esc(m.categoria || "")} · ${fecha(m.subido, { day: "numeric", month: "short" })}${(m.usado_en || []).length ? " · Usada en " + esc(m.usado_en.join(", ")) : ""}</span>
-        ${canWrite ? `<span class="acc"><button data-medpide="${esc(m._id)}">Pedir ajuste al agente</button>${assets ? btnQuitar(m._id, "") : ""}</span>` : ""}</div>
-        ${medPide === m._id ? `<div class="med-pide"><textarea id="sol-txt" maxlength="600" placeholder="Ej: úsala en el post 4 en vez de la foto de Canva, recórtala vertical y súbele la luz" aria-label="Qué debe hacer el agente"></textarea><div class="actions"><button class="btn primary" data-solenviar="${esc(m._id)}">Enviar al agente</button><button class="btn" data-medpide="">Cancelar</button></div></div>` : ""}</div>`; }).join("")}</div>`
-      : empty("Todavía no hay fotos ni videos.", "Sube lo que ya tengan: bebidas, el carrito, tú preparando café, entrenos. Los agentes los usarán en vez de imágenes inventadas.");
-    return sec("Biblioteca de " + proyecto.corto, "Fotos y videos reales · Contenido y Estratega", up + filt + grid);
+    const filtro = cats.includes(medFiltro) ? medFiltro : "todas";
+    const filt = cats.length > 1 ? `<div class="med-filtros">${["todas"].concat(cats).map((c) => `<button class="chip ${c === filtro ? "on" : ""}" data-medfil="${esc(c)}">${c === "todas" ? "Todas · " + ms.length : esc(c) + " · " + ms.filter((m) => m.categoria === c).length}</button>`).join("")}</div>` : "";
+    const vis = ms.filter((m) => filtro === "todas" || m.categoria === filtro);
+    const postDe = (m) => { const p = S.propuestas.find((y) => y._id === m.propuesta); return p ? " · Post " + esc(p.orden) : ""; };
+    const vista = (m) => { if (!assetId(m.asset)) { let host = ""; try { host = new URL(m.enlace).hostname.replace(/^www\./, ""); } catch (e) {} return `<a class="med-enl" href="${esc(m.enlace)}" target="_blank" rel="noopener"><strong>${esc(host || "Enlace")}</strong><span>Abrir referencia ↗</span></a><span class="chip">Enlace</span>`; }
+      const src = "/_blob/" + assetId(m.asset); return `${m.tipo === "video" ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<img src="${src}" alt="${esc(m.descripcion || m.categoria || "Foto")}" loading="lazy">`}<span class="chip">${m.tipo === "video" ? "Video" : "Foto"}</span>`; };
+    const grid = vis.length ? `<div class="med-grid">${vis.map((m) => `<div class="med ${medPide === m._id ? "open" : ""}">
+        <div class="med-v">${vista(m)}</div>
+        <div class="med-b"><span>${esc(m.descripcion || m.nombre || "Sin descripción")}</span><span class="src">${esc(m.categoria || "")} · ${fecha(m.subido, { day: "numeric", month: "short" })}${postDe(m)}${m.por === "agente" ? " · Lo subió un agente" : ""}${(m.usado_en || []).length ? " · Usada en " + esc(m.usado_en.join(", ")) : ""}</span>
+        ${canWrite ? `<span class="acc">${et !== "referencia" ? `<button data-medpide="${esc(m._id)}">Pedir ajuste al agente</button>` : ""}${assets ? btnQuitar(m._id, "") : ""}</span>` : ""}</div>
+        ${medPide === m._id ? `<div class="med-pide"><textarea id="sol-txt" maxlength="600" placeholder="Ej: úsala en el post 4 en vez de la foto de Canva, recórtala vertical y súbele la luz" aria-label="Qué debe hacer el agente"></textarea><div class="actions"><button class="btn primary" data-solenviar="${esc(m._id)}">Enviar al agente</button><button class="btn" data-medpide="">Cancelar</button></div></div>` : ""}</div>`).join("")}</div>`
+      : et === "bruto" ? empty("Todavía no hay material en bruto.", "Sube lo que grabes o fotografíes: bebidas, el carrito, tú preparando café, entrenos. Los agentes lo editan y lo montan.")
+      : et === "referencia" ? empty("Todavía no hay referencias.", "Sube capturas o pega enlaces de Reels y TikToks que te gusten. Los agentes los estudian para copiar el ritmo y el estilo, no el contenido.")
+      : empty("Todavía no hay piezas terminadas.", "Aquí quedan los posts y Reels listos. Los agentes dejan aquí lo que terminan, y tú también puedes subir piezas hechas por fuera.");
+    return sec("Biblioteca de " + proyecto.corto, "Todo lo que se usa para crear y publicar", carpetas + up + filt + grid);
   }
   const SOL_EST = { pendiente: ["amarillo", "Pendiente"], en_curso: ["amarillo", "El agente está en eso"], listo: ["verde", "Listo para revisar"], no_se_pudo: ["rojo", "No se pudo"] };
   // Próxima revisión del agente: minuto 17 de cada hora, de 7 am a 10 pm (hora de Bogotá, UTC-5 sin horario de verano)
@@ -806,7 +840,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   // Vista del Estratega: el material como insumo para decidir (subir y ajustar es de Contenido)
   const faltaFoto = (p) => /foto (real|tuya)/i.test(p.nota || "");
   function materialHTML() {
-    const ms = S.medios.filter((m) => assetId(m.asset));
+    const ms = S.medios.filter((m) => assetId(m.asset) && etapaOf(m) !== "referencia");
     const fotos = ms.filter((m) => m.tipo !== "video").length, videos = ms.length - fotos;
     const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)).filter((p) => revOf(p) !== "descartado");
     const esReel = (p) => /reel/i.test(p.formato || "");
@@ -835,7 +869,10 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (!list.length) { toast("Elige fotos o videos."); return; }
     medCat = ($("med-cat") || {}).value || medCat;
     const desc = ((($("med-desc") || {}).value) || "").trim();
-    let ok = 0; const fallas = [];
+    const et = ETAPAS[medEtapa] ? medEtapa : "bruto";
+    const pid = et === "terminado" ? ((($("med-post") || {}).value) || "") : "";
+    const post = pid ? S.propuestas.find((x) => x._id === pid) : null;
+    let ok = 0; const fallas = []; const ids = [];
     for (let i = 0; i < list.length; i++) {
       const f = list[i]; subiendo = `Subiendo ${i + 1} de ${list.length}…`; renderAll();
       const ext = (f.name.split(".").pop() || "").toLowerCase();
@@ -843,15 +880,20 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       try {
         const r = await assets.upload(f, tipoArchivo && tipoArchivo !== f.type ? { type: tipoArchivo } : undefined);
         const now = new Date().toISOString();
-        await C("medios").doc().set({ asset: r.id, tipo: /^video\//.test(r.contentType) ? "video" : "foto", nombre: f.name.slice(0, 120), descripcion: desc, categoria: medCat, subido: now, por: "fundadora", usado_en: [] });
-        ok++;
+        const ref = C("medios").doc();
+        await ref.set(Object.assign({ asset: r.id, tipo: /^video\//.test(r.contentType) ? "video" : "foto", etapa: et, nombre: f.name.slice(0, 120), descripcion: desc, categoria: medCat, subido: now, por: "fundadora", usado_en: [] }, post ? { propuesta: post._id } : {}));
+        ids.push(ref.id); ok++;
       } catch (e) { fallas.push(`${f.name}: ${MED_ERR[e && e.code] || "no se pudo subir"}`); }
     }
     subiendo = "";
-    if (ok) { try { await C("actividad").doc().set({ agente: "fundadora", accion: `Subió ${ok} ${ok === 1 ? "archivo" : "archivos"} a Fotos y videos reales (${medCat})`, pasa_a: "contenido", fecha: new Date().toISOString() }); } catch (e) {} }
+    if (ok) { try {
+      const now = new Date().toISOString();
+      if (post) { await C("solicitudes").doc().set({ tipo: "material", terminado: true, propuesta: post._id, medios: ids, medio: ids[0], texto: desc || `Pieza terminada para el post ${post.orden}: agrégala como versión nueva del post sin cambiarla, para que la fundadora la compare y elija`, agente: "contenido", estado: "pendiente", fecha: now, urgente: true }); despertarAgente(); }
+      await C("actividad").doc().set({ agente: "fundadora", accion: `Subió ${ok} ${ok === 1 ? "archivo" : "archivos"} a ${ETAPAS[et][0]} (${medCat})${post ? " para el post " + post.orden : ""}`, pasa_a: "contenido", fecha: now });
+    } catch (e) {} }
     if ($("med-desc")) $("med-desc").value = "";
     renderAll();
-    toast(fallas.length ? (ok ? `Se subieron ${ok}. ` : "") + "No se pudo: " + fallas.join(" · ") : `${ok === 1 ? "Archivo subido" : ok + " archivos subidos"}. Contenido ya los puede usar.`);
+    toast(fallas.length ? (ok ? `Se subieron ${ok}. ` : "") + "No se pudo: " + fallas.join(" · ") : `${ok === 1 ? "Archivo subido" : ok + " archivos subidos"} a ${ETAPAS[et][0]}.${post ? " Contenido lo pone como versión del post " + post.orden + " para que lo revises." : ""}`);
   }
   function postCard(p) {
     return `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)}</div></div><span class="n">${esc(p.orden)}</span></div>
@@ -897,7 +939,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       try {
         const r = await assets.upload(f, tipoArchivo && tipoArchivo !== f.type ? { type: tipoArchivo } : undefined);
         const ref = C("medios").doc();
-        await ref.set({ asset: r.id, tipo: /^video\//.test(r.contentType) ? "video" : "foto", nombre: f.name.slice(0, 120), descripcion: `Para el post ${p.orden}: ${p.titulo_img || ""}`.slice(0, 160), categoria: "Bebidas", propuesta: p._id, subido: new Date().toISOString(), por: "fundadora", usado_en: [p._id] });
+        await ref.set({ asset: r.id, tipo: /^video\//.test(r.contentType) ? "video" : "foto", etapa: "bruto", nombre: f.name.slice(0, 120), descripcion: `Para el post ${p.orden}: ${p.titulo_img || ""}`.slice(0, 160), categoria: "Bebidas", propuesta: p._id, subido: new Date().toISOString(), por: "fundadora", usado_en: [p._id] });
         ids.push(ref.id);
       } catch (e) { fallas.push(`${f.name}: ${MED_ERR[e && e.code] || "no se pudo subir"}`); }
     }
@@ -1429,6 +1471,21 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ct) { cTab = ct.dataset.ctab; renderAll(); return; }
     const rb = ev.target.closest("[data-rev]");
     if (rb) { { const pp = S.propuestas.find((x) => x._id === rb.dataset.rev); if (pp) { const rr = revOf(pp); cTab = rr === "aprobado" ? "aprobado" : rr === "descartado" ? "historial" : "revisar"; } } const rt = rb.dataset.tab && norm(rb.dataset.tab); if (rt && rt !== tab) { revId = rb.dataset.rev; go(rt); return; } revId = rb.dataset.rev; if ($("rev-cm")) $("rev-cm").value = ""; renderAll(); const ph = document.querySelector(".review"); if (ph && ph.getBoundingClientRect().top < 0) ph.scrollIntoView({ block: "start" }); return; }
+    const me = ev.target.closest("button[data-medetapa]");
+    if (me) { medEtapa = me.dataset.medetapa; medFiltro = "todas"; medPide = null; renderAll(); return; }
+    const ml = ev.target.closest("button[data-medlink]");
+    if (ml && db && canWrite && !busy) {
+      const url = ((($("med-url") || {}).value) || "").trim();
+      if (!/^https?:\/\/\S+\.\S+/.test(url)) { toast("Pega un enlace completo, que empiece por https://"); return; }
+      const desc = ((($("med-desc") || {}).value) || "").trim(); medCat = ($("med-cat") || {}).value || medCat;
+      busy = true; const now = new Date().toISOString();
+      try {
+        await C("medios").doc().set({ enlace: url.slice(0, 400), tipo: "enlace", etapa: "referencia", descripcion: desc, categoria: medCat, subido: now, por: "fundadora", usado_en: [] });
+        await C("actividad").doc().set({ agente: "fundadora", accion: "Guardó una referencia: " + url.slice(0, 120), pasa_a: "contenido", fecha: now });
+        if ($("med-url")) $("med-url").value = ""; if ($("med-desc")) $("med-desc").value = ""; toast("Referencia guardada.");
+      } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
     const mf = ev.target.closest("button[data-medfil]");
     if (mf) { medFiltro = mf.dataset.medfil; renderAll(); return; }
     const mp = ev.target.closest("button[data-medpide]");

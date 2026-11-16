@@ -48,9 +48,14 @@ La fundadora pide ajustes desde el Centro de mando ("Pedir ajuste al agente" en 
 
 Límite actual (25 de octubre de 2026): la red del entorno de los agentes bloquea `www.canva.com` y `export-download.canva.com`. Por eso el agente puede cambiar textos, colores y orden en los diseños de Canva, pero todavía no puede subir a Canva las fotos y videos de la fundadora. Se arregla agregando esos dominios en la configuración del entorno (Project settings → Cloud environment → Network access).
 
-## Fotos y videos reales
+## Fotos y videos reales (biblioteca en tres carpetas, desde 16 nov 2026)
 
-La fundadora los sube en las pestañas Contenido o Estratega. Quedan en la colección `medios` del tablero (ver `board/README.md`). Se usan antes que cualquier imagen generada.
+La fundadora los sube en Crear → Biblioteca y herramientas. Quedan en la colección `medios`, separados por `etapa`:
+- **Brutos** (`bruto`): material sin editar. Se usa antes que cualquier imagen generada.
+- **Referencias** (`referencia`): inspiración, archivo o enlace. Nunca se publica.
+- **Terminados** (`terminado`): piezas listas con su `propuesta`. Si la fundadora sube una y elige el post, se crea una solicitud `tipo: "material"` con `terminado: true`. Contenido la agrega como versión nueva del post sin cambiarla.
+
+Cuando un agente termina una pieza (export de Canva, Reel editado), la sube como asset y crea en `medios` un documento con `etapa: "terminado"`, `propuesta`, `por: "agente"`. Detalle en `library/README.md`.
 
 
 ## Material por post (desde 26 oct 2026)
