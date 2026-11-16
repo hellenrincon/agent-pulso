@@ -774,8 +774,18 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   // Diseño real de Canva (archivo publicado junto al dashboard) o, si no hay, la ilustración
   const imgOf = (p) => /^canva\/[a-z0-9-]+\.png$/.test(p.img || "") ? p.img + "?v=" + (Number(p.img_v) || 1) : "";
   const assetId = (v) => /^[0-9a-f]{32}$/.test(v || "") ? v : "";
-  const vidOf = (p) => assetId(p.video) ? "/_blob/" + assetId(p.video) : "";
-  const visual = (p) => vidOf(p) ? `<video src="${vidOf(p)}#t=6" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
+  const vidOf0 = (p) => assetId(p.video) ? "/_blob/" + assetId(p.video) : "";
+  // Solo lo terminado se aprueba: la pieza de un post es la que está en la carpeta Terminados
+  const termsOf = (p) => S.medios.filter((m) => m.etapa === "terminado" && m.propuesta === p._id && assetId(m.asset)).sort((a, b) => String(b.subido || "").localeCompare(String(a.subido || "")));
+  const piezaOf = (p) => {
+    if (p.pieza && assetId(p.pieza.asset)) return p.pieza;
+    const ts = termsOf(p); const m = ts.find((x) => x._id === p.pieza_elegida) || ts[0];
+    return m ? { medio: m._id, asset: assetId(m.asset), tipo: m.tipo === "video" ? "video" : "foto", nombre: m.nombre || "", descripcion: m.descripcion || "" } : null;
+  };
+  const listo = (p) => !!piezaOf(p);
+  const vidOf = (p) => { const z = piezaOf(p); return z ? (z.tipo === "video" ? "/_blob/" + z.asset : "") : vidOf0(p); };
+  const fotoOf = (p) => { const z = piezaOf(p); return z && z.tipo !== "video" ? "/_blob/" + z.asset : ""; };
+  const visual = (p) => fotoOf(p) ? `<img src="${fotoOf(p)}" alt="Post ${esc(p.orden)} terminado: ${esc(p.titulo_img)}" loading="lazy">` : vidOf(p) ? `<video src="${vidOf(p)}#t=6" preload="metadata" muted playsinline></video>` : imgOf(p) ? `<img src="${esc(imgOf(p))}" alt="Diseño de Canva: ${esc(p.titulo_img)}" loading="lazy">` : artOf(p.art);
   const colorTinta = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#F3E8D6";
   const REV = { aprobado: ["verde", "Aprobado"], cambios: ["amarillo", "Pide cambios"], descartado: ["rojo", "Descartado"] };
   const revOf = (p) => (p.revision && REV[p.revision.estado]) ? p.revision.estado : null;
@@ -785,7 +795,15 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const imgOk = (u) => /^canva\/[a-z0-9-]+\.png$/.test(u || "");
   const verOk = (v) => imgOk(v.img) || !!assetId(v.video);
   const versOf = (p) => (Array.isArray(p.versiones) ? p.versiones : []).filter(verOk);
+  let ptConf = "";
+  function terminadosHTML(p) {
+    const ts = termsOf(p); if (!ts.length) return "";
+    const z = piezaOf(p);
+    if (ts.length < 2) return `<div class="guia"><span class="eyebrow">Pieza terminada</span><div style="font-size:.86rem;margin-top:6px">${esc(ts[0].descripcion || ts[0].nombre || "")}</div><div class="src">Es lo que se publica si apruebas. Viene de Biblioteca → Terminados.</div></div>`;
+    return `<div class="guia"><span class="eyebrow">Piezas terminadas para elegir</span><div class="src" style="margin:4px 0 8px">Solo aparece lo que está en Terminados. Elegir no aprueba el post.</div><div class="mopc pvers">${ts.map((m) => { const src = "/_blob/" + assetId(m.asset); const vid = m.tipo === "video"; const on = z && z.medio === m._id; return `<figure><div class="zwrap">${vid ? `<video src="${src}" controls preload="metadata" playsinline></video>` : `<a class="mimg" href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${esc(m.descripcion || "Pieza terminada")}" loading="lazy"></a>`}<button class="zbtn" data-zoom="${src}" data-ztipo="${vid ? "video" : "img"}" data-zcap="${esc(m.descripcion || m.nombre || "")}" aria-label="Ver grande">⤢</button></div><figcaption>${on ? `<span class="chip" style="color:var(--ink-2)"><span class="dot verde"></span>Esta se publica</span> · ` : ""}${esc(m.descripcion || m.nombre || "")}</figcaption>${canWrite && !on && !p.pieza ? (ptConf === p._id + ":" + m._id ? `<div class="actions"><button class="btn primary" data-ptok="${esc(m._id)}" data-pid="${esc(p._id)}">Sí, uso esta</button><button class="btn" data-ptconf="">Cancelar</button></div>` : `<button class="btn" data-ptconf="${esc(p._id)}:${esc(m._id)}">Elegir esta</button>`) : ""}</figure>`; }).join("")}</div></div>`;
+  }
   function postVersHTML(p) {
+    if (termsOf(p).length || p.pieza) return terminadosHTML(p);
     const vs = versOf(p);
     const hayVid = vs.some((v) => assetId(v.video));
     const vidAct = assetId(p.video_original) || assetId(p.video);
@@ -955,14 +973,14 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   }
   function postCard(p) {
     return `<article class="igp"><div class="igp-h">${AVATAR}<div><div class="u">pulso.coffee.co</div><div class="f">${esc(p.formato)}</div></div><span class="n">${esc(p.orden)}</span></div>
-      ${vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">Tu video · Reel</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
+      ${fotoOf(p) ? `<div class="igp-art has-img zwrap">${visual(p)}<span class="canva-tag">Terminado</span><button class="zbtn" data-zoom="${fotoOf(p)}" data-ztipo="img" data-zcap="Post ${esc(p.orden)} · terminado" aria-label="Ver grande">⤢</button></div>` : vidOf(p) ? `<div class="igp-art has-vid"><video src="${vidOf(p)}" controls playsinline preload="metadata"></video><span class="canva-tag">${listo(p) ? "Terminado · Reel" : "Tu video · Reel"}</span></div>` : imgOf(p) ? `<div class="igp-art has-img">${visual(p)}<span class="canva-tag">Diseño en Canva</span></div>` : `<div class="igp-art">${artOf(p.art)}<div class="igp-txt" style="color:${colorTinta(p.tinta)}"><span class="t">${esc(p.titulo_img)}</span><span class="m">${esc(p.mano)}</span></div></div>`}
       <div class="igp-b">${p.texto_publicar ? `<div style="white-space:pre-line"><strong>pulso.coffee.co</strong> ${esc(p.texto_publicar)}</div>` : `<div><strong>pulso.coffee.co</strong> ${esc(p.caption)}</div><div class="cta">${esc(p.cta)}</div>`}</div></article>`;
   }
   // Material real por post: la fundadora sube lo que pide la guía y Contenido lo monta en Canva
   const delPost = (p) => S.medios.filter((m) => assetId(m.asset) && (m.propuesta === p._id || (m.usado_en || []).includes(p._id)));
   const pubTxt = (p) => {
     const f = p.metricool && p.metricool.fecha ? p.metricool.fecha : p.publicar && p.publicar.fecha;
-    if (!f) return esc(revOf(p) === "aprobado" ? "Se define en el Calendario" : "Se define en el Calendario cuando apruebes el post");
+    if (!f || (revOf(p) !== "aprobado" && !(p.metricool && p.metricool.fecha))) return esc(revOf(p) === "aprobado" ? "Se define en el Calendario" : "Se define en el Calendario cuando apruebes el post");
     const t = esc(fecha(f, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }));
     return p.metricool && p.metricool.fecha ? t : fechaOk(p) ? t + " (fecha aprobada)" : t + " · propuesta, se aprueba en el Calendario";
   };
@@ -1045,7 +1063,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           <div><span class="eyebrow">Post ${esc(p.orden)} · ${idx + 1} de ${ps.length} · ${esc(p.formato)}</span><h3 style="font-size:1.1rem;margin-top:6px">${esc(p.titulo_img)}</h3></div>
           <div class="rev-meta"><div><span class="eyebrow">Se publicaría</span><span>${pubTxt(p)}</span></div><div><span class="eyebrow">Para qué</span><span>${esc(p.objetivo)}</span></div></div>
           ${guia.length ? `<div class="guia"><span class="eyebrow">Cómo hacer la foto o el video</span><ol>${guia.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></div>` : ""}
-          ${p.publicar && p.publicar.motivo ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
+          ${p.publicar && p.publicar.motivo && revOf(p) === "aprobado" ? `<div class="src">${esc(p.publicar.motivo)}${p.publicar.fuente ? " · Hora según " + esc(p.publicar.fuente) : ""}</div>` : ""}
           ${p.texto_publicar ? `<div class="guia"><span class="eyebrow">Texto exacto que se publica</span><div style="white-space:pre-line;font-size:.86rem;margin-top:6px">${esc(p.texto_publicar)}</div><div class="src" style="margin-top:4px">Lleva el gancho en la primera línea, el llamado a la acción y los hashtags. Esto es lo que se envía a Metricool al aprobar.${/por confirmar/i.test(p.texto_publicar) ? " Tiene datos por confirmar: no se programa hasta completarlos." : ""}</div></div>` : ""}
           ${materialPostHTML(p)}
           ${(() => { const u = S.solicitudes.filter((x) => x.propuesta === p._id).sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")))[0]; return u ? `<div class="guia"><span class="eyebrow">Tu último pedido de cambio</span><div style="font-size:.86rem;margin:6px 0">“${esc(u.texto)}”</div>${progresoHTML(u)}${u.respuesta && u.estado !== "pendiente" ? `<div style="font-size:.84rem;margin-top:6px">${esc(u.respuesta)}</div>` : ""}</div>` : ""; })()}
@@ -1066,15 +1084,15 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   }
   function perfilHTML() {
     const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); if (!ps.length) return "";
-    const tiles = ps.filter((x) => revOf(x) !== "descartado").reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${visual(x)}${imgOf(x) ? "" : `<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span>`}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
+    const tiles = ps.filter((x) => revOf(x) !== "descartado" && (listo(x) || revOf(x) === "aprobado")).reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${visual(x)}${imgOf(x) || listo(x) ? "" : `<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span>`}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
     const perfil = `<div class="perfil"><div class="pgrid" aria-label="Así se vería el perfil">${tiles}</div>
       <div class="bio"><strong>PULSO Coffee &amp; More | Bogotá</strong><span>Café para gente en movimiento</span><span>RUN • RIDE • SWIM</span><span>Bogotá · Próximamente</span><span class="pc">Enlace a la lista de espera: por confirmar</span>
-      <span class="hand" style="margin-top:10px">Los descartados desaparecen del perfil</span>
+      <span class="hand" style="margin-top:10px">Solo lo terminado aparece aquí</span>
       </div></div>`;
     return sec("Así se vería tu perfil", "Se actualiza con lo que apruebas", perfil);
   }
   function revisionBanner() {
-    const pend = S.propuestas.filter((p) => !revOf(p)).length;
+    const pend = S.propuestas.filter((p) => !revOf(p) && listo(p)).length;
     if (!pend) return "";
     return `<button class="rev-banner" data-tab="contenido"><span class="mono" style="--ag:#B8913F">CO</span><span><strong>${pend} ${pend === 1 ? "post espera" : "posts esperan"} tu revisión</strong><br><span class="src">Contenido · uno a la vez, con imagen y caption</span></span><span class="btn primary" style="margin-left:auto">Revisar</span></button>`;
   }
@@ -1107,8 +1125,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     mas: '<path d="M4 7 H20 M4 12 H20 M4 17 H20"/>'
   };
   const ico = (k) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${IC[k] || ""}</svg>`;
-  const pendTotal = () => pendingOf().length + S.propuestas.filter((x) => !revOf(x)).length;
-  const badgeOf = (k) => { const n = k === "decisiones" ? pendTotal() : k === "crear" ? S.propuestas.filter((x) => !revOf(x)).length : 0; return n ? `<span class="badge">${n}</span>` : ""; };
+  const pendTotal = () => pendingOf().length + S.propuestas.filter((x) => !revOf(x) && listo(x)).length;
+  const badgeOf = (k) => { const n = k === "decisiones" ? pendTotal() : k === "crear" ? S.propuestas.filter((x) => !revOf(x) && listo(x)).length : 0; return n ? `<span class="badge">${n}</span>` : ""; };
   const curMenu = () => tab.startsWith("ag-") ? "agentes" : tab;
   function renderNav() {
     $("menu").innerHTML = MENU.map(([k, l]) => `<button data-tab="${k}" ${curMenu() === k ? 'aria-current="page"' : ""}>${ico(k)}<span>${esc(l)}</span>${badgeOf(k)}</button>`).join("");
@@ -1128,7 +1146,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
 
   // Inicio: 4 accesos rápidos, decisiones pendientes, cupos del día y agentes activos
   function inicioHTML() {
-    const pend = pendingOf().length, posts = S.propuestas.filter((x) => !revOf(x)).length;
+    const pend = pendingOf().length, posts = S.propuestas.filter((x) => !revOf(x) && listo(x)).length;
     const hoy = hoyYMD(); const en7 = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(Date.now() + 7 * 864e5));
     const prox = S.calendario.filter((c) => String(c.fecha) >= hoy && String(c.fecha) <= en7).length;
     const c = S.cupos.find((x) => x._id === hoy); const ped = c && typeof c.vendidos === "number" ? c.vendidos : null;
@@ -1201,7 +1219,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   let cTab = null;
   function crearHTML() {
     const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99));
-    const apr = ps.filter((x) => revOf(x) === "aprobado"), porRev = ps.filter((x) => revOf(x) !== "aprobado" && revOf(x) !== "descartado"), desc = ps.filter((x) => revOf(x) === "descartado");
+    const apr = ps.filter((x) => revOf(x) === "aprobado"), sinAprobar = ps.filter((x) => revOf(x) !== "aprobado" && revOf(x) !== "descartado"), desc = ps.filter((x) => revOf(x) === "descartado");
+    const porRev = sinAprobar.filter(listo), enPrep = sinAprobar.filter((x) => !listo(x));
     const hist = S.historial.filter((x) => x.tipo === "post").sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
     if (!cTab) cTab = porRev.length ? "revisar" : "aprobado";
     const tb = (k, l) => `<button role="tab" data-ctab="${k}" aria-selected="${cTab === k}">${l}</button>`;
@@ -1222,7 +1241,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (cTab === "biblioteca") return tabs + bibliotecaHTML() + piezasHTML("contenido") + sec("Herramientas creativas", "Qué hace cada una y si ya está conectada", herramientasHTML());
     const enCurso = S.solicitudes.filter((x) => x.estado === "pendiente" || x.estado === "en_curso");
     return tabs + `<div class="fases">${PASOS.map((p, i) => `<div class="fase"><span class="fn">${i + 1}</span><span style="font-family:var(--f-title);text-transform:uppercase;letter-spacing:.12em;font-weight:500;font-size:.78rem">${esc(p[0])}</span><span class="src" style="font-size:.78rem">${esc(p[1])}</span></div>`).join("")}</div>`
-      + (porRev.length ? propuestasHTML(porRev) : sec("Por revisar", "", `<div class="src">No hay posts esperando tu revisión. Lo aprobado está en la pestaña Aprobado.</div>`))
+      + (porRev.length ? propuestasHTML(porRev, "Terminados para aprobar", "Solo lo que está en Terminados: aprueba, pide un cambio o descarta") : sec("Por revisar", "", `<div class="src">No hay piezas terminadas esperando tu revisión. Lo aprobado está en la pestaña Aprobado.</div>`))
+      + (enPrep.length ? sec("En preparación", enPrep.length + (enPrep.length === 1 ? " post todavía no tiene pieza terminada" : " posts todavía no tienen pieza terminada"), `<div class="src" style="margin-bottom:10px">No se aprueban hasta que el agente (o tú) suba la pieza a Biblioteca → Terminados con su post.</div><div class="cal-banco">${enPrep.map((x) => `<span class="chip" style="color:var(--ink-2)"><span class="dot gris"></span>Post ${esc(x.orden)} · ${esc(x.titulo_img || "")}</span>`).join("")}</div>`) : "")
       + (enCurso.length ? sec("Pedidos en curso", "El agente ya los está haciendo", enCurso.map((x) => `<div class="guia"><div style="font-size:.86rem">“${esc(x.texto)}”</div>${progresoHTML(x)}</div>`).join("")) : "");
   }
 
@@ -1489,6 +1509,20 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     if (ev.target.closest("[data-mas]")) { drawer(!$("side").classList.contains("open")); return; }
     const dt = ev.target.closest("[data-dectab]");
     if (dt) { decTab = dt.dataset.dectab; renderAll(); return; }
+    const ptc = ev.target.closest("button[data-ptconf]");
+    if (ptc) { ptConf = ptc.dataset.ptconf; renderAll(); return; }
+    const pto = ev.target.closest("button[data-ptok]");
+    if (pto && db && canWrite && !busy) {
+      const p = S.propuestas.find((x) => x._id === pto.dataset.pid); const m = S.medios.find((x) => x._id === pto.dataset.ptok);
+      ptConf = ""; if (!p || !m) { renderAll(); return; }
+      busy = true; const now = new Date().toISOString();
+      try {
+        await D("propuestas/" + p._id).update({ pieza_elegida: m._id, version_fecha: now });
+        await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo: `Post ${p.orden}: ${p.titulo_img || ""}`, resultado: "con_cambios", nota: "Eligió la pieza terminada: " + (m.descripcion || m.nombre || m._id), opcion: null, opcion_titulo: m.nombre || "", por: "fundadora" });
+        toast("Pieza elegida. El post sigue esperando tu aprobación.");
+      } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
     const ccf = ev.target.closest("button[data-calconf]");
     if (ccf) { calConf = ccf.dataset.calconf === "1"; renderAll(); return; }
     const cok = ev.target.closest("button[data-calok]");
@@ -1566,7 +1600,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           if (!p || (r !== "aprobado" && r !== "descartado")) throw new Error("estado");
           if (p.metricool && p.metricool.fecha) { toast("Ya está programado: se cambia en Metricool."); return; }
           const u = ultimaDe(p._id); const titulo = `Post ${p.orden} · ${p.titulo_img || ""}`; const que = r === "aprobado" ? "la aprobación" : "el descarte";
-          await D("propuestas/" + p._id).update({ revision: null });
+          await D("propuestas/" + p._id).update({ revision: null, pieza: null });
           await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo, resultado: "reabierta", nota: "Deshizo " + que, opcion: null, opcion_titulo: "", reabre: u ? u._id : null, por: "fundadora" });
           await C("actividad").doc().set({ agente: "fundadora", accion: `Deshizo ${que} del post ${p.orden} "${p.titulo_img || ""}"`, pasa_a: "contenido", fecha: now });
           cTab = "revisar"; revId = p._id;
@@ -1688,7 +1722,8 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       busy = true; document.querySelectorAll("button[data-revact]").forEach((x) => (x.disabled = true));
       const now = new Date().toISOString();
       try {
-        await D("propuestas/" + p._id).update({ revision: { estado: act, comentario: cm, fecha: now } });
+        const pz = act === "aprobado" ? piezaOf(p) : null;
+        await D("propuestas/" + p._id).update(pz ? { revision: { estado: act, comentario: cm, fecha: now }, pieza: Object.assign({}, pz, { aprobada: now }) } : { revision: { estado: act, comentario: cm, fecha: now } });
         if (act === "cambios") await C("solicitudes").doc().set({ tipo: "post", propuesta: p._id, texto: cm, agente: "contenido", estado: "pendiente", fecha: now, urgente: ahora });
         await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo: `Post ${p.orden} · ${p.titulo_img || ""}`, resultado: { aprobado: "aprobada", cambios: "con_cambios", descartado: "rechazada" }[act], nota: cm, opcion: null, opcion_titulo: "", por: "fundadora" });
         await C("actividad").doc().set({ agente: "fundadora", accion: `${{ aprobado: "Aprobó", cambios: "Pidió cambios en", descartado: "Descartó" }[act]} el post ${p.orden} "${p.titulo_img}"${cm ? ": " + cm : ""}`, pasa_a: "contenido", tarea: "t-reel3", fecha: now });
@@ -1696,7 +1731,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         toast(act === "descartado" ? "Post descartado."
           : act === "aprobado" ? (fechaOk(p) ? (yaVa ? "Post aprobado. Su fecha ya estaba aprobada: el agente lo está pasando a Metricool." : `Post aprobado. Su fecha ya estaba aprobada: pasa a Metricool ${proxRevision()}.`) : "Contenido aprobado. Ya entra al Calendario para ponerle fecha.")
           : yaVa ? "Cambio enviado. El agente ya empezó; mira la barra." : `Cambio enviado. El agente lo toma ${proxRevision()}; la barra te muestra el avance.`);
-        if (act !== "cambios") { const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); const nxt = ps.find((x) => x._id !== p._id && !revOf(x)); if (nxt) revId = nxt._id; }
+        if (act !== "cambios") { const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); const nxt = ps.find((x) => x._id !== p._id && !revOf(x) && listo(x)); if (nxt) revId = nxt._id; }
         if ($("rev-cm")) $("rev-cm").value = "";
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); }
       finally { busy = false; renderAll(); }

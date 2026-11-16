@@ -26,3 +26,6 @@ Todo el material para crear, revisar y publicar está en **tres carpetas**. Tien
 5. Si la fundadora sube algo a Terminados y elige el post, el tablero crea un pedido (`solicitudes`, `tipo: "material"`, `terminado: true`). Contenido lo agrega como versión del post **sin cambiarlo**.
 
 Nada se publica sin la aprobación de la fundadora.
+
+## Solo lo terminado se aprueba (16 nov 2026)
+Crear → Por revisar muestra únicamente los posts con una pieza en Terminados. Al aprobar se guarda esa pieza en `propuestas.pieza` y es la que se publica. Si la fundadora borra una pieza de Terminados, el post vuelve a "En preparación".

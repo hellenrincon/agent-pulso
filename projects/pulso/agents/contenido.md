@@ -47,6 +47,10 @@ Embudo de referencia: Reel → descubrimiento → interés → visita al perfil 
 | 3. Programar | Programa en Metricool lo que tenga contenido y fecha aprobados | Nada más | Metricool |
 
 Reglas:
+- **Solo lo terminado se aprueba (16 nov 2026).** Un post aparece en Crear → Por revisar solo si tiene una pieza en Biblioteca → Terminados (`medios` con `etapa: "terminado"`, `propuesta` = id del post y `asset`). Sin pieza terminada queda "En preparación" y no se puede aprobar. Las versiones viejas de Canva ya no se muestran para elegir.
+- Si un post tiene varias piezas terminadas, la fundadora elige una (`propuestas.pieza_elegida` = id del medio); si no elige, vale la más reciente.
+- Al aprobar, el Centro de mando guarda en `propuestas.pieza` {medio, asset, tipo, nombre} la pieza exacta que se aprobó. **Eso es lo que se publica**, nada más.
+- Para terminar un post, Contenido sube la pieza como asset y crea su `medios` en `terminado` con `propuesta`. Una pieza de foto en un post de formato Reel se publica como foto, salvo que llegue el video.
 - Un post sin contenido aprobado no entra al calendario. Si ya tenía una fecha tentativa, el Centro de mando la oculta hasta que se apruebe el contenido.
 - Aprobar el contenido no programa nada. Aprobar las fechas sí.
 - Pedidos del Centro de mando: `solicitudes` con `tipo: "calendario"` (proponer o cambiar fechas, campo `propuestas`) y `tipo: "programar"` (fechas aprobadas: programar ya).
@@ -68,7 +72,7 @@ Regla: cada pieza terminada lleva su post (`propuesta`). Sin post no se puede re
 2. **Guion de cada Reel** con la skill `guion-de-reel`: gancho de 2 s, planos, texto en pantalla, caption, CTA.
 3. **Caption** con la skill `caption-con-gancho`.
 4. **Ideas de fotos e historias**: 3 a 5 Stories diarias (encuesta, detrás de cámara, receta, pregunta).
-5. **Piezas visuales en Claude Design**: storyboard del Reel, mockup del post con el caption puesto y cuadrícula de 9.
+5. **Pieza terminada** de cada post (imagen 3:4 o Reel 9:16) con la línea gráfica, subida a Terminados con su post. Opcional: storyboard o mockup.
 6. **Una tarjeta de decisión** por pieza o por bloque semanal, con el enlace al diseño.
 7. **Cada pieza lista** (export de Canva o Reel editado) se sube como asset y queda en `medios` con `etapa: "terminado"`, `propuesta`, `por: "agente"`.
 8. Una fila en `actividad` por cada entrega, con `pasa_a: "estratega"`.
@@ -86,7 +90,7 @@ Todo se diseña en **Canva** (carpeta "PULSO · Contenido Instagram"), siguiendo
 - Colores: vino `#5A1A28` como protagonista; fondo crema `#F3E8D6` o marfil `#F7F2E8`; fondos de producto en café `#5B3522` u oliva `#4A4B25`; dorado `#B8913F` solo en líneas finas y detalles. Nada de azul marino en textos.
 - Letra (decidido el 16 nov): títulos en condensada gruesa (Barlow Condensed Bold) en vino o el color del pilar, sobre fondos claros; subtítulos en condensada fina espaciada; una sola frase en Caveat por pieza. Detalle en `knowledge/linea-grafica.md`.
 - Línea de pulso fina en dorado (o vino sobre fondos claros), esquinas rectas, mucho aire.
-- Cierre o firma: el emblema del logo (círculo crema, PULSO, línea de pulso y grano en vino) o "PULSO / COFFEE & MORE" en vino o crema. Nunca un logo distinto al del manual. Las fotos reales las pone la fundadora; mientras tanto, el storyboard usa cuadros de color con la descripción del plano.
+- Cierre o firma: sobre fotos, la **firma sutil** (logo en línea, un color, sin círculo relleno: `firma_crema.png` sobre foto oscura, `firma_vino.png` sobre claro); el emblema con círculo relleno solo sobre fondo liso. Nunca un logo distinto al del manual. Se usan fotos y videos reales de la fundadora (Brutos) antes que imágenes de IA; si una pieza usa IA, se dice en su nota.
 
 ## Cómo trabaja
 

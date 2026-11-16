@@ -53,7 +53,7 @@ Semáforo (para estados, márgenes y cupos), calibrado para convivir con la pale
 
 | Rol | Fuente | Estilo |
 | --- | --- | --- |
-| Títulos | Montserrat Light (300) | MAYÚSCULA, letras espaciadas (tracking 0,18 a 0,3 em) |
+| Títulos | Barlow Condensed Bold (decidido el 16 nov 2026, como se ven las páginas del manual) | MAYÚSCULA, en vino o color del pilar. Subtítulos en condensada fina espaciada |
 | Texto | Montserrat Regular (400) | Minúscula normal, buena interlínea |
 | Frases destacadas | Manuscrita: **Caveat** (Google Fonts) | Una frase por pieza, nunca párrafos |
 

@@ -11,7 +11,7 @@
 1. **Gancho (0 a 2 s):** una frase en texto grande que plantea un problema, una pregunta o un contraste. Máximo 10 palabras. Ejemplos aprobados: "Tu matcha sabe amargo por esto", "Verde o negro".
 2. **Escenas (4 a 6):** para cada una, escribe encuadre (cenital, lateral, cámara baja, primer plano), acción, texto en pantalla y segundos. Total 15 a 30 s.
 3. **Momento clave:** marca la escena que más se va a ver (el espresso cayendo, el hielo, el primer sorbo). Pide cámara lenta ahí.
-4. **Cierre:** emblema del logo del manual (versión Vino) o "Good Coffee, Better Movement".
+4. **Cierre:** tarjeta crema con la firma vino, una pregunta en Caveat y "Good Coffee, Better Movement" (como el Reel 11).
 5. **Receta o datos:** solo los de `knowledge/menu.md`. Si falta un gramaje, "por confirmar".
 6. **Caption y CTA:** con la skill `caption-con-gancho`.
 7. **Checklist de grabación:** el de la ficha de Contenido.
