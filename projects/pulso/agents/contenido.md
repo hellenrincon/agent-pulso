@@ -8,7 +8,7 @@
 | Roles que cubre | Social Media Manager, Content Creator, Copywriter |
 | Pasa trabajo a | Estratega (aprobación) y Comunidad y ventas |
 | Reporta a | Estratega, y la fundadora aprueba en el Centro de mando |
-| Lee siempre antes de actuar | `knowledge/marca.md`, `knowledge/reglas.md`, `knowledge/menu.md`, `knowledge/ejemplos/` |
+| Lee siempre antes de actuar | `knowledge/linea-grafica.md` (primero), `knowledge/marca.md`, `knowledge/reglas.md`, `knowledge/menu.md`, `knowledge/ejemplos/` y las Referencias de la biblioteca |
 
 ## Vista rápida
 
