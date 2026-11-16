@@ -1509,7 +1509,10 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
       if (!m || !mb.dataset.ok) { medBorrar = m ? m._id : null; renderAll(); return; }
       busy = true;
       try {
-        await D("medios/" + m._id).delete(); if (assetId(m.asset)) await assets.delete(m.asset);
+        await D("medios/" + m._id).delete();
+        // El archivo solo se borra si ningún post ni otro archivo de la biblioteca lo usa
+        const enUso = (a) => S.propuestas.some((p) => assetId(p.video) === a || assetId(p.resultado) === a) || S.medios.some((x) => x._id !== m._id && assetId(x.asset) === a);
+        if (assetId(m.asset) && !enUso(assetId(m.asset))) await assets.delete(m.asset);
         // Si un pedido pendiente al agente solo tenía este archivo, ya no hay nada que hacer
         for (const x of S.solicitudes.filter((y) => y.estado === "pendiente" && (y.medio === m._id || (y.medios || []).includes(m._id)))) {
           const resto = (x.medios || [x.medio]).filter((id) => id && id !== m._id);
