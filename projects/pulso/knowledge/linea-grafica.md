@@ -18,6 +18,16 @@
 | Fotos | Luz natural cálida, Bogotá con montañas, gente real corriendo o pedaleando, vasos PULSO (nunca de otra marca) |
 | Cierre | "Good Coffee, Better Movement" o la firma |
 
+## Estructura del feed (aprobada el 16 nov 2026)
+
+Así se ve el perfil cuando funciona: cada fila de 3 lleva **crema · foto completa · crema**.
+
+- **Posición 1 y 3 de cada fila (crema)**: fondo crema con la foto real enmarcada o en recuadros, título grande en condensada gruesa vino, una frase en Caveat con subrayado dorado y la línea de pulso. Ejemplos: post 1 (Hola, somos PULSO) y post 3 (Detrás de PULSO).
+- **Posición 2 de cada fila (foto completa)**: foto o video a sangre, oscuro, con el texto encima (degradado suave) y la firma sutil. Ejemplo: post 2 (RUN • RIDE • SWIM). Los Reels van aquí.
+- **Reels en posición crema**: la portada es el cuadro final crema con el logo (portada_ms en la propuesta).
+- **El orden manda**: en Instagram la fila se arma por orden de publicación, así que el calendario reparte las piezas en ese patrón (1 crema, 2 foto completa, 3 crema, 4 crema, 5 foto completa…). Si dos piezas de foto completa quedarían seguidas en la misma fila, se cambia el orden o se rehace una en versión crema.
+- **Revisión**: en el Centro de mando, "Así se vería tu perfil" muestra los posts en orden de publicación. Antes de proponer fechas, mira que cada fila cumpla el patrón.
+
 ## Lista antes de entregar una pieza
 
 1. ¿El título está en condensada gruesa y la frase especial en Caveat? Nada de Arial, Helvetica ni cursivas genéricas.
@@ -26,7 +36,8 @@
 4. ¿El dorado está solo en líneas y detalles?
 5. ¿El color va con el pilar (RUN vino, RIDE oliva, SWIM petróleo)?
 6. ¿El texto se lee bien sobre la foto? Si no, usa una franja o un degradado suave en un color de la paleta.
-7. ¿No inventa precios, fechas ni cifras? Lo que no está confirmado se marca "por confirmar".
+7. ¿Encaja en su lugar del feed (crema o foto completa según la posición)?
+8. ¿No inventa precios, fechas ni cifras? Lo que no está confirmado se marca "por confirmar".
 
 ## Revisión de los posts (16 nov 2026)
 

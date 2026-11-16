@@ -99,12 +99,13 @@ Todo se diseña en **Canva** (carpeta "PULSO · Contenido Instagram"), siguiendo
 1. Lee las prioridades del Estratega y las bebidas disponibles.
 2. Decide cuántas piezas preparar con el ritmo sugerido para 2 horas diarias: **4 a 5 Reels por semana** y **3 a 5 Stories diarias**.
 3. Para cada Reel: escribe el guion, el caption y la idea de portada.
-4. Diseña el storyboard y el mockup, con la línea gráfica.
+4. Diseña el storyboard y el mockup, con la línea gráfica y pensando en su lugar del feed (crema o foto completa).
 5. Calcula cuánto tiempo de grabación pide a la fundadora y lo agrupa en sesiones (por ejemplo, 2 Reels por sesión).
 6. Deja cada pieza en Crear para que la fundadora la apruebe. Todavía sin fecha.
 
 *Paso 2, calendario (solo con contenido aprobado):*
 7. Propone fecha y hora para cada post aprobado: mejor hora de Metricool (Bogotá), sin chocar con lo programado, domingo para RIDE y ciclovía, y lanzamiento con los posts fijados el mismo día.
+7b. Ordena las fechas para que el feed cumpla la estructura de `knowledge/linea-grafica.md`: cada fila de 3 es crema · foto completa · crema (los Reels van al centro, o con portada crema si caen a un lado).
 8. La fundadora aprueba las fechas en Calendario. Solo entonces se programa en Metricool.
 
 **Antes de grabar (checklist que entrega con cada guion):** formato 9:16, 15 a 30 s, subtítulos, gancho en texto grande en los primeros 2 s, luz natural de ventana, superficie crema o madera con detalle vino o café, vaso transparente con hielo visible, cierre con logo o "Good Coffee, Better Movement", música con licencia comercial, anotar gramajes.

@@ -1083,13 +1083,14 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     return sec(titulo || "Revisión de posts", sub || "Un post a la vez: aprueba, pide un cambio o descarta", review);
   }
   function perfilHTML() {
-    const ps = S.propuestas.slice().sort((a, b) => (a.orden || 99) - (b.orden || 99)); if (!ps.length) return "";
+    const cuando = (x) => (x.metricool && x.metricool.fecha) || (x.publicar && x.publicar.fecha) || "9999";
+    const ps = S.propuestas.slice().sort((a, b) => String(cuando(a)).localeCompare(String(cuando(b))) || (a.orden || 99) - (b.orden || 99)); if (!ps.length) return "";
     const tiles = ps.filter((x) => revOf(x) !== "descartado" && (listo(x) || revOf(x) === "aprobado")).reverse().map((x) => { const rr = revOf(x); return `<button class="tile" data-rev="${esc(x._id)}" style="border:0;padding:0;cursor:pointer">${visual(x)}${imgOf(x) || listo(x) ? "" : `<span style="color:${colorTinta(x.tinta)}">${esc(x.titulo_img)}</span>`}<b>${esc(x.orden)}</b><i class="dot ${rr ? REV[rr][0] : "gris"}" style="position:absolute;left:6px;bottom:6px"></i></button>`; }).join("");
     const perfil = `<div class="perfil"><div class="pgrid" aria-label="Así se vería el perfil">${tiles}</div>
       <div class="bio"><strong>PULSO Coffee &amp; More | Bogotá</strong><span>Café para gente en movimiento</span><span>RUN • RIDE • SWIM</span><span>Bogotá · Próximamente</span><span class="pc">Enlace a la lista de espera: por confirmar</span>
-      <span class="hand" style="margin-top:10px">Solo lo terminado aparece aquí</span>
+      <span class="hand" style="margin-top:10px">Solo lo terminado aparece aquí</span><span class="src" style="margin-top:6px">En el orden en que se publica. Cada fila sigue la estructura del feed: crema, foto completa, crema.</span>
       </div></div>`;
-    return sec("Así se vería tu perfil", "Se actualiza con lo que apruebas", perfil);
+    return sec("Así se vería tu perfil", "En orden de publicación, con lo terminado y lo aprobado", perfil);
   }
   function revisionBanner() {
     const pend = S.propuestas.filter((p) => !revOf(p) && listo(p)).length;
