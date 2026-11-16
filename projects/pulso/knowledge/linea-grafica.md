@@ -10,7 +10,7 @@
 | Color protagonista | Vino en títulos, textos y logo sobre fondo claro |
 | Dorado `#B8913F` | Solo para líneas finas, detalles y la línea de pulso. Nunca como color de un título grande |
 | Color por pilar (vasos) | RUN = vino, RIDE = oliva, SWIM = azul petróleo `#17293A` |
-| Títulos | Mayúscula espaciada (Montserrat Light, según el texto del manual). **Por confirmar**: en las páginas del manual los títulos se ven en una letra condensada y gruesa |
+| Títulos | **Decidido el 16 nov:** letra condensada gruesa (Barlow Condensed Bold), como se ven las páginas del manual, en vino (o el color del pilar) sobre fondo claro. Subtítulos y etiquetas en condensada fina espaciada |
 | Textos | Montserrat Regular |
 | Frase especial | Caveat, una sola frase por pieza, con un subrayado dorado a mano si cabe |
 | Línea de pulso | Fina, dorada, o vino sobre fondos claros. Esquinas rectas, mucho aire |
@@ -20,7 +20,7 @@
 
 ## Lista antes de entregar una pieza
 
-1. ¿El título está en mayúscula espaciada y la frase especial en Caveat? Nada de Arial, Helvetica ni cursivas genéricas.
+1. ¿El título está en condensada gruesa y la frase especial en Caveat? Nada de Arial, Helvetica ni cursivas genéricas.
 2. ¿Hay una sola frase manuscrita?
 3. ¿El logo sobre una foto es la firma sutil (en línea, sin círculo relleno)?
 4. ¿El dorado está solo en líneas y detalles?
@@ -55,3 +55,5 @@ Comparando los 9 posts con el manual, todavía no:
 5. **Personas.** Solo los posts 2 y 3 muestran gente. El manual muestra deportistas reales en Bogotá.
 
 Lo que sí funciona: la paleta, la línea de pulso, la firma sutil y los posts 1, 3 y 9.
+
+**Decisión (16 nov):** títulos en condensada gruesa, como el manual. Muestras: posts 4 y 6, versión "Letra del manual" (`dashboard/canva/post4-condensada.png`, `post6-condensada.png`), sin aprobar. Si gustan, se pasan los demás posts a esta línea.
