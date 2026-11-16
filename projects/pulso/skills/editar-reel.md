@@ -19,6 +19,11 @@
    - Quitar silencios largos: buscar con `-af silencedetect=noise=-35dB:d=0.6` y cortar ahí.
 2. **Subtítulos (Whisper).** `python3 tools/editor-video/scripts/transcribir.py videos/trabajo/unido.mp4 --idioma es`. Leer el `.srt` y corregir a mano palabras mal oídas en el `.palabras.json` (mismo orden, mismos tiempos). Si hay música fuerte, `--modelo medium`.
 3. **Armar (HyperFrames).** `python3 tools/editor-video/scripts/armar-reel.py videos/trabajo/unido.mp4 --palabras videos/trabajo/unido.palabras.json --gancho "<gancho del guion>" [--musica pista.mp3] --salida videos/trabajo/<reel>`.
+   - Vídeo sin voz: textos por paso con `--textos textos.json` (ver `videos/guiones/`).
+   - Franja de título en el color del pilar: `--pilar run|ride|swim|cafe --titulo "…" --mano "…"` (la frase en Caveat). Una sola frase en Caveat por pieza: con `--mano`, el gancho sale en Montserrat.
+   - Firma sutil sobre el vídeo: `--firma X,Y,ANCHO`. Cierre crema con la firma y el lema: `--cierre "llamado a la acción"`.
+   - Si el bruto trae un logo o un texto viejo pegado, bórralo antes con `ffmpeg -vf delogo=x=…:y=…:w=…:h=…` y tapa el resto con la franja o la firma.
+   - Todo texto entre 270 y 1248 px de alto: Instagram tapa lo demás (`check` avisa con `outside_safe_zone`).
    Para algo más (títulos por escena, transiciones, cierre con emblema), leer primero la skill `hyperframes` y buscar bloques con `npx hyperframes catalog`.
 4. **Revisar.** Dentro de la carpeta del proyecto: `npx hyperframes check` (0 errores), `npx hyperframes snapshot` en el gancho, el momento clave y el cierre, y `npx hyperframes audio reel.mp4 --json` después de exportar.
 5. **Exportar.** `npx hyperframes render -o ../../salida/<reel>.mp4`.
@@ -28,7 +33,8 @@
 - [ ] 1080×1920, 15 a 30 s, gancho legible en los primeros 2 s.
 - [ ] Subtítulos sin errores en nombres (PULSO, matcha, cold brew, RUN, RIDE).
 - [ ] Nada tapa la cara, el vaso ni el logo; textos dentro del 80 % central (Instagram tapa los bordes).
-- [ ] Colores y letras del manual versión Vino.
+- [ ] Colores y letras del manual versión Vino, revisados con `knowledge/linea-grafica.md`: mayúscula espaciada, una sola frase en Caveat, firma sutil sobre la foto, color del pilar.
+- [ ] Menos de 20 MB (límite de la biblioteca): `ffmpeg -i reel.mp4 -c:v libx264 -crf 23 -preset slow -movflags +faststart final.mp4`.
 - [ ] Sonido entre −16 y −14 LUFS, sin saturar.
 - [ ] Música con licencia comercial o sonido original.
 
