@@ -157,6 +157,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .zbtn:hover { background: rgba(90,26,40,.92); }
 #visor { position: fixed; inset: 0; z-index: 9999; background: rgba(12,14,18,.98); backdrop-filter: blur(6px); display: none; grid-template-rows: auto 1fr auto; color: #F3E8D6; }
 #visor.on { display: grid; }
+#visor.cargando .vstage::after { content: ""; position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 2px solid rgba(243,232,214,.25); border-top-color: #B8913F; border-radius: 50%; animation: vgira .8s linear infinite; }
+@keyframes vgira { to { transform: rotate(360deg); } }
 #visor .vtop { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; gap: 10px; font-size: .82rem; letter-spacing: .06em; }
 #visor .vstage { position: relative; display: grid; place-items: center; min-height: 0; padding: 0 56px; }
 #visor .vstage img, #visor .vstage video { max-width: 100%; max-height: calc(100dvh - 140px); object-fit: contain; display: block; }
@@ -1425,9 +1427,15 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   function visorPinta() {
     const v = visor.el, it = visor.lista[visor.i]; if (!v || !it) return;
     const st = v.querySelector(".vstage"); st.querySelectorAll("img,video").forEach((x) => { if (x.pause) x.pause(); x.remove(); });
-    const m = document.createElement(it.tipo === "video" ? "video" : "img"); m.src = it.src;
-    if (it.tipo === "video") { m.controls = true; m.playsInline = true; m.autoplay = true; } else m.alt = it.cap || "Vista grande";
-    st.prepend(m);
+    const m = document.createElement(it.tipo === "video" ? "video" : "img");
+    v.classList.add("cargando");
+    const listo = () => v.classList.remove("cargando");
+    if (it.tipo === "video") { m.controls = true; m.playsInline = true; m.autoplay = true; m.preload = "auto"; m.addEventListener("loadeddata", listo, { once: true }); }
+    else { m.alt = it.cap || "Vista grande"; m.decoding = "async"; m.addEventListener("load", listo, { once: true }); }
+    m.addEventListener("error", listo, { once: true });
+    m.src = it.src; st.prepend(m);
+    if (m.complete && m.naturalWidth) listo();
+    visorPrecarga();
     v.querySelector(".vcap").textContent = it.cap || "";
     v.querySelector(".vnum").textContent = visor.lista.length > 1 ? `${visor.i + 1} de ${visor.lista.length}` : "";
     v.querySelectorAll(".vnav").forEach((b) => { b.hidden = visor.lista.length < 2; });
@@ -1453,6 +1461,19 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     document.querySelectorAll("video").forEach((x) => { if (x.pause) x.pause(); });
     visor.el.classList.add("on"); document.body.style.overflow = "hidden";
     visorPinta(); visorLink(); visor.el.querySelector(".vcerrar").focus();
+  }
+  // Deja listas en memoria las fotos de al lado (y todas si son pocas) para que pasar de una a otra sea inmediato
+  const visorCache = new Map();
+  function precargar(it) {
+    if (!it || visorCache.has(it.src)) return;
+    if (it.tipo === "video") { const x = document.createElement("video"); x.preload = "metadata"; x.muted = true; x.src = it.src; visorCache.set(it.src, x); }
+    else { const x = new Image(); x.decoding = "async"; x.src = it.src; visorCache.set(it.src, x); }
+  }
+  function visorPrecarga() {
+    if (visorCache.size > 80) visorCache.clear();
+    const L = visor.lista, k = L.length; if (!k) return;
+    if (k <= 12) L.forEach(precargar);
+    else [1, -1, 2, -2].forEach((d) => precargar(L[(visor.i + d + k) % k]));
   }
   function visorLink() { const a = visor.el && visor.el.querySelector(".vabrir"); const it = visor.lista[visor.i]; if (a && it) a.href = it.src; }
   function visorMueve(d) { if (visor.lista.length < 2) return; visor.i = (visor.i + d + visor.lista.length) % visor.lista.length; visorPinta(); visorLink(); }
