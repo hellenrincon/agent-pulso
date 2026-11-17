@@ -53,7 +53,7 @@ Semáforo (para estados, márgenes y cupos), calibrado para convivir con la pale
 
 | Rol | Fuente | Estilo |
 | --- | --- | --- |
-| Títulos | Montserrat Light (300) | MAYÚSCULA, letras espaciadas (tracking 0,18 a 0,3 em) |
+| Títulos | Barlow Condensed Bold (decidido el 16 nov 2026, como se ven las páginas del manual) | MAYÚSCULA, en vino o color del pilar. Subtítulos en condensada fina espaciada |
 | Texto | Montserrat Regular (400) | Minúscula normal, buena interlínea |
 | Frases destacadas | Manuscrita: **Caveat** (Google Fonts) | Una frase por pieza, nunca párrafos |
 
@@ -93,7 +93,7 @@ Vaso crema con tapa vino; vasos transparentes RUN (crema), RIDE (café oscuro) y
 Toda pieza visual (Claude Design, dashboard, web) parte de esta página. Los tokens de color y tipografía de arriba son los mismos que usan `dashboard/` y `web/`.
 
 ## Firma del logo en piezas de contenido (2 nov 2026)
-- La fundadora dijo que el emblema con círculo crema "en las fotos se ve muy feo". Propuesta vigente: **firma sutil**, el logo solo en línea y de un color, sin círculo de fondo: crema #F3E8D6 sobre fotos o fondos oscuros, vino #5A1A28 sobre fondos claros. Archivos: library/manual-marca/vino/firma_crema.png y firma_vino.png.
+- La fundadora dijo que el emblema con círculo crema "en las fotos se ve muy feo". Propuesta vigente: **firma sutil**, el logo solo en línea y de un color, sin círculo de fondo: crema #F3E8D6 sobre fotos o fondos oscuros, vino #5A1A28 sobre fondos claros. Archivos: library/referencias/manual-marca/vino/firma_crema.png y firma_vino.png.
 - Canva: copia "PULSO · Contenido Instagram · Firma sutil" (DAHZvSfey6g). Está por confirmar cuál versión elige en cada post.
 
 ## Vasos PULSO (referencia de la fundadora, 2 nov 2026)

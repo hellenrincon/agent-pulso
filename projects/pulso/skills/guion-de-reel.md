@@ -11,13 +11,13 @@
 1. **Gancho (0 a 2 s):** una frase en texto grande que plantea un problema, una pregunta o un contraste. Máximo 10 palabras. Ejemplos aprobados: "Tu matcha sabe amargo por esto", "Verde o negro".
 2. **Escenas (4 a 6):** para cada una, escribe encuadre (cenital, lateral, cámara baja, primer plano), acción, texto en pantalla y segundos. Total 15 a 30 s.
 3. **Momento clave:** marca la escena que más se va a ver (el espresso cayendo, el hielo, el primer sorbo). Pide cámara lenta ahí.
-4. **Cierre:** emblema del logo del manual (versión Vino) o "Good Coffee, Better Movement".
+4. **Cierre:** tarjeta crema con la firma vino, una pregunta en Caveat y "Good Coffee, Better Movement" (como el Reel 11).
 5. **Receta o datos:** solo los de `knowledge/menu.md`. Si falta un gramaje, "por confirmar".
 6. **Caption y CTA:** con la skill `caption-con-gancho`.
 7. **Checklist de grabación:** el de la ficha de Contenido.
 8. **Tiempo de la fundadora:** minutos de grabación estimados.
 9. **Storyboard en Canva:** una tira de escenas 9:16, fondo crema, textos en vino, número de escena, segundos y texto en pantalla, frase manuscrita del gancho.
-10. **Tablero:** fila en `calendario` (estado `guion`), tarea `esperando_aprobacion` y tarjeta en `decisiones`.
+10. **Tablero:** la pieza va a `propuestas` para que la fundadora apruebe el contenido (sin fecha), tarea `esperando_aprobacion`. La fila en `calendario` se crea después, cuando el contenido esté aprobado.
 
 ## Plantilla
 ```

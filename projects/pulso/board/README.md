@@ -21,7 +21,7 @@ El tablero es el **único canal** entre agentes. Vive en la base de datos del **
 | `agentes/{id}` | Estado de los agentes | Activo, inactivo o modo eventos |
 | `semana/actual` | Resumen del Estratega | Las 3 prioridades de la semana |
 | `solicitudes/{id}` | Pedidos de ajuste de la fundadora | Lo que pide cambiar sobre una foto/video (`medio`) o un post (`propuesta`): `texto`, `agente`, `estado` (pendiente, en_curso, listo, no_se_pudo), `respuesta` y `enlace` al resultado |
-| `medios/{id}` | Fotos y videos reales | Archivos que sube la fundadora desde la sección Crear. Cada documento guarda el id del archivo (`asset`), `tipo` (foto o video), `categoria`, `descripcion`, `subido` y `usado_en` (posts donde se usó). El archivo se ve en `/_blob/{asset}` |
+| `medios/{id}` | Biblioteca: brutos, referencias y terminados | Archivos de la sección Crear → Biblioteca. Cada documento guarda `etapa` (`bruto`, `referencia` o `terminado`; si falta, lo que subió la fundadora es bruto y lo que subió un agente es referencia), el id del archivo (`asset`), `tipo` (foto, video o enlace), `enlace` (solo referencias guardadas como link), `categoria`, `descripcion`, `propuesta` (post al que pertenece), `por` (fundadora o agente), `subido` y `usado_en`. El archivo se ve en `/_blob/{asset}`. Ver `library/README.md` |
 | `marca/board` | Branding board | Imágenes aprobadas para las casillas del tablero de marca: `logo`, `submarca`, `logo_secundario`, `tipografia`, `mockup1`, `mockup2` (id de archivo de la biblioteca). Solo el agente Marca e identidad la escribe, y solo con lo que la fundadora aprobó. Si una casilla está vacía, el Centro de mando dibuja la versión actual de la marca |
 | `historial/{id}` | Historial de decisiones | Una entrada por cada vez que la fundadora aprueba, comenta o rechaza (decisiones y posts): `fecha`, `proyecto`, `agente`, `tipo`, `ref`, `titulo`, `resultado` (aprobada, con_cambios, rechazada, reabierta), `nota`, `opcion`, `opcion_titulo`. **No se edita ni se borra**; reabrir crea una entrada nueva. Los agentes lo leen antes de proponer algo parecido |
 | `recetas/{id}` y `proveedores/{id}` | Menú y producto | Recetas con ingredientes y pasos; proveedores con fuente y estado |
@@ -76,6 +76,7 @@ Solo la fundadora cambia `estado` y `respuesta` (desde el dashboard). Un agente 
 
 ### `calendario/{id}`
 `{ "fecha": "2026-10-26", "formato": "Reel | Story | Post | Carrusel", "titulo": "...", "pilar": "RUN | RIDE | SWIM | CAFÉ", "estado": "idea | guion | grabado | editado | aprobado | publicado", "gancho": "...", "visual": "url", "tarea": "id", "fuente": "..." }`
+Desde el 16 nov el calendario se arma **después** del contenido: solo lleva posts con contenido aprobado (`propuesta` = id). `estado`: `propuesto` (fecha propuesta por Contenido) → `aprobado` (la fundadora aprobó la fecha) → `programado` (ya en Metricool). La fecha aprobada vive también en `propuestas/{id}.publicar.estado = "aprobado"`.
 
 ### `menu/{id}`
 `{ "nombre": "Cold Brew", "estado": "candidata | piloto | aprobada", "costo": null, "precio": null, "foto": "url o null", "fuente": "..." }`
