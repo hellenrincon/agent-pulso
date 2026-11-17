@@ -39,7 +39,9 @@ button { font: inherit; cursor: pointer; }
 /* Armazón: menú lateral fijo con selector de proyecto; en celular, barra inferior de 5 opciones */
 .shell { display: grid; grid-template-columns: 252px minmax(0, 1fr); min-height: 100vh; }
 .main-col { min-width: 0; display: flex; flex-direction: column; }
-.main-col main { flex: 1; }
+.main-col main { flex: 1; min-width: 0; overflow-x: clip; }
+img, video { max-width: 100%; }
+.pgrid .tile img, .pgrid .tile video, .thumb img, .thumb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 aside.side { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--petroleo); color: #F3E8D6; display: flex; flex-direction: column; padding: max(18px, env(safe-area-inset-top, 0px)) 0 18px; padding-left: env(safe-area-inset-left, 0px); scrollbar-width: thin; }
 .proj { display: flex; gap: 12px; align-items: center; margin: 0 14px; padding: 10px; background: rgba(243,232,214,.06); border: 1px solid rgba(243,232,214,.16); color: inherit; text-align: left; width: calc(100% - 28px); }
 .proj:hover { border-color: var(--dorado); }
@@ -138,7 +140,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 /* Manual de marca (páginas de Canva en grande) con revisión por página */
 .manual { display: grid; gap: 28px; }
-.capr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.capr{border:0;padding:0;background:none;cursor:pointer;text-align:left;display:grid;gap:8px;color:inherit;font:inherit}.capr .ph,.capr img,.capr>div:first-child{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}.capr.on{outline:2px solid var(--accent);outline-offset:3px}.capr-t{display:grid;gap:2px;font-size:.86rem}
+.capr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:16px}.capr{border:0;padding:0;background:none;cursor:pointer;text-align:left;display:grid;gap:8px;color:inherit;font:inherit;min-width:0}.capr .ph,.capr img,.capr video,.capr svg,.capr>div:first-child{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block;background:var(--panel)}.capr.on{outline:2px solid var(--accent);outline-offset:3px}.capr-t{display:grid;gap:2px;font-size:.86rem}
 .mfinal{display:grid;gap:28px}.mfinal-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}.mfinal-h h2{margin:4px 0}.mfinal-p{margin:0;display:grid;gap:8px}.mfinal-p img{width:100%;display:block;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.mfinal-p figcaption{display:flex;justify-content:space-between;font-size:.8rem;color:var(--ink-2);letter-spacing:.04em}.mfinal-p .ok{color:var(--verde)}
 .mcmp-w{display:grid;gap:14px;overflow-x:auto}.mcmp{display:grid;grid-template-columns:110px repeat(var(--nv),minmax(200px,1fr));gap:12px;align-items:start}.mcmp-h>div{display:grid;gap:4px;align-content:start;font-size:.88rem}.mcmp-n{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2)}.mcmp img{width:100%;display:block;border-radius:6px}.alc{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.86rem;margin:6px 0}.alc label{display:flex;gap:6px;align-items:center}@media(max-width:640px){.mcmp{grid-template-columns:repeat(var(--nv),minmax(130px,1fr))}.mcmp-n{grid-column:1/-1;grid-auto-flow:column;justify-content:start}.mcmp-h>span{display:none}}
 .mopc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
@@ -153,6 +155,30 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .cal-pide { display: grid; gap: 8px; margin-top: 12px; max-width: 560px; }
 .cal-pide textarea { width: 100%; font: inherit; padding: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
 .cal-pide .btn { justify-self: start; }
+.pasos-pub { display: grid; gap: 0; border: 1px solid var(--line); background: var(--panel); }
+.pp { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.pp:last-child { border-bottom: 0; }
+.pp .n { width: 30px; height: 30px; display: grid; place-items: center; border: 1.5px solid var(--line); font-weight: 600; font-size: .85rem; border-radius: 50%; }
+.pp.ok .n { background: var(--verde); border-color: var(--verde); color: #fff; }
+.pp.ahora { background: var(--bg); box-shadow: inset 3px 0 0 var(--accent); }
+.pp.ahora .n { border-color: var(--accent); color: var(--accent); }
+.pp .t { font-weight: 600; font-size: .95rem; }
+.pp .d { font-size: .82rem; color: var(--ink-2); }
+@media (max-width: 640px) { .pp { grid-template-columns: 30px minmax(0, 1fr); } .pp > .btn, .pp > .actions { grid-column: 1 / -1; } }
+.btn.big { padding: 14px 22px; font-size: .9rem; }
+.feed-filas { display: grid; gap: 14px; }
+.fila-h { font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.fila-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
+.fcell { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--panel); border: 0; padding: 0; cursor: pointer; }
+.fcell img, .fcell video, .fcell svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.fcell .fd { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 6px 5px; font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.72)); text-align: left; }
+.fcell i.dot { position: absolute; left: 5px; top: 5px; }
+.fcell.libre { background: repeating-linear-gradient(135deg, var(--bg) 0 8px, var(--panel) 8px 16px); cursor: default; }
+.crow { display: grid; grid-template-columns: 64px 56px minmax(0, 1fr); gap: 6px 14px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.crow .cth { width: 56px; aspect-ratio: 4 / 5; position: relative; overflow: hidden; background: var(--panel); border: 0; padding: 0; cursor: pointer; }
+.crow .cth img, .crow .cth video, .crow .cth svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.crow .cact { grid-column: 3; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+@media (max-width: 640px) { .crow { grid-template-columns: 52px 48px minmax(0, 1fr); } .crow .cth { width: 48px; } .crow .cact { grid-column: 1 / -1; } }
 .zbtn { position: absolute; top: 8px; right: 8px; z-index: 2; min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: 999px; background: rgba(23,41,58,.78); color: #F3E8D6; font: 600 .74rem/1 Montserrat, sans-serif; letter-spacing: .08em; padding: 0 12px; cursor: pointer; }
 .zbtn:hover { background: rgba(90,26,40,.92); }
 #visor { position: fixed; inset: 0; z-index: 9999; background: rgba(12,14,18,.98); backdrop-filter: blur(6px); display: none; grid-template-rows: auto 1fr auto; color: #F3E8D6; }
@@ -267,7 +293,7 @@ details.hist .decisiones { margin-top: 14px; }
 .arrow { color: var(--gold); font-size: .8rem; }
 
 /* Calendario */
-.cal-grid { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 28px; align-items: start; }
+.cal-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 32px; align-items: start; }
 @media (max-width: 820px) { .cal-grid { grid-template-columns: minmax(0, 1fr); } }
 .ig { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; background: var(--panel); padding: 3px; border: 1px solid var(--line); }
 .ig-cell { aspect-ratio: 4 / 5; max-width: 100%; position: relative; display: grid; align-content: space-between; padding: 8px; color: #F3E8D6; background: var(--pc, var(--petroleo)); overflow: hidden; }
@@ -645,54 +671,67 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
   const fechaOk = (p) => !!(p && p.publicar && p.publicar.estado === "aprobado");
   const futuro = (iso) => { const d = new Date(iso || ""); return !isNaN(d) && d.getTime() > Date.now(); };
   let calConf = false;
+  // Cuándo sale un post: lo programado manda; si no, la fecha propuesta o aprobada
+  const cuandoSale = (p) => (p.metricool && p.metricool.fecha) || (p.publicar && p.publicar.fecha) || "";
+  const ganchoDe = (p) => String(p.texto_publicar || "").split("\n")[0] || p.caption || "";
+  const estadoPost = (p) => p.metricool && p.metricool.fecha ? ["verde", "Programado en Instagram"]
+    : revOf(p) !== "aprobado" ? (revOf(p) === "cambios" ? ["amarillo", "Con cambios pedidos"] : ["gris", listo(p) ? "Falta aprobar el contenido" : "Falta la pieza"])
+    : fechaOk(p) ? ["verde", "Fecha aprobada · se programa sola"]
+    : p.publicar && futuro(p.publicar.fecha) ? ["amarillo", "Falta aprobar la fecha"] : ["rojo", "Necesita fecha nueva"];
+  let calOne = "";
   function bancoHTML() {
-    const ps = S.propuestas.filter((p) => revOf(p) !== "descartado").sort((a, b) => (a.orden || 99) - (b.orden || 99));
-    const listos = ps.filter((p) => revOf(p) === "aprobado");
-    const prep = ps.length - listos.length;
-    const sinFecha = listos.filter((p) => !(p.metricool && p.metricool.fecha) && !fechaOk(p));
-    const conProp = sinFecha.filter((p) => p.publicar && futuro(p.publicar.fecha));
-    const fila = (p) => `<button class="chip" data-tab="crear" data-rev="${esc(p._id)}" style="cursor:pointer;background:none;color:var(--ink-2)"><span class="dot ${p.metricool && p.metricool.fecha ? "verde" : fechaOk(p) ? "verde" : "amarillo"}"></span>Post ${esc(p.orden)} · ${esc(p.titulo_img || p.formato || "")}</button>`;
-    const pasos = `<div class="cal-pasos">
-      <div class="cal-paso"><span class="eyebrow">Paso 1 · Contenido</span><b>${listos.length} de ${ps.length}</b><span class="src">${listos.length === 1 ? "post aprobado" : "posts aprobados"}${prep ? ` · ${prep} en preparación o revisión` : ""}</span><button class="chip" data-tab="crear" style="cursor:pointer;background:none;justify-self:start">Revisar en Crear</button></div>
-      <div class="cal-paso"><span class="eyebrow">Paso 2 · Calendario</span><b>${sinFecha.length}</b><span class="src">${sinFecha.length === 1 ? "post listo espera fecha aprobada" : "posts listos esperan fecha aprobada"}</span></div></div>`;
-    const lista = listos.length ? `<div class="cal-banco">${listos.map(fila).join("")}</div>` : `<div class="src">Todavía no hay posts aprobados. Primero se aprueba el contenido en Crear; después se arma el calendario solo con lo aprobado.</div>`;
-    let acc = "";
-    if (canWrite && db && conProp.length) acc += calConf
-      ? `<div class="actions"><button class="btn primary" data-calok="1">Sí, apruebo las fechas de ${conProp.length} ${conProp.length === 1 ? "post" : "posts"}</button><button class="btn" data-calconf="0">Cancelar</button></div>`
-      : `<div class="actions"><button class="btn primary" data-calconf="1">Aprobar fechas de ${conProp.length} ${conProp.length === 1 ? "post listo" : "posts listos"}</button></div>`;
-    if (canWrite && db && listos.length) acc += `<div class="cal-pide"><textarea id="cal-cm" rows="2" maxlength="600" placeholder="${sinFecha.length > conProp.length ? "Opcional: qué días o qué orden prefieres" : "Si quieres otro orden u otras fechas, escríbelo aquí"}"></textarea><button class="btn" data-calpide="1">${sinFecha.length > conProp.length ? "Pedir calendario al agente" : "Pedir cambio de fechas"}</button></div>`;
-    return pasos + lista + acc;
+    const ps = S.propuestas.filter((p) => revOf(p) !== "descartado");
+    const aprob = ps.filter((p) => revOf(p) === "aprobado");
+    const porRev = ps.filter((p) => revOf(p) !== "aprobado" && listo(p));
+    const sinPieza = ps.filter((p) => revOf(p) !== "aprobado" && !listo(p));
+    const prog = aprob.filter((p) => p.metricool && p.metricool.fecha);
+    const fechaLista = aprob.filter((p) => !(p.metricool && p.metricool.fecha) && fechaOk(p));
+    const conProp = aprob.filter((p) => !(p.metricool && p.metricool.fecha) && !fechaOk(p) && p.publicar && futuro(p.publicar.fecha));
+    const vencidas = aprob.filter((p) => !(p.metricool && p.metricool.fecha) && !fechaOk(p) && !(p.publicar && futuro(p.publicar.fecha)));
+    const paso1ok = !porRev.length, paso2ok = !conProp.length && !vencidas.length;
+    const ahora = !paso1ok ? 1 : !paso2ok ? 2 : 3;
+    const btnFechas = !canWrite || !db || !conProp.length ? "" : calConf
+      ? `<div class="actions"><button class="btn primary big" data-calok="1">Sí, aprobar ${conProp.length} ${conProp.length === 1 ? "fecha" : "fechas"}</button><button class="btn" data-calconf="0">Cancelar</button></div>`
+      : `<button class="btn primary big" data-calconf="1">Aprobar ${conProp.length === 1 ? "la fecha" : "las " + conProp.length + " fechas"}</button>`;
+    const paso = (n, ok, t, d, acc) => `<div class="pp ${ok ? "ok" : ""} ${ahora === n ? "ahora" : ""}"><span class="n">${ok ? "✓" : n}</span><div><div class="t">${t}</div><div class="d">${d}</div></div>${acc || ""}</div>`;
+    const html = `<div class="pasos-pub">
+      ${paso(1, paso1ok, paso1ok ? `Contenido aprobado: ${aprob.length} ${aprob.length === 1 ? "post" : "posts"}` : `Aprueba el contenido: ${porRev.length} ${porRev.length === 1 ? "post espera" : "posts esperan"}`, `En Crear miras cada post con su foto o video y su texto.${sinPieza.length ? ` ${sinPieza.length === 1 ? "1 post todavía no tiene pieza" : sinPieza.length + " posts todavía no tienen pieza"} (${sinPieza.map((p) => p.orden).join(", ")}).` : ""}`, paso1ok ? "" : `<button class="btn primary" data-tab="crear">Ir a Crear</button>`)}
+      ${paso(2, paso2ok && aprob.length > 0, conProp.length ? `Aprueba las fechas: ${conProp.length} ${conProp.length === 1 ? "post espera" : "posts esperan"}` : vencidas.length ? `${vencidas.length === 1 ? "1 post necesita" : vencidas.length + " posts necesitan"} fecha nueva` : `Fechas aprobadas: ${fechaLista.length + prog.length}`, conProp.length ? "Revisa la lista de abajo. Puedes aprobar todas de una vez o una por una." : vencidas.length ? "Su fecha ya pasó. Pide al agente una fecha nueva con el botón de abajo." : "Nada pendiente aquí.", btnFechas)}
+      ${paso(3, prog.length > 0 && !fechaLista.length && paso2ok, `Se programa solo en Instagram: ${prog.length} ${prog.length === 1 ? "programado" : "programados"}`, fechaLista.length ? `${fechaLista.length} ${fechaLista.length === 1 ? "post pasa" : "posts pasan"} a Metricool ${proxRevision()}. No tienes que hacer nada más.` : "Cuando apruebas una fecha, el agente lo pasa a Metricool y te avisa.", "")}
+    </div>`;
+    const pide = canWrite && db && aprob.length ? `<div class="cal-pide"><textarea id="cal-cm" rows="2" maxlength="600" placeholder="¿Quieres otro día, otra hora u otro orden? Escríbelo aquí (ej: el post 3 el miércoles a las 10 am)"></textarea><button class="btn" data-calpide="1">Pedir cambio de fechas</button></div>` : "";
+    return html + pide;
   }
   function calChip(c, stChip) {
     const p = c.propuesta && S.propuestas.find((x) => x._id === c.propuesta);
-    const e = !p ? [stChip[c.estado] || "gris", c.estado || "idea"]
-      : p.metricool && p.metricool.fecha ? ["verde", "Programado"]
-      : revOf(p) === "aprobado" && fechaOk(p) ? ["verde", "Fecha aprobada"]
-      : revOf(p) === "aprobado" ? ["amarillo", "Falta aprobar fecha"]
-      : revOf(p) === "cambios" ? ["amarillo", "Con cambios"]
-      : revOf(p) === "descartado" ? ["rojo", "Descartado"] : ["amarillo", "Por aprobar"];
-    return p ? `<button class="chip" data-tab="contenido" data-rev="${esc(p._id)}" style="color:var(--ink-2);cursor:pointer;background:none"><span class="dot ${e[0]}"></span>${esc(e[1])}</button>` : `<span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span>`;
+    const e = p ? estadoPost(p) : [stChip[c.estado] || "gris", c.estado || "idea"];
+    return `<span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span>`;
   }
   function calendarioHTML() {
     const hoy = hoyYMD();
-    const postDe = (c) => c.propuesta && S.propuestas.find((x) => x._id === c.propuesta);
-    const items = S.calendario.filter((c) => { const p = postDe(c); return !c.propuesta || (p && revOf(p) === "aprobado"); }).sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
-    const esperan = S.calendario.filter((c) => { const p = postDe(c); return p && revOf(p) !== "aprobado" && revOf(p) !== "descartado" && String(c.fecha) >= hoy; }).length;
-    const prox = items.filter((c) => String(c.fecha) >= hoy);
-    const nine = prox.filter((c) => c.formato !== "Story").slice(0, 9);
-    const mini = '<svg viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 H40 L45 3 L51 16 L57 10 H100" fill="none" stroke="#B8913F" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg>';
-    const cells = nine.map((c) => { const d = dia(c.fecha); return `<div class="ig-cell" style="--pc:${PILAR[(c.pilar || "").toUpperCase()] || "var(--petroleo)"}">
-      <span class="ig-f">${esc(c.formato || "")} · ${esc(c.pilar || "")}</span>${mini}<span class="ig-g">${esc(c.gancho || c.titulo)}</span>
-      <span class="ig-d">${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }) : esc(c.fecha)}${c.hora && /\d/.test(c.hora) ? " · " + esc(c.hora) : ""}</span></div>`; });
-    while (cells.length < 9) cells.push(`<div class="ig-cell vacia"><span class="ig-f">Libre</span><span></span><span class="ig-d">por planear</span></div>`);
-    const stChip = { idea: "gris", guion: "amarillo", grabado: "amarillo", editado: "amarillo", aprobado: "verde", publicado: "verde" };
-    const list = items.length ? `<div class="cal-list">${(prox.length ? prox : items).slice(0, 14).map((c) => { const d = dia(c.fecha); return `<div class="cal-row">
-      <div class="cal-date">${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, weekday: "short" }) : ""}<b>${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, day: "numeric" }) : esc(c.fecha)}</b>${d ? d.toLocaleDateString("es-CO", { timeZone: TZ, month: "short" }) : ""}</div>
-      <div class="cal-body"><div class="cal-t">${c.hora ? `<b>${esc(c.hora)}</b> · ` : ""}${esc(c.formato || "")} · ${esc(c.titulo)}</div>${c.gancho ? `<div class="cal-h">“${esc(c.gancho)}”</div>` : ""}${c.fuente ? `<div class="src">${esc(c.fuente)}</div>` : ""}</div>
-      ${calChip(c, stChip)}</div>`; }).join("")}</div>`
-      : empty("Todavía no hay fechas.", "Cuando apruebes posts en Crear, el agente les propone fecha y hora aquí.");
-    const nota = esperan ? `<div class="src" style="margin-bottom:10px">${esperan} ${esperan === 1 ? "publicación ya tiene fecha tentativa pero espera" : "publicaciones ya tienen fecha tentativa pero esperan"} que apruebes su contenido en Crear. Aparecen aquí cuando las apruebes.</div>` : "";
-    return nota + `<div class="cal-grid"><div class="ig" aria-label="Cuadrícula de Instagram con las próximas publicaciones">${cells.join("")}</div><div>${list}</div></div>`;
+    const posts = S.propuestas.filter((p) => revOf(p) === "aprobado" && cuandoSale(p)).sort((a, b) => String(cuandoSale(a)).localeCompare(String(cuandoSale(b))));
+    const prox = posts.filter((p) => (p.metricool && p.metricool.fecha) || futuro(cuandoSale(p)) || String(cuandoSale(p)).slice(0, 10) >= hoy);
+    const lista = prox.length ? prox : posts;
+    const ideas = S.calendario.filter((c) => !c.propuesta && String(c.fecha) >= hoy).sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
+    const esperan = S.propuestas.filter((p) => revOf(p) !== "aprobado" && revOf(p) !== "descartado").length;
+    // Feed por filas de 3, en orden de publicación (fila 1 = primeros 3 posts)
+    const feedPosts = lista.filter((p) => !/story/i.test(p.formato || ""));
+    const filas = [];
+    for (let i = 0; i < feedPosts.length; i += 3) filas.push(feedPosts.slice(i, i + 3));
+    const celda = (p) => { const e = estadoPost(p); return `<button class="fcell" data-tab="crear" data-rev="${esc(p._id)}" aria-label="Post ${esc(p.orden)}">${visual(p)}<i class="dot ${e[0]}"></i><span class="fd">${fecha(cuandoSale(p), { weekday: "short", day: "numeric", month: "short" })} · ${fecha(cuandoSale(p), { hour: "numeric", minute: "2-digit" })}</span></button>`; };
+    const feed = filas.length ? `<div class="feed-filas">${filas.map((f, i) => `<div><div class="fila-h">Fila ${i + 1}</div><div class="fila-g">${f.map(celda).join("")}${f.length < 3 ? '<div class="fcell libre"></div>'.repeat(3 - f.length) : ""}</div></div>`).join("")}</div>` : "";
+    const fila = (p) => { const e = estadoPost(p); const d = new Date(cuandoSale(p));
+      const pend = canWrite && db && revOf(p) === "aprobado" && !(p.metricool && p.metricool.fecha) && !fechaOk(p) && p.publicar && futuro(p.publicar.fecha);
+      const acc = pend ? (calOne === p._id ? `<div class="actions"><button class="btn primary" data-calone="${esc(p._id)}" data-ok="1">Sí, aprobar</button><button class="btn" data-calone="">Cancelar</button></div>` : `<button class="btn" data-calone="${esc(p._id)}">Aprobar esta fecha</button>`) : "";
+      return `<div class="crow">
+        <div class="cal-date">${fecha(d, { weekday: "short" })}<b>${fecha(d, { day: "numeric" })}</b>${fecha(d, { month: "short" })}</div>
+        <button class="cth" data-tab="crear" data-rev="${esc(p._id)}" aria-label="Ver post ${esc(p.orden)}">${visual(p)}</button>
+        <div class="cal-body"><div class="cal-t"><b>${fecha(d, { hour: "numeric", minute: "2-digit" })}</b> · Post ${esc(p.orden)} · ${esc(p.titulo_img || "")}</div><div class="src">${esc(fotoOf(p) ? "Foto" : vidOf(p) ? "Reel" : p.formato || "")}${p.pilar ? " · " + esc(p.pilar) : ""}</div>${ganchoDe(p) ? `<div class="cal-h">“${esc(ganchoDe(p))}”</div>` : ""}</div>
+        <div class="cact"><span class="chip" style="color:var(--ink-2)"><span class="dot ${e[0]}"></span>${esc(e[1])}</span>${acc}</div></div>`; };
+    const filasLista = lista.length ? `<div class="cal-list">${lista.map(fila).join("")}</div>` : empty("Todavía no hay fechas.", "Cuando apruebes posts en Crear, el agente les propone fecha y hora aquí.");
+    const ideasHTML = ideas.length ? `<div style="margin-top:18px"><span class="eyebrow">Ideas para más adelante (no se publican solas)</span><div class="cal-banco" style="margin-top:8px">${ideas.map((c) => `<span class="chip" style="color:var(--ink-2)"><span class="dot gris"></span>${esc(c.titulo)}${dia(c.fecha) ? " · " + dia(c.fecha).toLocaleDateString("es-CO", { timeZone: TZ, day: "numeric", month: "short" }) : ""}</span>`).join("")}</div></div>` : "";
+    const nota = esperan ? `<div class="src" style="margin-bottom:10px">${esperan} ${esperan === 1 ? "post más aparece" : "posts más aparecen"} aquí cuando apruebes su contenido en Crear.</div>` : "";
+    return nota + `<div class="cal-grid"><div aria-label="Así se llena tu feed, fila por fila">${feed}</div><div>${filasLista}${ideasHTML}</div></div>`;
   }
 
   function piezasHTML(id) {
@@ -1070,7 +1109,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
           ${hookMusicaHTML(p)}
           ${p.nota ? `<div class="src">${esc(p.nota)}</div>` : ""}
           ${postVersHTML(p)}
-          ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? `<div class="src">Aprobado. El agente lo pasa solo a Metricool en menos de una hora (revisa cada hora de 7 am a 10 pm), en la fecha y hora del calendario. No tienes que hacer nada más.</div>` : ""}
+          ${p.metricool && p.metricool.fecha ? `<div class="answer"><span class="chip" style="color:var(--verde)"><span class="dot verde"></span>Programado en Instagram</span><div style="margin-top:6px">${fecha(p.metricool.fecha, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</div>${safeUrl(p.metricool.plannerUrl) ? `<a href="${esc(p.metricool.plannerUrl)}" target="_blank" rel="noopener" class="src">Ver, cambiar o borrar en Metricool</a>` : ""}</div>` : revOf(p) === "aprobado" ? (fechaOk(p) ? `<div class="src">Contenido y fecha aprobados. El agente lo pasa solo a Metricool ${proxRevision()}. No tienes que hacer nada más.</div>` : `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot amarillo"></span>Falta aprobar la fecha</span><div class="src" style="margin-top:6px">El contenido ya está aprobado. Para que se publique, aprueba su fecha en el Calendario.</div><div class="actions"><button class="btn primary" data-tab="calendario">Ir al Calendario</button></div></div>`) : ""}
           ${safeUrl(p.canva) ? `<a class="visual-link" href="${esc(p.canva)}" target="_blank" rel="noopener">Ver y editar el diseño en tu Canva</a>` : `<div class="src">Diseño en Canva: por hacer. Mientras tanto ves la ilustración de referencia.</div>`}
           ${r ? `<div class="answer"><span class="chip" style="color:var(--ink-2)"><span class="dot ${REV[r][0]}"></span>${REV[r][1]}</span>${rv.comentario ? `<div style="margin-top:6px">“${esc(rv.comentario)}”</div>` : ""}${rv.fecha ? `<div class="src" style="margin-top:4px">${fecha(rv.fecha)}</div>` : ""}</div>` : ""}
           ${canWrite && (r === "aprobado" || r === "descartado") ? (p.metricool && p.metricool.fecha ? `<div class="src">Ya está programado en Metricool: para deshacerlo, bórralo o cámbialo allá con el enlace de arriba.</div>` : deshConf === "p:" + p._id ? `<div class="undo"><span>¿Deshacer ${r === "aprobado" ? "la aprobación" : "el descarte"}? El post vuelve a Por revisar y no se programa.</span><div class="actions"><button class="btn primary" data-deshacer="p:${esc(p._id)}" data-ok="1">Sí, deshacer</button><button class="btn" data-deshacer="">Cancelar</button></div></div>` : `<div class="actions"><button class="btn" data-deshacer="p:${esc(p._id)}">↶ Deshacer ${r === "aprobado" ? "aprobación" : "descarte"}</button></div>`) : ""}
@@ -1227,8 +1266,11 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     const tb = (k, l) => `<button role="tab" data-ctab="${k}" aria-selected="${cTab === k}">${l}</button>`;
     const tabs = `<section><div class="subtabs" role="tablist">${tb("aprobado", "Aprobado · " + apr.length)}${tb("revisar", "Por revisar · " + porRev.length)}${tb("historial", "Historial · " + hist.length)}${tb("biblioteca", "Biblioteca y herramientas")}</div></section>`;
     if (cTab === "aprobado") {
-      const cards = apr.map((x) => { const mc = x.metricool && x.metricool.fecha; return `<button class="capr ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}">${visual(x)}<span class="capr-t"><b>${esc(x.orden)} · ${esc(x.titulo_img || "")}</b><span class="src">${mc ? "Programado · " + fecha(x.metricool.fecha, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "Aprobado · pasa a Metricool en la próxima hora"}</span></span></button>`; }).join("");
-      return tabs + sec("Contenido aprobado", apr.length ? "Listo para publicar o ya programado en Instagram" : "", apr.length ? `<div class="capr-g">${cards}</div>` : `<div class="src">Todavía no hay posts aprobados. Revisa los que esperan en Por revisar.</div>`)
+      const aprO = apr.slice().sort((a, b) => String(cuandoSale(a) || "9999").localeCompare(String(cuandoSale(b) || "9999")));
+      const cards = aprO.map((x) => { const e = estadoPost(x); const f = cuandoSale(x); return `<button class="capr ${x._id === revId ? "on" : ""}" data-rev="${esc(x._id)}" aria-label="Post ${esc(x.orden)}">${visual(x)}<span class="capr-t"><b>${esc(x.orden)} · ${esc(x.titulo_img || "")}</b>${f ? `<span style="font-size:.8rem">${fecha(f, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}</span>` : ""}<span class="src"><i class="dot ${e[0]}"></i> ${esc(e[1])}</span></span></button>`; }).join("");
+      const faltanF = apr.filter((x) => !(x.metricool && x.metricool.fecha) && !fechaOk(x)).length;
+      const avisoF = faltanF ? `<div class="pp ahora" style="border:1px solid var(--line);margin-bottom:16px"><span class="n">2</span><div><div class="t">Falta aprobar ${faltanF === 1 ? "1 fecha" : faltanF + " fechas"}</div><div class="d">El contenido ya está aprobado. Para que se publique, aprueba las fechas en el Calendario.</div></div><button class="btn primary" data-tab="calendario">Ir al Calendario</button></div>` : "";
+      return tabs + sec("Contenido aprobado", apr.length ? "En orden de publicación" : "", apr.length ? avisoF + `<div class="capr-g">${cards}</div>` : `<div class="src">Todavía no hay posts aprobados. Revisa los que esperan en Por revisar.</div>`)
         + (apr.length && apr.find((x) => x._id === revId) ? propuestasHTML(apr, "Detalle", "Texto, fecha y enlaces del post aprobado") : "")
         + perfilHTML();
     }
@@ -1252,7 +1294,7 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
     inicio: inicioHTML,
     decisiones: decisionesScreen,
     crear: crearHTML,
-    calendario: () => sec("Primero el contenido, después las fechas", "Solo los posts aprobados entran al calendario", bancoHTML()) + sec("Calendario de publicación", "Fechas propuestas por el agente · nada sale sin tu aprobación", calendarioHTML() + `<div class="src" style="margin-top:8px">Así funciona: 1) apruebas cada post en Crear; 2) el agente propone fecha y hora solo para lo aprobado; 3) apruebas las fechas aquí y el agente lo programa en Metricool. Si una fecha ya pasó, propone el siguiente espacio libre.</div>`),
+    calendario: () => sec("Qué falta para publicar", "Tres pasos · nada sale sin tu aprobación", bancoHTML()) + sec("Calendario de publicación", "Hora de Bogotá · toca un post para verlo completo", calendarioHTML()),
     ventas: () => sec("Pedidos del día", "Cupos como barra de progreso", `<div class="menu-grid"><div>${empty("Todavía no hay pedidos.", "La web abre pedidos cuando apruebes bebidas, precios, cupo, entrega y medio de cobro.")}</div>${cupoHTML()}</div>`) + sec("Números clave", "Cada número con su fuente", numerosHTML()),
     producto: () => sec("Menú y costos", "Tabla con semáforo de margen", `<div class="menu-grid"><div>${menuHTML()}</div>${cupoHTML()}</div>`) + sec("Recetas", "Café, matcha y más · ingredientes y pasos", recetasHTML()) + sec("Proveedores", "Café de marca propia, matcha y empaques · cada dato con fuente", proveedoresHTML()),
     eventos: () => sec("Calendario de eventos", "Modo eventos · Bogotá y Cundinamarca", empty("Primera búsqueda pendiente.", "Aquí aparece cada carrera, evento ciclista, triatlón o ciclovía con semáforo, fuente y fecha de verificación, más su tarjeta: ir, no ir o contactar.")),
@@ -1521,6 +1563,26 @@ label.post-drop input[type=file] { position: absolute; width: 1px; height: 1px; 
         await D("propuestas/" + p._id).update({ pieza_elegida: m._id, version_fecha: now });
         await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "post", ref: p._id, titulo: `Post ${p.orden}: ${p.titulo_img || ""}`, resultado: "con_cambios", nota: "Eligió la pieza terminada: " + (m.descripcion || m.nombre || m._id), opcion: null, opcion_titulo: m.nombre || "", por: "fundadora" });
         toast("Pieza elegida. El post sigue esperando tu aprobación.");
+      } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
+      return;
+    }
+    const c1 = ev.target.closest("button[data-calone]");
+    if (c1) {
+      const id = c1.dataset.calone;
+      if (!id || !c1.dataset.ok) { calOne = id || ""; renderAll(); return; }
+      const p = S.propuestas.find((x) => x._id === id);
+      if (!p || !db || !canWrite || busy || !(p.publicar && futuro(p.publicar.fecha))) { calOne = ""; renderAll(); return; }
+      busy = true; calOne = ""; const now = new Date().toISOString();
+      try {
+        await D("propuestas/" + p._id).update({ publicar: Object.assign({}, p.publicar, { estado: "aprobado", aprobado: now }) });
+        const c = S.calendario.find((x) => x.propuesta === p._id);
+        if (c) await D("calendario/" + c._id).update({ estado: "aprobado" });
+        const txt = `post ${p.orden} (${fecha(p.publicar.fecha, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })})`;
+        await C("solicitudes").doc().set({ tipo: "programar", agente: "contenido", propuestas: [p._id], texto: `Fecha aprobada: ${txt}. Programar en Metricool en esa fecha y hora.`, estado: "pendiente", fecha: now, urgente: true });
+        await C("historial").doc().set({ fecha: now, proyecto: proyecto.id, agente: "contenido", tipo: "calendario", ref: p._id, titulo: "Fecha del post " + p.orden, resultado: "aprobada", nota: txt, opcion: null, opcion_titulo: "", por: "fundadora" });
+        await C("actividad").doc().set({ agente: "fundadora", accion: `Aprobó la fecha del ${txt}`, pasa_a: "contenido", fecha: now });
+        const yaVa = await despertarAgente();
+        toast(yaVa ? "Fecha aprobada. El agente ya lo está programando." : `Fecha aprobada. Se programa ${proxRevision()}.`);
       } catch (e) { toast("No se pudo guardar. Inténtalo de nuevo."); } finally { busy = false; renderAll(); }
       return;
     }
